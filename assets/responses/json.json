@@ -1,0 +1,34 @@
+{
+  storeId: 1,
+  currency: "USD",
+  customer{
+  oken: "0yxqk66z0vh0otmp9qloj8ggy3o3zj1g",
+  quoteId: 0,
+  paymentMethod: "banktransfer",
+  checkoutMethod: "customer",
+  purchasePoint: "android",
+  billingData: {
+    addressId: "",
+    newAddress: {
+      saveInAddressBook: "1",
+      fax: "",
+      city: "Noida",
+      region: "Uttar Pradesh",
+      prefix: "",
+      suffix: "",
+      street: "[Noida, NOida]",
+      company: "",
+      lastName: "test",
+      postcode: "201301",
+      region_id: "602",
+      firstName: "test",
+      telephone: "543651257657",
+      middleName: "",
+      country_id: "IN",
+      email: "test12@webkul.com",
+      address_title: ""
+    },
+    sameAsShipping: "1"
+  },
+  token: "cxs-xxPGQqail_PF6DHsam:APA91bHrclU_eBlBTlR4OUhvPt_UVCnGnHfeFtvFO9iiy62krDggjd9p-FhPIUWxCb6vIfHuOq3wlieL10Q-Srjz9g4VxbVkvO-Bjub-l_boU8QQADuA3DyoLLe13OK_A2oR6mfWdsj3"
+}

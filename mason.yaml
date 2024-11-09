@@ -1,0 +1,22 @@
+bricks:
+  # Bricks can be imported via version constraint from a registry.
+  # Uncomment the following line to import the "hello" brick from BrickHub.
+  # hello: 0.1.0+1
+  # Bricks can also be imported via remote git url.
+  # Uncomment the following lines to import the "widget" brick from git.
+  bloc:
+    git:
+      url: git@github.com:sleem2012/mason.git
+      path: bricks/bloc
+  api_bloc:
+    git:
+      url: git@github.com:sleem2012/mason.git
+      path: bricks/api_bloc
+  page_bloc:
+    git:
+      url: git@github.com:sleem2012/mason.git
+      path: bricks/page_bloc
+  repo:
+    git:
+      url: git@github.com:sleem2012/mason.git
+      path: bricks/repo

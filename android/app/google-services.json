@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "439949680648",
+    "project_id": "unveels-92787",
+    "storage_bucket": "unveels-92787.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:439949680648:android:ce838b119f2b0a0f5bb1bd",
+        "android_client_info": {
+          "package_name": "com.unveels.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBo-TDHxFC7fRGDv_MGuith1hIBIT7bDzY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,74 @@
+{
+  "success": true,
+  "message": "",
+  "fieldList": [
+    {
+      "label": "Product Name",
+      "title": "Product Name",
+      "options": [
+
+      ],
+      "inputType": "string",
+      "attributeCode": "name",
+      "maxQueryLength": "128"
+    },
+    {
+      "label": "SKU",
+      "title": "SKU",
+      "options": [
+
+      ],
+      "inputType": "string",
+      "attributeCode": "sku",
+      "maxQueryLength": "128"
+    },
+    {
+      "label": "Description",
+      "title": "Description",
+      "options": [
+
+      ],
+      "inputType": "string",
+      "attributeCode": "description",
+      "maxQueryLength": "128"
+    },
+    {
+      "label": "Short Description",
+      "title": "Short Description",
+      "options": [
+
+      ],
+      "inputType": "string",
+      "attributeCode": "short_description",
+      "maxQueryLength": "128"
+    },
+    {
+      "label": "Price",
+      "title": "Price",
+      "options": [
+
+      ],
+      "inputType": "price",
+      "attributeCode": "price",
+      "maxQueryLength": "128"
+    },
+    {
+      "label": "Color",
+      "title": "Color",
+      "options": [
+        {
+          "value": "11",
+          "label": "Brown"
+        },
+        {
+          "value": "12",
+          "label": "Black"
+        }
+      ],
+      "inputType": "select",
+      "attributeCode": "color",
+      "maxQueryLength": "128"
+    }
+
+  ]
+}
