@@ -25,6 +25,7 @@ import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/constants/app_string_constant.dart';
 import 'package:test_new/unvells/helper/app_storage_pref.dart';
 import 'package:upgrader/upgrader.dart';
+import 'unveels_tech_evorty/core/observers/bloc_observer_info.dart';
 import 'unvells/configuration/unvells_theme.dart';
 import 'unvells/constants/app_constants.dart';
 import 'unvells/constants/app_routes.dart';
@@ -33,6 +34,7 @@ import 'unvells/helper/app_localizations.dart';
 import 'unvells/helper/push_notifications_manager.dart';
 import 'unvells/screens/home/widgets/item_card_bloc/item_card_bloc.dart';
 import 'unvells/screens/home/widgets/item_card_bloc/item_card_repository.dart';
+import 'unveels_tech_evorty/service_locator.dart' as di;
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -54,6 +56,24 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> init() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // bloc observer
+  Bloc.observer = BlocObserverInfo();
+
+  if (!kIsWeb) {
+    // if not web, set orientation
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  // Initialize dependency injection
+  await di.init();
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -79,6 +99,7 @@ void main() async {
   await Firebase.initializeApp();
   // await Upgrader.clearSavedSettings(); ///Debug use only
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await init();
   runApp(const MyApp());
 }
 

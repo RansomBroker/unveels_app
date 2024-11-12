@@ -63,9 +63,9 @@ class TechScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 style: KTextStyle.of(context).semiBoldSixteen.copyWith(
-                  color: const Color(0xFFB1B1B1),
-                  height: 1,
-                ),
+                      color: const Color(0xFFB1B1B1),
+                      height: 1,
+                    ),
               ),
             ),
           ),
@@ -111,7 +111,8 @@ class TechScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    Utils.getStringValue(context, "EXCLUSIVE_TECHNOLOGIES_DESCRIPTION"),
+                    Utils.getStringValue(
+                        context, "EXCLUSIVE_TECHNOLOGIES_DESCRIPTION"),
                     style: KTextStyle.of(context)
                         .sixteen
                         .copyWith(color: AppColors.white),
@@ -122,93 +123,109 @@ class TechScreen extends StatelessWidget {
                 ],
               ),
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
               title: "AI_MAKEUP_TRY_ON",
               subTitle: "GLAMOUR_AT_YOUR_FINGERTIPS",
               description: "MAKEUP_TRY_ON_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
+              onButtonPressed: () => {},
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.white,
               bgColor: Colors.black,
               title: "FIND_THE_LOOK",
               subTitle: "CURATE_SIGNATURE_STYLE",
               description: "FIND_THE_LOOK_DESCRIPTION",
               buttonTitle: 'FIND_A_LOOK',
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.findTheLook),
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
               title: "AI_SKIN_ANALYSIS",
               subTitle: "REVEAL_SECRETS_OF_RADIANT_SKIN",
               description: "AI_SKIN_ANALYSIS_DESCRIPTION",
               buttonTitle: 'ANALYZE_MY_SKIN',
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.skinAnalysis),
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.white,
               bgColor: Colors.black,
               title: "AI_SKIN_TONE_FINDER",
               subTitle: "ILLUMINATE_YOUR_TRUE_HUE",
               description: "AI_SKIN_TONE_FINDER_DESCRIPTION",
               buttonTitle: 'FIND_MY_SKIN_TONE',
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.skinToneFinder),
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
               title: "AI_FACE_ANALYZER",
               subTitle: "ELEGANCE_BEYOND_IMAGINATION",
               description: "AI_FACE_ANALYZER_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
+              onButtonPressed: () => {},
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.white,
               bgColor: Colors.black,
               title: "SHOP_THE_LOOK",
               subTitle: "ELEVATE_YOUR_STYLE",
               description: "SHOP_THE_LOOK_DESCRIPTION",
               buttonTitle: 'SHOP_A_LOOK',
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.shopTheLook),
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
               title: "AI_ACCESSORIES_TRY_ON",
               subTitle: "ELEGANCE_BEYOND_IMAGINATION",
               description: "AI_ACCESSORIES_TRY_ON_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
+              onButtonPressed: () => {},
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.white,
               bgColor: Colors.black,
               title: "AI_SKIN_SIMULATION",
               subTitle: "ENVISION_FUTURE_RADIANCE",
               description: "AI_SKIN_SIMULATION_DESCRIPTION",
               buttonTitle: 'SIMULATE_MY_SKIN',
+              onButtonPressed: () => {},
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
               title: "AI_PERSONALITY_FINDER",
               subTitle: "DISCOVER_YOUR_ESSENCE",
               description: "AI_PERSONALITY_FINDER_DESCRIPTION",
               buttonTitle: 'FIND_MY_PERSONALITY',
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.personalityFinder),
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.white,
               bgColor: Colors.black,
               title: "AI_SMART_BEAUTY_MIRROR",
               subTitle: "REFLECTIONS_OF_ELEGANCE",
               description: "AI_SMART_BEAUTY_MIRROR_DESCRIPTION",
               buttonTitle: 'USE_SMART_MIRROR',
+              onButtonPressed: () => {},
             ),
-            const CustomTechContainer(
+            CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
               title: "AR_HOME_ACCESSORIES",
               subTitle: "TRANSFORM_YOUR_SPACE",
               description: "AR_HOME_ACCESSORIES_DESCRIPTION",
               buttonTitle: 'TRY_NOW',
+              onButtonPressed: () => {},
             ),
             const SizedBox(
               height: 100,
@@ -229,6 +246,7 @@ class CustomTechContainer extends StatelessWidget {
     required this.description,
     required this.textColor,
     required this.buttonTitle,
+    required this.onButtonPressed,
   });
 
   final Color bgColor;
@@ -237,6 +255,7 @@ class CustomTechContainer extends StatelessWidget {
   final String subTitle;
   final String description;
   final String buttonTitle;
+  final Function onButtonPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -258,8 +277,8 @@ class CustomTechContainer extends StatelessWidget {
             Utils.getStringValue(context, subTitle),
             textAlign: TextAlign.center,
             style: KTextStyle.of(context).twenty.copyWith(
-              color: AppColors.gold,
-            ),
+                  color: AppColors.gold,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -275,7 +294,7 @@ class CustomTechContainer extends StatelessWidget {
             borderWidth: 1,
             isFlat: true,
             title: Utils.getStringValue(context, buttonTitle).toUpperCase(),
-            onPressed: () {},
+            onPressed: () => onButtonPressed(),
           ),
           const SizedBox(height: 30),
         ],

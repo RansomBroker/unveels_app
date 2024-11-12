@@ -10,6 +10,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:test_new/logic/get_product_details/get_product_details_bloc.dart';
+import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_home_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/personality_finder/presentation/pages/pf_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/shop_the_look/presentation/pages/stl_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/skin_analysis/presentation/pages/sa_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/skin_tone_finder/presentation/pages/stf_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/main.dart';
+import 'package:test_new/unveels_tech_evorty/shared/configs/route_config.dart';
+import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
+import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/models/order_details/order_detail_model.dart';
 
@@ -208,6 +218,15 @@ class AppRoutes {
   static const String manageWallet = 'manageWallet';
   static const String transferWallet = 'transferWallet';
   static const String addAccount = 'addAccount';
+
+  static const String techEvorty = 'techEvorty';
+
+  static const String findTheLook = "findTheLook";
+  static const String findTheLookLive = "findTheLookLive";
+  static const String skinAnalysis = "skinAnalysis";
+  static const String skinToneFinder = "skinToneFinder";
+  static const String personalityFinder = "personalityFinder";
+  static const String shopTheLook = "shopTheLook";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -630,6 +649,39 @@ class AppRoutes {
                       AddAccountDetailsBloc(AddAccountDetailsRepoMain()),
                   child: const AddAccountDetailsScreen(),
                 ));
+
+      case findTheLook:
+        return MaterialPageRoute(
+            builder: (_) =>
+                Theme(data: ThemeConfig.dark, child: const FTLHomePage()));
+      case findTheLookLive:
+        return MaterialPageRoute(
+          builder: (context) {
+            final FTLLivePageParams? params =
+                settings.arguments as FTLLivePageParams?;
+            return Theme(
+              data: ThemeConfig.dark,
+              child: FTLLivePage(params: params),
+            );
+          },
+        );
+
+      case skinAnalysis:
+        return MaterialPageRoute(
+            builder: (_) =>
+                Theme(data: ThemeConfig.dark, child: const SALivePage()));
+      case skinToneFinder:
+        return MaterialPageRoute(
+            builder: (_) =>
+                Theme(data: ThemeConfig.dark, child: const STFLivePage()));
+      case personalityFinder:
+        return MaterialPageRoute(
+            builder: (_) =>
+                Theme(data: ThemeConfig.dark, child: const PFLivePage()));
+      case shopTheLook:
+        return MaterialPageRoute(
+            builder: (_) =>
+                Theme(data: ThemeConfig.dark, child: const STLLivePage()));
 
       default:
         return _errorRoute();
