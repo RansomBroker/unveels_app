@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:test_new/logic/get_product_details/get_product_details_bloc.dart';
+import 'package:test_new/unveels_smart_beauty/src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_home_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/personality_finder/presentation/pages/pf_live_page.dart';
@@ -227,6 +228,8 @@ class AppRoutes {
   static const String skinToneFinder = "skinToneFinder";
   static const String personalityFinder = "personalityFinder";
   static const String shopTheLook = "shopTheLook";
+
+  static const String smartBeauty = "smartBeauty";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -682,6 +685,9 @@ class AppRoutes {
         return MaterialPageRoute(
             builder: (_) =>
                 Theme(data: ThemeConfig.dark, child: const STLLivePage()));
+
+      case smartBeauty:
+        return MaterialPageRoute(builder: (_) => const OcrCameraPage2());
 
       default:
         return _errorRoute();

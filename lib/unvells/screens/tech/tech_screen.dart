@@ -216,7 +216,8 @@ class TechScreen extends StatelessWidget {
               subTitle: "REFLECTIONS_OF_ELEGANCE",
               description: "AI_SMART_BEAUTY_MIRROR_DESCRIPTION",
               buttonTitle: 'USE_SMART_MIRROR',
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.smartBeauty),
             ),
             CustomTechContainer(
               textColor: Colors.black,
