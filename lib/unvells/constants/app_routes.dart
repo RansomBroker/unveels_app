@@ -21,6 +21,7 @@ import 'package:test_new/unveels_tech_evorty/main.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/route_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
+import 'package:test_new/unveels_virtual_assistant/onboarding/va_onboarding_screen.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/models/order_details/order_detail_model.dart';
 
@@ -230,6 +231,9 @@ class AppRoutes {
   static const String shopTheLook = "shopTheLook";
 
   static const String smartBeauty = "smartBeauty";
+
+  // VIRTUAL ASSISTANT
+  static const String vaOnboarding = "vaOnboarding";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -688,6 +692,10 @@ class AppRoutes {
 
       case smartBeauty:
         return MaterialPageRoute(builder: (_) => const OcrCameraPage2());
+
+      // VIRTUAL ASSISTANT
+      case vaOnboarding:
+        return MaterialPageRoute(builder: (_) => const VaOnboardingScreen());
 
       default:
         return _errorRoute();
