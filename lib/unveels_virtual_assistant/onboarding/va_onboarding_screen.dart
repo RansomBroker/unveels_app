@@ -25,7 +25,7 @@ class VaOnboardingScreen extends StatelessWidget {
               top: 0,
               right: 0,
               child: CustomPaint(
-                size: Size(MediaQuery.of(context).size.width, 200),
+                size: Size(MediaQuery.of(context).size.width, 180),
                 painter: WavePatternPainter(),
               ),
             ),
@@ -52,7 +52,7 @@ class VaOnboardingScreen extends StatelessWidget {
                   RichText(
                     text: const TextSpan(
                       style: TextStyle(
-                          fontSize: 32,
+                          fontSize: 30,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Lato'),
@@ -110,7 +110,7 @@ class WavePatternPainter extends CustomPainter {
     final waveHeight = size.height / 10; // Reduced amplitude
     final waveLength = size.width / 1.6;
     final numberOfWaves =
-        (size.height / (waveHeight * 0.6)).ceil(); // Increased density
+        (size.height / waveHeight).ceil(); // Increased density
 
     // Apply rotation
     canvas.save();
@@ -120,7 +120,7 @@ class WavePatternPainter extends CustomPainter {
 
     for (var i = -10; i < numberOfWaves; i++) {
       final path = Path();
-      final startY = i * waveHeight * 0.5;
+      final startY = i * waveHeight * 1;
 
       path.moveTo(-size.width, startY);
 
