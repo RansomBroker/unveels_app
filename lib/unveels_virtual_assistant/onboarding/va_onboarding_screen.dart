@@ -1,8 +1,10 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:test_new/unveels_virtual_assistant/components/va_start_button.dart';
 import 'package:test_new/unvells/app_widgets/flux_image.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
+import 'package:test_new/unvells/constants/app_routes.dart';
 
 class VaOnboardingScreen extends StatelessWidget {
   const VaOnboardingScreen({super.key});
@@ -81,11 +83,17 @@ class VaOnboardingScreen extends StatelessWidget {
                   ),
                   const Spacer(),
                   // Start button
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.only(bottom: 32.0),
                     child: SizedBox(
                       width: double.infinity,
-                      child: StartButton(),
+                      child: VaStartButton(
+                        buttonText: 'Start',
+                        onPressed: () {
+                          Navigator.of(context)
+                              .pushNamed(AppRoutes.vaChooseConnection);
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -137,56 +145,4 @@ class WavePatternPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class StartButton extends StatelessWidget {
-  const StartButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      constraints: const BoxConstraints(maxWidth: 374),
-      child: ElevatedButton(
-        onPressed: () {
-          // TODO: Implement start functionality
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          padding: const EdgeInsets.all(0),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0),
-          ),
-        ),
-        child: Ink(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Color(0xFFCA9C43),
-                Color(0xFF916E2B),
-                Color(0xFF6A4F1B),
-                Color(0xFF473209),
-              ],
-              stops: [0.0, 0.274, 0.594, 1.0],
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-            ),
-          ),
-          child: Container(
-            constraints: const BoxConstraints(minHeight: 50),
-            alignment: Alignment.center,
-            child: const Text(
-              'Start',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-                fontFamily: 'Lato',
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

@@ -29,6 +29,10 @@ class IconPath {
   static const hair = 'assets/icons/hair.svg';
   static const lip = 'assets/icons/lip.svg';
   static const nose = 'assets/icons/nose.svg';
+
+  static const speakerSubwoofer = 'assets/icons/speaker-subwoofer.svg';
+  static const messagesChat = 'assets/icons/messages-chat.svg';
+  static const userProfileVoice = 'assets/icons/user-profile-voice.svg';
 }
 
 class ImagePath {

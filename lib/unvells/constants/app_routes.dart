@@ -21,6 +21,7 @@ import 'package:test_new/unveels_tech_evorty/main.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/route_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
+import 'package:test_new/unveels_virtual_assistant/choose_connection/va_choose_connection.dart';
 import 'package:test_new/unveels_virtual_assistant/onboarding/va_onboarding_screen.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/models/order_details/order_detail_model.dart';
@@ -234,6 +235,7 @@ class AppRoutes {
 
   // VIRTUAL ASSISTANT
   static const String vaOnboarding = "vaOnboarding";
+  static const String vaChooseConnection = "vaChooseConnection";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -696,6 +698,8 @@ class AppRoutes {
       // VIRTUAL ASSISTANT
       case vaOnboarding:
         return MaterialPageRoute(builder: (_) => const VaOnboardingScreen());
+      case vaChooseConnection:
+        return MaterialPageRoute(builder: (_) => const VaChooseConnection());
 
       default:
         return _errorRoute();
