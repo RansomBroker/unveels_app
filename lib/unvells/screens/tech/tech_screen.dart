@@ -169,7 +169,8 @@ class TechScreen extends StatelessWidget {
               subTitle: "ELEGANCE_BEYOND_IMAGINATION",
               description: "AI_FACE_ANALYZER_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.faceAnalyzer),
             ),
             CustomTechContainer(
               textColor: Colors.white,

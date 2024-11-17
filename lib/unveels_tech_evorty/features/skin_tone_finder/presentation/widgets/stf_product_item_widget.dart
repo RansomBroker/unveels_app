@@ -1,12 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../../shared/configs/asset_path.dart';
+import '../../skin_tone_product_model.dart';
 
 class STFProductItemWidget extends StatelessWidget {
-  const STFProductItemWidget({
-    super.key,
-  });
+  const STFProductItemWidget({super.key, this.data});
+  final SkinToneProductData? data;
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +17,38 @@ class STFProductItemWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            ImagePath.productExample,
-            width: 115,
-            height: 120 * 0.65,
-            fit: BoxFit.cover,
-          ),
+          data == null
+              ? Container(
+                  color: Colors.white,
+                  child: Center(
+                      child: SizedBox(
+                          height: 25, width: 25, child: Icon(Icons.error))),
+                )
+              : CachedNetworkImage(
+                  imageUrl:
+                      "https://magento-1231949-4398885.cloudwaysapps.com/media/catalog/product${data?.customAttributes?.where((e) => e.attributeCode == 'small_image').first.value ?? ''}",
+                  placeholder: (context, url) {
+                    return Container(
+                      color: Colors.white,
+                      child: Center(
+                          child: SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator())),
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return Container(
+                      color: Colors.white,
+                      child: Center(
+                          child: SizedBox(
+                              height: 25, width: 25, child: Icon(Icons.error))),
+                    );
+                  },
+                  width: 115,
+                  height: 120 * 0.65,
+                  fit: BoxFit.cover,
+                ),
           const SizedBox(
             height: 3,
           ),
@@ -33,7 +59,7 @@ class STFProductItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Item name Tom Ford",
+                      data?.name ?? '',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: GoogleFonts.lora(
@@ -55,7 +81,7 @@ class STFProductItemWidget extends StatelessWidget {
                 ),
               ),
               Text(
-                "\$15",
+                "\$${data?.price ?? 0}",
                 style: GoogleFonts.lora(
                   fontSize: 8,
                   fontWeight: FontWeight.w500,

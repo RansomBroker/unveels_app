@@ -27,6 +27,9 @@ extension AppRouteParsing on AppRoute {
         return 'pf_live';
       case AppRoute.stlLive:
         return 'stl_live';
+
+      case AppRoute.faLive:
+        return 'fa_live';
     }
   }
 
@@ -46,6 +49,11 @@ extension AppRouteParsing on AppRoute {
 
         return FTLLivePage(
           params: params,
+        );
+
+      case AppRoute.faLive:
+        return const PFLivePage(
+          isFaceAnalyzer: true,
         );
       case AppRoute.saLive:
         return const SALivePage();

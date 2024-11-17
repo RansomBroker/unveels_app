@@ -228,6 +228,7 @@ class AppRoutes {
   static const String skinToneFinder = "skinToneFinder";
   static const String personalityFinder = "personalityFinder";
   static const String shopTheLook = "shopTheLook";
+  static const String faceAnalyzer = "faceAnalyzer";
 
   static const String smartBeauty = "smartBeauty";
 
@@ -685,6 +686,11 @@ class AppRoutes {
         return MaterialPageRoute(
             builder: (_) =>
                 Theme(data: ThemeConfig.dark, child: const STLLivePage()));
+      case faceAnalyzer:
+        return MaterialPageRoute(
+            builder: (_) => Theme(
+                data: ThemeConfig.dark,
+                child: const PFLivePage(isFaceAnalyzer: true)));
 
       case smartBeauty:
         return MaterialPageRoute(builder: (_) => const OcrCameraPage2());

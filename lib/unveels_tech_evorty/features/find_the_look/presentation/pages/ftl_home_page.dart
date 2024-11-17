@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:test_new/unvells/constants/app_routes.dart';
 
 import '../../../../core/utils/local_picker_info.dart';
 import '../../../../service_locator.dart';
@@ -105,10 +104,9 @@ class _FTLHomePageState extends State<FTLHomePage> {
   }
 
   void _onLiveCamera() {
-    Navigator.pushNamed(
-      context,
-      AppRoutes.findTheLookLive,
-      arguments: const FTLLivePageParams(
+    context.goNamed(
+      AppRoute.ftlLive.name,
+      extra: const FTLLivePageParams(
         file: null,
       ),
     );
@@ -124,10 +122,9 @@ class _FTLHomePageState extends State<FTLHomePage> {
     }
 
     // go to live makeup page
-    Navigator.pushNamed(
-      context,
-      AppRoutes.findTheLookLive,
-      arguments: FTLLivePageParams(
+    context.goNamed(
+      AppRoute.ftlLive.name,
+      extra: FTLLivePageParams(
         file: selectedImage,
       ),
     );
@@ -143,10 +140,9 @@ class _FTLHomePageState extends State<FTLHomePage> {
     }
 
     // go to live makeup page
-    Navigator.pushNamed(
-      context,
-      AppRoutes.findTheLookLive,
-      arguments: FTLLivePageParams(
+    context.goNamed(
+      AppRoute.ftlLive.name,
+      extra: FTLLivePageParams(
         file: selectedVideo,
       ),
     );

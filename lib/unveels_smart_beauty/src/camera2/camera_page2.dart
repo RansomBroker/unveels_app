@@ -35,7 +35,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
   bool isRearCamera = true;
   bool isFlipCameraSupported = false;
   File? file;
-  bool makeupOrAccessories = false;
+  bool makeupOrAccessories = true;
 
   @override
   void initState() {

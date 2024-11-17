@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../configs/color_config.dart';
 import '../../extensions/context_parsing.dart';
+import '../../extensions/string_parsing.dart';
 
 class FullScreenLoadingWidget extends StatelessWidget {
   final String? message;

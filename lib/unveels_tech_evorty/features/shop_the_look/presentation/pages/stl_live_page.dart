@@ -57,7 +57,8 @@ class __BodyState extends State<_Body> {
         liveStep: step,
         liveType: LiveType.liveCamera,
         body: _buildBody,
-        onLiveStepChanged: (value) {
+        url: "https://unveels-webview.netlify.app/find-the-look-web",
+        onLiveStepChanged: (value, result) {
           if (value != step) {
             if (mounted) {
               setState(() {

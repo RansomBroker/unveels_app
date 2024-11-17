@@ -1,14 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../../shared/configs/asset_path.dart';
 import '../../../../shared/widgets/buttons/button_widget.dart';
+import '../../../skin_tone_finder/skin_tone_product_model.dart';
+import '../../look_product_model.dart';
 
 class PFProductItemWidget extends StatelessWidget {
-  const PFProductItemWidget({
-    super.key,
-  });
+  const PFProductItemWidget({super.key, this.productData, this.lookData});
 
+  final SkinToneProductData? productData;
+  final LookProfiles? lookData;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -18,11 +21,55 @@ class PFProductItemWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset(
-            ImagePath.productExample,
-            height: 242 * 0.65,
-            fit: BoxFit.cover,
-          ),
+          lookData == null
+              ? CachedNetworkImage(
+                  imageUrl:
+                      "https://magento-1231949-4398885.cloudwaysapps.com/media/catalog/product${productData?.customAttributes.where((e) => e.attributeCode == 'small_image').first.value}",
+                  placeholder: (context, url) {
+                    return Container(
+                      color: Colors.white,
+                      child: Center(
+                          child: SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator())),
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return Container(
+                      color: Colors.white,
+                      child: Center(
+                          child: SizedBox(
+                              height: 25, width: 25, child: Icon(Icons.error))),
+                    );
+                  },
+                  height: 242 * 0.65,
+                  fit: BoxFit.cover,
+                )
+              : CachedNetworkImage(
+                  imageUrl:
+                      "https://magento-1231949-4398885.cloudwaysapps.com/media/${lookData?.image}",
+                  placeholder: (context, url) {
+                    return Container(
+                      color: Colors.white,
+                      child: Center(
+                          child: SizedBox(
+                              height: 25,
+                              width: 25,
+                              child: CircularProgressIndicator())),
+                    );
+                  },
+                  errorWidget: (context, url, error) {
+                    return Container(
+                      color: Colors.white,
+                      child: Center(
+                          child: SizedBox(
+                              height: 25, width: 25, child: Icon(Icons.error))),
+                    );
+                  },
+                  height: 242 * 0.65,
+                  fit: BoxFit.cover,
+                ),
           const SizedBox(
             height: 3,
           ),
@@ -32,8 +79,8 @@ class PFProductItemWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Item name Tom Ford",
+                    Text(
+                      lookData?.name ?? productData?.name ?? '-',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -54,14 +101,15 @@ class PFProductItemWidget extends StatelessWidget {
                   ],
                 ),
               ),
-              const Text(
-                "\$15",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+              if (lookData == null)
+                Text(
+                  "\$${productData?.price}",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
             ],
           ),
           const SizedBox(

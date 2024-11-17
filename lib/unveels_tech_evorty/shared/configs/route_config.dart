@@ -6,4 +6,6 @@ enum AppRoute {
   stfLive,
   pfLive,
   stlLive,
+
+  faLive
 }

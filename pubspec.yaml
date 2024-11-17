@@ -59,7 +59,7 @@ dependencies:
   speech_to_text:
 #  firebase_core: ^3.5.0
 #  firebase_messaging: ^15.1.2
-  flutter_local_notifications: ^9.4.0
+  flutter_local_notifications: ^18.0.1
   #  device_info_plus: ^3.2.2
   location:
   geocoding: ^3.0.0
@@ -130,6 +130,8 @@ dependencies:
   path: ^1.8.3
   pattern_formatter: ^4.0.0
   sizer: ^2.0.15
+
+  flutter_inappwebview: ^6.1.5
 
 
 

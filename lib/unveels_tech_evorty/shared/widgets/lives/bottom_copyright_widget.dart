@@ -32,19 +32,19 @@ class BottomCopyrightWidget extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  "Powered by",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 8,
-                  ),
-                ),
-                const SizedBox(
-                  width: 2,
-                ),
-                SvgPicture.asset(
-                  IconPath.unveelsLogo,
-                ),
+                // const Text(
+                //   "Powered by",
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //     fontSize: 8,
+                //   ),
+                // ),
+                // const SizedBox(
+                //   width: 2,
+                // ),
+                // SvgPicture.asset(
+                //   IconPath.unveelsLogo,
+                // ),
               ],
             ),
             SizedBox(
