@@ -49,7 +49,7 @@ dependencies:
   cached_network_image:
   image_picker: ^1.0.8
   package_info_plus: ^8.0.2
-  dio: ^4.0.0
+  dio: ^5.6.0
   dio_cookie_manager: ^2.0.0
 
   #  permission_handler:
@@ -75,7 +75,7 @@ dependencies:
   google_maps_flutter: ^2.1.4
   flutter_share: ^2.0.0
   file_picker: ^8.0.0+1
-  file_saver: ^0.1.1
+  file_saver: ^0.2.14
   #  downloads_path_provider_28:
   floor: ^1.4.1
   connectivity_plus: ^6.0.5
@@ -95,7 +95,7 @@ dependencies:
   shared_preferences: ^2.1.0
   flutter_bounce: ^1.1.0
   page_transition: "^2.0.9"
-  flutter_exif_rotation: ^0.5.1
+  flutter_exif_rotation: ^0.5.2
   shimmer:
 
 
@@ -103,9 +103,7 @@ dependencies:
 #  firebase_database: ^11.1.3
   overlay_support: ^2.1.0
   qr_code_scanner: ^1.0.1
-  flutter_barcode_scanner:
-    git:
-      url: https://github.com/itsAyyazdev/flutter_barcode_scanner.git
+  flutter_barcode_scanner: ^2.0.0
   flutter_rating_bar: ^4.0.1
 
   auto_size_text: ^3.0.0
