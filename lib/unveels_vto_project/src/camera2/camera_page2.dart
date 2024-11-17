@@ -52,9 +52,10 @@ import 'package:test_new/unveels_vto_project//utils/utils.dart';
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
 class OcrCameraPage2 extends StatefulWidget {
-  OcrCameraPage2({super.key, this.makeUpOn, this.accessoriesOn});
+  OcrCameraPage2({super.key, this.makeUpOn, this.accessoriesOn, this.showChoices});
   bool? makeUpOn;
   bool? accessoriesOn;
+  bool? showChoices;
 
   @override
   State<OcrCameraPage2> createState() => _OcrCameraPage2State();
@@ -377,7 +378,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
       ),
       child: Column(
         children: [
-          Container(
+          widget.showChoices == true ? Container(
             child: Row(
               children: [
                 Expanded(
@@ -451,8 +452,8 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                 ),
               ],
             ),
-          ),
-          separator(),
+          ) : const SizedBox(),
+          widget.showChoices == true ? separator() : const SizedBox(),
           if (makeUpOn == true) MakeupPage(),
           if (accessoriesOn == true) AccessoriesPage(),
           // Center(

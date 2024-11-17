@@ -696,13 +696,13 @@ class AppRoutes {
                 child: const PFLivePage(isFaceAnalyzer: true)));
 
       case smartBeauty:
-        return MaterialPageRoute(builder: (_) => OcrCameraPage2());
+        return MaterialPageRoute(builder: (_) => OcrCameraPage2(makeUpOn: true, accessoriesOn: false, showChoices: false));
 
       case makeupTryOn:
-        return MaterialPageRoute(builder: (_) => OcrCameraPage2());
+        return MaterialPageRoute(builder: (_) => OcrCameraPage2(showChoices: true));
 
       case accessoriesTryOn:
-        return MaterialPageRoute(builder: (_) => OcrCameraPage2());
+        return MaterialPageRoute(builder: (_) => OcrCameraPage2(accessoriesOn: true, makeUpOn: false, showChoices: false));
 
       default:
         return _errorRoute();
