@@ -181,7 +181,7 @@ class TechScreen extends StatelessWidget {
               description: "SHOP_THE_LOOK_DESCRIPTION",
               buttonTitle: 'SHOP_A_LOOK',
               onButtonPressed: () =>
-                  Navigator.pushNamed(context, AppRoutes.shopTheLook),
+                  Navigator.pushNamed(context, AppRoutes.lookBookList),
             ),
             CustomTechContainer(
               textColor: Colors.black,
