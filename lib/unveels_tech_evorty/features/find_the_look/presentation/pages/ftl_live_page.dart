@@ -92,9 +92,10 @@ class __BodyState extends State<_Body> {
         liveStep: step,
         liveType: type,
         file: widget.params?.file,
+        url: "https://unveels-webview.netlify.app/find-the-look-web",
         body: _buildBody,
         screenRecordBackrgoundColor: screenRecordBackrgoundColor,
-        onLiveStepChanged: (value) {
+        onLiveStepChanged: (value, result) {
           if (value != step) {
             if (mounted) {
               setState(() {

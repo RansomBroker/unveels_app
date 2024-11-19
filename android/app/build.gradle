@@ -1,6 +1,6 @@
 /*
  *
-  
+
 
  *
  * /
@@ -59,7 +59,7 @@ android {
         applicationId "com.unveels.android"
         //Application id for M2 watch app
         minSdkVersion 23
-        targetSdkVersion 33
+        targetSdkVersion 34
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

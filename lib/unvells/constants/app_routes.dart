@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:test_new/logic/get_product_details/get_product_details_bloc.dart';
-import 'package:test_new/unveels_smart_beauty/src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_home_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/personality_finder/presentation/pages/pf_live_page.dart';
@@ -21,6 +20,7 @@ import 'package:test_new/unveels_tech_evorty/main.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/route_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
+import 'package:test_new/unveels_vto_project/src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_virtual_assistant/choose_connection/va_choose_connection.dart';
 import 'package:test_new/unveels_virtual_assistant/onboarding/va_onboarding_screen.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
@@ -230,8 +230,12 @@ class AppRoutes {
   static const String skinToneFinder = "skinToneFinder";
   static const String personalityFinder = "personalityFinder";
   static const String shopTheLook = "shopTheLook";
+  static const String faceAnalyzer = "faceAnalyzer";
 
   static const String smartBeauty = "smartBeauty";
+
+  static const String makeupTryOn = "makeupTryOn";
+  static const String accessoriesTryOn = "accessoriesTryOn";
 
   // VIRTUAL ASSISTANT
   static const String vaOnboarding = "vaOnboarding";
@@ -691,9 +695,20 @@ class AppRoutes {
         return MaterialPageRoute(
             builder: (_) =>
                 Theme(data: ThemeConfig.dark, child: const STLLivePage()));
+      case faceAnalyzer:
+        return MaterialPageRoute(
+            builder: (_) => Theme(
+                data: ThemeConfig.dark,
+                child: const PFLivePage(isFaceAnalyzer: true)));
 
       case smartBeauty:
-        return MaterialPageRoute(builder: (_) => const OcrCameraPage2());
+        return MaterialPageRoute(builder: (_) => OcrCameraPage2(makeUpOn: true, accessoriesOn: false, showChoices: false));
+
+      case makeupTryOn:
+        return MaterialPageRoute(builder: (_) => OcrCameraPage2(showChoices: true));
+
+      case accessoriesTryOn:
+        return MaterialPageRoute(builder: (_) => OcrCameraPage2(accessoriesOn: true, makeUpOn: false, showChoices: false));
 
       // VIRTUAL ASSISTANT
       case vaOnboarding:

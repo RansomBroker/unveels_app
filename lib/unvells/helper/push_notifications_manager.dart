@@ -31,7 +31,7 @@ class PushNotificationsManager {
   static const initializationSettingsAndroid =
   AndroidInitializationSettings('@mipmap/ic_launcher');
 
-  static const initializationSettingsIOS = IOSInitializationSettings(
+  static const initializationSettingsIOS = DarwinInitializationSettings(
     requestAlertPermission: true,
     requestBadgePermission: true,
     requestSoundPermission: true,
@@ -47,7 +47,8 @@ class PushNotificationsManager {
 
   void setUpFirebase(BuildContext context) {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: (String? payload) async {
+        onDidReceiveNotificationResponse: (NotificationResponse response) async {
+          final String? payload = response.payload;
           if ((payload?.isNotEmpty ?? false) && appStoragePref.getAllowAllNotifications()) {
             print("payload---==>" + payload.toString());
 
@@ -128,7 +129,7 @@ class PushNotificationsManager {
         playSound: true,
         styleInformation: notificationStyle);
 
-    var iOSPlatformChannelSpecifics = const IOSNotificationDetails(
+    var iOSPlatformChannelSpecifics = const DarwinNotificationDetails(
       presentAlert: true,
       presentSound: true,
       presentBadge: true,

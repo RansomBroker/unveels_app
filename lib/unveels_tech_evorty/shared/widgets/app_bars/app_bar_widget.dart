@@ -51,6 +51,10 @@ class _AppBarWidgetState extends State<AppBarWidget> {
   }
 
   Widget? get _buildLeading {
+    if (isFirstRoute) {
+      return null;
+    }
+
     return Row(
       children: [
         SizedBox(
@@ -70,7 +74,7 @@ class _AppBarWidgetState extends State<AppBarWidget> {
               Icons.chevron_left,
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
             },
           ),
         ),

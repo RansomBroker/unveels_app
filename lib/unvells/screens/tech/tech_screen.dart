@@ -140,7 +140,8 @@ class TechScreen extends StatelessWidget {
               subTitle: "GLAMOUR_AT_YOUR_FINGERTIPS",
               description: "MAKEUP_TRY_ON_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.makeupTryOn),
             ),
             CustomTechContainer(
               textColor: Colors.white,
@@ -179,7 +180,8 @@ class TechScreen extends StatelessWidget {
               subTitle: "ELEGANCE_BEYOND_IMAGINATION",
               description: "AI_FACE_ANALYZER_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.faceAnalyzer),
             ),
             CustomTechContainer(
               textColor: Colors.white,
@@ -189,7 +191,7 @@ class TechScreen extends StatelessWidget {
               description: "SHOP_THE_LOOK_DESCRIPTION",
               buttonTitle: 'SHOP_A_LOOK',
               onButtonPressed: () =>
-                  Navigator.pushNamed(context, AppRoutes.shopTheLook),
+                  Navigator.pushNamed(context, AppRoutes.lookBookList),
             ),
             CustomTechContainer(
               textColor: Colors.black,
@@ -198,7 +200,8 @@ class TechScreen extends StatelessWidget {
               subTitle: "ELEGANCE_BEYOND_IMAGINATION",
               description: "AI_ACCESSORIES_TRY_ON_DESCRIPTION",
               buttonTitle: 'TRY_ON_NOW',
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.accessoriesTryOn),
             ),
             CustomTechContainer(
               textColor: Colors.white,

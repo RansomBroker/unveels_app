@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../shared/configs/asset_path.dart';
 import '../../../../shared/configs/color_config.dart';
@@ -9,11 +10,12 @@ class PFAnalysisDetailsWidget extends StatelessWidget {
   final String title;
   final String description;
 
-  const PFAnalysisDetailsWidget({
-    super.key,
-    required this.title,
-    required this.description,
-  });
+  final double percent;
+  const PFAnalysisDetailsWidget(
+      {super.key,
+      required this.title,
+      required this.description,
+      required this.percent});
 
   @override
   Widget build(BuildContext context) {
@@ -76,11 +78,15 @@ class PFAnalysisDetailsWidget extends StatelessWidget {
               const SizedBox(
                 height: 5,
               ),
-              const Text(
-                "Mild 40%",
+              Text(
+                '${NumberFormat.decimalPatternDigits(decimalDigits: 2).format(percent * 100)}%',
                 style: TextStyle(
                   fontSize: 14,
-                  color: ColorConfig.greenSuccess,
+                  color: percent > 0.5
+                      ? ColorConfig.greenSuccess
+                      : percent > 0.3
+                          ? Colors.orange
+                          : ColorConfig.redError,
                 ),
               ),
             ],

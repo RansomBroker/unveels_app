@@ -4,9 +4,23 @@ import 'package:flutter_svg/svg.dart';
 import '../../../../shared/configs/asset_path.dart';
 import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/context_parsing.dart';
+import '../../face_analyzer_model.dart';
 
 class PFAttributesAnalysisWidget extends StatelessWidget {
-  const PFAttributesAnalysisWidget({super.key});
+  const PFAttributesAnalysisWidget({super.key, required this.resultDataParsed});
+  final List<FaceAnalyzerModel> resultDataParsed;
+  Color hexToColor(String hexString) {
+    // Ensure the string is properly formatted
+    hexString = hexString.toUpperCase().replaceAll('#', '');
+
+    // If the hex code is only 6 characters (RRGGBB), add the 'FF' prefix for full opacity
+    if (hexString.length == 6) {
+      hexString = 'FF' + hexString;
+    }
+
+    // Parse the hex string to an integer and return the color
+    return Color(int.parse(hexString, radix: 16));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,54 +31,90 @@ class PFAttributesAnalysisWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const _BodyItemWidget(
+          _BodyItemWidget(
             title: "Face",
             iconPath: IconPath.face,
             leftChildren: [
               _DetailBodyItem(
                 title: "Face Shape",
-                value: "Heart",
+                value: resultDataParsed
+                        .where((element) => element.name == "Face Shape")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '',
               ),
             ],
             rightChildren: [
               _DetailBodyItem(
                 title: "Skin Tone",
-                value: "Dark latte",
+                value: resultDataParsed
+                        .where((element) => element.name == "Skin Type")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
             ],
           ),
           const Divider(
             height: 50,
           ),
-          const _BodyItemWidget(
+          _BodyItemWidget(
             title: "Eyes",
             iconPath: IconPath.eye,
             leftChildren: [
               _DetailBodyItem(
                 title: "Eye Shape",
-                value: "Almond",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eye Shape")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
               _DetailBodyItem(
                 title: "Eye Angle",
-                value: "Heart",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eye Angle")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
               _DetailBodyItem(
                 title: "Eyelid",
-                value: "Droopy",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eye Lid")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
             ],
             rightChildren: [
               _DetailBodyItem(
                 title: "Eye Size",
-                value: "Bid",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eye Size")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
               _DetailBodyItem(
                 title: "Eye Distance",
-                value: "Wide-Set",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eye Distance")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
               _DetailBodyItem(
                 title: "Eye Color",
-                value: "Green",
+                valueWidget: Container(
+                  height: 28,
+                  color: hexToColor(resultDataParsed
+                          .where(
+                              (element) => element.name == "Average Eye Color")
+                          .firstOrNull
+                          ?.outputColor ??
+                      '#ffffff'),
+                ),
               ),
             ],
           ),
@@ -74,26 +124,43 @@ class PFAttributesAnalysisWidget extends StatelessWidget {
           _BodyItemWidget(
             title: "Brows",
             iconPath: IconPath.brow,
-            leftChildren: const [
+            leftChildren: [
               _DetailBodyItem(
                 title: "Eyebrow Shape",
-                value: "Rounded",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eyebrow Shape")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
               _DetailBodyItem(
                 title: "Eyebrow Distance",
-                value: "Average",
+                value: resultDataParsed
+                        .where((element) => element.name == "Eyebrow Distance")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
             ],
             rightChildren: [
-              const _DetailBodyItem(
+              _DetailBodyItem(
                 title: "Thickness",
-                value: "Average",
+                value: resultDataParsed
+                        .where((element) => element.name == "Thickness")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
               _DetailBodyItem(
                 title: "Eyebrow color",
                 valueWidget: Container(
                   height: 28,
-                  color: const Color(0xFF473209),
+                  color: hexToColor(resultDataParsed
+                          .where((element) =>
+                              element.name == "Average Eyebrow Color")
+                          .firstOrNull
+                          ?.outputColor ??
+                      '#ffffff'),
                 ),
               ),
             ],
@@ -104,10 +171,14 @@ class PFAttributesAnalysisWidget extends StatelessWidget {
           _BodyItemWidget(
             title: "Lips",
             iconPath: IconPath.lip,
-            leftChildren: const [
+            leftChildren: [
               _DetailBodyItem(
                 title: "Lip shape",
-                value: "Full",
+                value: resultDataParsed
+                        .where((element) => element.name == "Lip")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
             ],
             rightChildren: [
@@ -115,7 +186,12 @@ class PFAttributesAnalysisWidget extends StatelessWidget {
                 title: "Lip color",
                 valueWidget: Container(
                   height: 28,
-                  color: const Color(0xFF473209),
+                  color: hexToColor(resultDataParsed
+                          .where(
+                              (element) => element.name == "Average Lip Color")
+                          .firstOrNull
+                          ?.outputColor ??
+                      '#ffffff'),
                 ),
               ),
             ],
@@ -123,26 +199,34 @@ class PFAttributesAnalysisWidget extends StatelessWidget {
           const Divider(
             height: 50,
           ),
-          const _BodyItemWidget(
+          _BodyItemWidget(
             title: "Cheekbones",
             iconPath: IconPath.cheekbones,
             leftChildren: [
               _DetailBodyItem(
                 title: "Cheekbones",
-                value: "Flat cheekbones",
+                value: resultDataParsed
+                        .where((element) => element.name == "Cheeks Bones")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
             ],
           ),
           const Divider(
             height: 50,
           ),
-          const _BodyItemWidget(
+          _BodyItemWidget(
             title: "Nose",
             iconPath: IconPath.nose,
             leftChildren: [
               _DetailBodyItem(
                 title: "Nose Shape",
-                value: "Broad",
+                value: resultDataParsed
+                        .where((element) => element.name == "Nose Shape")
+                        .firstOrNull
+                        ?.outputLabel ??
+                    '-',
               ),
             ],
           ),
@@ -156,9 +240,12 @@ class PFAttributesAnalysisWidget extends StatelessWidget {
               _DetailBodyItem(
                 title: "Face Shape",
                 valueWidget: Container(
-                  height: 28,
-                  color: const Color(0xFF473209),
-                ),
+                    height: 28,
+                    color: hexToColor(resultDataParsed
+                            .where((element) => element.name == "Hair Color")
+                            .firstOrNull
+                            ?.outputColor ??
+                        '#ffffff')),
               ),
             ],
           ),

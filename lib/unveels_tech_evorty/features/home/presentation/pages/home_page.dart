@@ -61,6 +61,14 @@ class _HomePageState extends State<HomePage> {
               text: 'Shop the Look',
               onTap: _onStlLive,
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            ButtonWidget(
+              width: context.width,
+              text: 'Face Analyzer',
+              onTap: _onFaLive,
+            ),
           ],
         ),
       ),
@@ -82,6 +90,12 @@ class _HomePageState extends State<HomePage> {
   void _onStfLive() {
     context.goNamed(
       AppRoute.stfLive.name,
+    );
+  }
+
+  void _onFaLive() {
+    context.goNamed(
+      AppRoute.faLive.name,
     );
   }
 

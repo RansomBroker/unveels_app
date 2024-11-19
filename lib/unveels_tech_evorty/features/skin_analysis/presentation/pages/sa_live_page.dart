@@ -50,9 +50,10 @@ class _SALivePageState extends State<SALivePage> {
       body: LiveWidget(
         liveStep: step,
         liveType: LiveType.liveCamera,
+        url: "https://unveels-webview.netlify.app/skin-analysis-web",
         body: _buildBody,
         screenRecordBackrgoundColor: screenRecordBackrgoundColor,
-        onLiveStepChanged: (value) {
+        onLiveStepChanged: (value, result) {
           if (value != step) {
             if (mounted) {
               setState(() {

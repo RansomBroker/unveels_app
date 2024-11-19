@@ -12,36 +12,37 @@ abstract class AppRouteInfo {
 
 class AppRouteInfoImpl implements AppRouteInfo {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  late final GoRouter _router;
 
-  AppRouteInfoImpl({String? initialLocation}) {
-    // Use AppRoute.home.path as the fallback default if initialLocation is null
-    _router = GoRouter(
-      initialLocation: AppRoute.home.path,
-      debugLogDiagnostics: kDebugMode,
-      routerNeglect: true,
-      navigatorKey: _navigatorKey,
-      routes: [
-        AppRoute.home.router(
-          routes: [
-            AppRoute.ftlHome.router(
-              routes: [
-                AppRoute.ftlLive.router(),
-              ],
-            ),
-            AppRoute.saLive.router(),
-            AppRoute.stfLive.router(),
-            AppRoute.pfLive.router(),
-            AppRoute.stlLive.router(),
-          ],
-        ),
-      ],
-    );
+  late final GoRouter _router = GoRouter(
+    initialLocation: AppRoute.home.path,
+    debugLogDiagnostics: kDebugMode,
+    routerNeglect: true,
+    navigatorKey: _navigatorKey,
+    routes: [
+      AppRoute.home.router(
+        routes: [
+          AppRoute.ftlHome.router(
+            routes: [
+              AppRoute.ftlLive.router(),
+            ],
+          ),
+          AppRoute.saLive.router(),
+          AppRoute.stfLive.router(),
+          AppRoute.pfLive.router(),
+          AppRoute.faLive.router(),
+          AppRoute.stlLive.router(),
+        ],
+      ),
+    ],
+  );
+
+  @override
+  GlobalKey<NavigatorState> get navigatorKey {
+    return _navigatorKey;
   }
 
   @override
-  GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
-
-  @override
-  GoRouter get route => _router;
+  GoRouter get route {
+    return _router;
+  }
 }

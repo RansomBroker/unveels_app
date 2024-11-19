@@ -10,8 +10,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:retrofit/http.dart';
-import 'package:dio/adapter.dart';
 import 'package:test_new/unvells/models/base_model.dart';
 
 import '../constants/app_constants.dart';
@@ -24,8 +24,8 @@ abstract class ApiClientRetrofit{
   factory ApiClientRetrofit({String? baseUrl}) {
     Dio dio = Dio();
     dio.options = BaseOptions(
-        receiveTimeout: 50000,
-        connectTimeout: 50000,
+        connectTimeout: const Duration(milliseconds: 50000),
+        receiveTimeout: const Duration(milliseconds: 50000),
         baseUrl: ApiConstant.baseUrl);
     dio.options.headers["Content-Type"] = "application/json";
     // dio.options.headers["Authorization"] = "sadasd";
