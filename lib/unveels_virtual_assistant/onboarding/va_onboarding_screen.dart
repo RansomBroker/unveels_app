@@ -6,8 +6,31 @@ import 'package:test_new/unvells/app_widgets/flux_image.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:test_new/unvells/constants/app_routes.dart';
 
-class VaOnboardingScreen extends StatelessWidget {
+class VaOnboardingScreen extends StatefulWidget {
   const VaOnboardingScreen({super.key});
+
+  @override
+  State<VaOnboardingScreen> createState() => _VaOnboardingScreenState();
+}
+
+class _VaOnboardingScreenState extends State<VaOnboardingScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    )..repeat(); // Loop the animation
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +49,16 @@ class VaOnboardingScreen extends StatelessWidget {
             Positioned(
               top: 0,
               right: 0,
-              child: CustomPaint(
-                size: Size(MediaQuery.of(context).size.width, 180),
-                painter: WavePatternPainter(),
-              ),
+              child: AnimatedBuilder(
+                  animation: _controller,
+                  builder: (context, child) {
+                    return CustomPaint(
+                      size: Size(MediaQuery.of(context).size.width, 180),
+                      painter: WavePatternPainter(
+                        shift: _controller.value * 2 * pi,
+                      ),
+                    );
+                  }),
             ),
             // Back button
             Positioned(
@@ -107,6 +136,10 @@ class VaOnboardingScreen extends StatelessWidget {
 }
 
 class WavePatternPainter extends CustomPainter {
+  final double shift;
+
+  WavePatternPainter({required this.shift});
+
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
@@ -115,15 +148,13 @@ class WavePatternPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    final waveHeight = size.height / 10; // Reduced amplitude
+    final waveHeight = size.height / 10;
     final waveLength = size.width / 1.6;
-    final numberOfWaves =
-        (size.height / waveHeight).ceil(); // Increased density
+    final numberOfWaves = (size.height / waveHeight).ceil();
 
-    // Apply rotation
     canvas.save();
     canvas.translate(size.width / 2, size.height / 2);
-    canvas.rotate(27 * pi / 180); // 27 degrees rotation
+    canvas.rotate(27 * pi / 180);
     canvas.translate(-size.width / 2, -size.height / 2);
 
     for (var i = -10; i < numberOfWaves; i++) {
@@ -133,7 +164,8 @@ class WavePatternPainter extends CustomPainter {
       path.moveTo(-size.width, startY);
 
       for (double x = -size.width; x <= size.width * 2; x += 1) {
-        final y = startY + waveHeight * sin((x / waveLength) * 2 * pi);
+        final y =
+            startY + waveHeight * sin(((x / waveLength) * 2 * pi) + shift);
         path.lineTo(x, y);
       }
 
@@ -144,5 +176,6 @@ class WavePatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant WavePatternPainter oldDelegate) =>
+      oldDelegate.shift != shift;
 }

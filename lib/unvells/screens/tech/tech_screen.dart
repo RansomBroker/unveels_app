@@ -126,16 +126,6 @@ class TechScreen extends StatelessWidget {
             CustomTechContainer(
               textColor: Colors.black,
               bgColor: Colors.white,
-              title: "Virtual Assistant",
-              subTitle: "GLAMOUR_AT_YOUR_FINGERTIPS",
-              description: "MAKEUP_TRY_ON_DESCRIPTION",
-              buttonTitle: 'TRY_ON_NOW',
-              onButtonPressed: () =>
-                  Navigator.pushNamed(context, AppRoutes.vaOnboarding),
-            ),
-            CustomTechContainer(
-              textColor: Colors.black,
-              bgColor: Colors.white,
               title: "AI_MAKEUP_TRY_ON",
               subTitle: "GLAMOUR_AT_YOUR_FINGERTIPS",
               description: "MAKEUP_TRY_ON_DESCRIPTION",
