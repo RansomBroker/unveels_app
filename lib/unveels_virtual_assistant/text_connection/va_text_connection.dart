@@ -17,25 +17,19 @@ class VaTextConnection extends StatefulWidget {
 }
 
 class _VaTextConnectionState extends State<VaTextConnection> {
+  ScrollController _scrollController = ScrollController();
+
   final TextEditingController _textController = TextEditingController();
   final Record _audioRecorder = Record();
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isRecording = false;
   String? _currentRecordingPath;
 
-  List<ChatMessage> messages = [
-    ChatMessage(
-      isUser: true,
-      content: "Do you have any recommendations?",
-      timestamp: "10 AM",
-    ),
-    ChatMessage(
-      isUser: false,
-      content:
-          "Here are a few options:\n1. Golden Elegance: A bold, modern necklace with intricate patterns.\n2. Luxe Links: A sleek design featuring interlocking gold loops.\n3. Glamour Gleam: A contemporary piece with a mix of gold and crystal accents.",
-      timestamp: "10 AM",
-    ),
-  ];
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +59,13 @@ class _VaTextConnectionState extends State<VaTextConnection> {
                   } else if (state is VaLoadingState) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is VaSuccessState) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (_scrollController.hasClients) {
+                        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                      }
+                    });
                     return ListView.builder(
+                      controller: _scrollController,
                       itemCount: state.messages.length,
                       itemBuilder: (context, index) {
                         final message = state.messages[index];
