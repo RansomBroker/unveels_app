@@ -1,148 +1,390 @@
-import 'dart:math';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:test_new/unveels_virtual_assistant/components/va_start_button.dart';
-import 'package:test_new/unvells/app_widgets/flux_image.dart';
-import 'package:test_new/unvells/constants/app_constants.dart';
-import 'package:test_new/unvells/constants/app_routes.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:record/record.dart';
+import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicator.dart';
+import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_bloc.dart';
+import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_event.dart';
+import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_state.dart';
 
-class VaOnboardingScreen extends StatelessWidget {
-  const VaOnboardingScreen({super.key});
+class VaTextConnection extends StatefulWidget {
+  const VaTextConnection({super.key});
+
+  @override
+  _VaTextConnectionState createState() => _VaTextConnectionState();
+}
+
+class _VaTextConnectionState extends State<VaTextConnection> {
+  final TextEditingController _textController = TextEditingController();
+  final Record _audioRecorder = Record();
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isRecording = false;
+  String? _currentRecordingPath;
+
+  List<ChatMessage> messages = [
+    ChatMessage(
+      isUser: true,
+      content: "Do you have any recommendations?",
+      timestamp: "10 AM",
+    ),
+    ChatMessage(
+      isUser: false,
+      content:
+          "Here are a few options:\n1. Golden Elegance: A bold, modern necklace with intricate patterns.\n2. Luxe Links: A sleek design featuring interlocking gold loops.\n3. Glamour Gleam: A contemporary piece with a mix of gold and crystal accents.",
+      timestamp: "10 AM",
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          leading: IconButton(
+            color: Colors.white,
+            icon: const Icon(Icons.chevron_left),
+            onPressed: () => Navigator.pop(context),
+          ),
+          backgroundColor: Colors.black),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment(0.00, -1.00),
             end: Alignment(0, 1),
-            colors: [Color(0xFF47330A), Color(0xFF0E0A02), Colors.black],
+            colors: [Colors.black, Color(0xFF0E0A02), Color(0xFF47330A)],
           ),
         ),
-        child: Stack(
+        child: Column(
           children: [
-            // Wave pattern
-            Positioned(
-              top: 0,
-              right: 0,
-              child: CustomPaint(
-                size: Size(MediaQuery.of(context).size.width, 180),
-                painter: WavePatternPainter(),
+            Expanded(
+              child: BlocBuilder<VaTextConnectionBloc, VaTextConnectionState>(
+                builder: (context, state) {
+                  if (state is VaInitialState) {
+                    return const Center(child: Text("Start chatting!"));
+                  } else if (state is VaLoadingState) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state is VaSuccessState) {
+                    return ListView.builder(
+                      itemCount: state.messages.length,
+                      itemBuilder: (context, index) {
+                        final message = state.messages[index];
+                        return _buildMessageBubble(message);
+                      },
+                    );
+                  } else if (state is VaErrorState) {
+                    return Center(child: Text("Error: ${state.errorMessage}"));
+                  }
+                  return const SizedBox.shrink();
+                },
               ),
             ),
-            // Back button
-            Positioned(
-              top: 40,
-              left: 16,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ),
-            // Main content
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Spacer(),
-                  const FluxImage(
-                    imageUrl: AppImages.placeholder,
-                  ),
-                  const SizedBox(height: 24),
-                  RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Lato'),
-                      children: [
-                        TextSpan(text: 'Welcome to '),
-                        TextSpan(
-                          text: 'Sarah',
-                          style: TextStyle(
-                            color: Color(0xFFD4AF37),
-                          ),
-                        ),
-                        TextSpan(text: ', Your\nVirtual Shopping Assistant'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Description text
-                  Text(
-                    "Hello and welcome! I'm Sarah, here to assist you with all your shopping needs.",
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w300,
-                      fontFamily: 'Lato',
-                    ),
-                  ),
-                  const Spacer(),
-                  // Start button
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 32.0),
-                    child: SizedBox(
-                      width: double.infinity,
-                      child: VaStartButton(
-                        buttonText: 'Start',
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed(AppRoutes.vaChooseConnection);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _buildInputArea(),
           ],
         ),
       ),
     );
   }
-}
 
-class WavePatternPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.3)
-      ..strokeWidth = 0.8
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final waveHeight = size.height / 10; // Reduced amplitude
-    final waveLength = size.width / 1.6;
-    final numberOfWaves =
-        (size.height / waveHeight).ceil(); // Increased density
-
-    // Apply rotation
-    canvas.save();
-    canvas.translate(size.width / 2, size.height / 2);
-    canvas.rotate(27 * pi / 180); // 27 degrees rotation
-    canvas.translate(-size.width / 2, -size.height / 2);
-
-    for (var i = -10; i < numberOfWaves; i++) {
-      final path = Path();
-      final startY = i * waveHeight * 1;
-
-      path.moveTo(-size.width, startY);
-
-      for (double x = -size.width; x <= size.width * 2; x += 1) {
-        final y = startY + waveHeight * sin((x / waveLength) * 2 * pi);
-        path.lineTo(x, y);
-      }
-
-      canvas.drawPath(path, paint);
-    }
-
-    canvas.restore();
+  Widget _buildMessageBubble(ChatMessage message) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: Row(
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (!message.isUser)
+            const CircleAvatar(
+              backgroundImage: AssetImage('assets/images/img_sarah.png'),
+            ),
+          const SizedBox(width: 8),
+          Flexible(
+            child: Container(
+              margin: message.isUser
+                  ? const EdgeInsets.only(left: 40)
+                  : const EdgeInsets.only(right: 40),
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              clipBehavior: Clip.antiAlias,
+              decoration: message.isUser
+                  ? const ShapeDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment(1.00, 0.00),
+                        end: Alignment(-1, 0),
+                        colors: [
+                          Color(0x99CA9C43),
+                          Color(0x99906E2A),
+                          Color(0x996A4F1A),
+                          Color(0x99463109)
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                          bottomLeft: Radius.circular(30),
+                        ),
+                      ),
+                    )
+                  : const ShapeDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment(1.00, 0.00),
+                        end: Alignment(-1, 0),
+                        colors: [
+                          Color(0xFFCA9C43),
+                          Color(0xFF906E2A),
+                          Color(0xFF6A4F1A),
+                          Color(0xFF463109)
+                        ],
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                          bottomRight: Radius.circular(30),
+                        ),
+                      ),
+                    ),
+              child: message.isLoading
+                  ? const VaTypingIndicator()
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          message.content,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        if (message.productInfo != null)
+                          _buildProductCard(message.productInfo!),
+                        if (message.audioUrl != null)
+                          _buildAudioPlayer(message.audioUrl!),
+                        Row(
+                          mainAxisAlignment: message.isUser
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              textAlign: TextAlign.left,
+                              message.timestamp,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+            ),
+          ),
+          if (message.isUser)
+            const Padding(
+              padding: EdgeInsets.only(left: 8),
+              child: CircleAvatar(
+                backgroundColor: Colors.white,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  Widget _buildProductCard(ProductInfo product) {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.brown.shade800,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.network(
+            product.imageUrl,
+            height: 100,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            product.name,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            product.brand,
+            style: const TextStyle(color: Colors.white70),
+          ),
+          Text(
+            '\$${product.price}',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAudioPlayer(String audioUrl) {
+    return Container(
+      margin: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.all(8),
+      decoration: BoxDecoration(
+        color: Colors.brown.shade800,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.play_arrow, color: Colors.white),
+            onPressed: () {
+              // Implement audio playback
+            },
+          ),
+          Expanded(
+            child: Container(
+              height: 30,
+              decoration: BoxDecoration(
+                color: Colors.brown.shade700,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              // Add waveform visualization here
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInputArea() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+        color: Colors.black.withOpacity(0.26),
+      ),
+      width: double.infinity,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(11, 12, 9, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    // padding: const EdgeInsets.fromLTRB(12, 8, 9, 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(26),
+                      border: Border.all(color: const Color(0xFFCA9C43)),
+                      color: Colors.black,
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            onSubmitted: (value) => _sendMessage(),
+                            controller: _textController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              hintText: 'Ask me anything...',
+                              hintStyle: const TextStyle(color: Colors.white70),
+                              filled: true,
+                              fillColor: Colors.black,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            _isRecording
+                                ? CupertinoIcons.stop
+                                : CupertinoIcons.mic,
+                            color: Colors.white,
+                          ),
+                          onPressed: _toggleRecording,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: const LinearGradient(
+                        colors: [
+                          Color(0xFFCA9C43),
+                          Color(0xFF916E2B),
+                          Color(0xFF6A4F1B),
+                          Color(0xFF473209),
+                        ],
+                        stops: [0.0, 0.274, 0.594, 1.0],
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(0),
+                    child: IconButton(
+                      icon: const Icon(CupertinoIcons.paperplane,
+                          color: Colors.white),
+                      onPressed: _sendMessage,
+                    )),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _toggleRecording() async {
+    if (_isRecording) {
+      _currentRecordingPath = await _audioRecorder.stop();
+      setState(() {
+        _isRecording = false;
+      });
+    } else {
+      // Request microphone permission
+      PermissionStatus status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        const SnackBar(content: Text('Microphone permission not granted'));
+        return;
+      }
+
+      // Initialize audio session
+      try {
+        await _audioRecorder.start();
+        setState(() {
+          _isRecording = true;
+        });
+      } catch (e) {
+        print('Error starting recording: $e');
+      }
+    }
+  }
+
+  void _sendMessage() {
+    if (_textController.text.isNotEmpty) {
+      context
+          .read<VaTextConnectionBloc>()
+          .add(SendMessageEvent(_textController.text));
+      // setState(() {
+      //   messages.add(ChatMessage(
+      //     isUser: true,
+      //     content: _textController.text,
+      //     timestamp: "10 AM",
+      //   ));
+      // });
+      _textController.clear();
+    }
+  }
 }

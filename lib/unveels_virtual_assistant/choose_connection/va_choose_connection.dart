@@ -3,23 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/asset_path.dart';
 import 'package:test_new/unveels_virtual_assistant/components/va_choose_button.dart';
+import 'package:test_new/unvells/constants/app_routes.dart';
 
 class VaChooseConnection extends StatelessWidget {
   const VaChooseConnection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(13, 49, 13, 207),
+            padding: const EdgeInsets.fromLTRB(13, 49, 13, 207),
             child: Column(
               children: [
-                Header(),
-                SizedBox(height: 31),
-                Text(
+                const Header(),
+                const SizedBox(height: 31),
+                const Text(
                   'How would you like to communicate with me today',
                   style: TextStyle(
                     fontSize: 16,
@@ -29,29 +30,34 @@ class VaChooseConnection extends StatelessWidget {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 OptionCard(
                   title: 'Vocal Connection',
                   description:
                       'Speak freely, and I\'ll respond in real-time. Let\'s talk Speech to Speech!',
                   iconPath: IconPath.speakerSubwoofer,
                   buttonText: 'Start Video Chat',
+                  onPressed: () {},
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 OptionCard(
                   title: 'Text Connection',
                   description:
                       'Prefer typing? Chat with me directly using text. I\'m here to help!',
                   iconPath: IconPath.messagesChat,
                   buttonText: 'Start Text Chat',
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.vaTextConnection);
+                  },
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 OptionCard(
                   title: 'Audible Assistance',
                   description:
                       'Type your thoughts, and I\'ll reply with a voice. Enjoy a hands-free experience.',
                   iconPath: IconPath.userProfileVoice,
                   buttonText: 'Start Audio Response',
+                  onPressed: () {},
                 ),
               ],
             ),
@@ -113,6 +119,7 @@ class OptionCard extends StatelessWidget {
   final String description;
   final String iconPath;
   final String buttonText;
+  final VoidCallback onPressed;
 
   const OptionCard({
     super.key,
@@ -120,6 +127,7 @@ class OptionCard extends StatelessWidget {
     required this.description,
     required this.iconPath,
     required this.buttonText,
+    required this.onPressed,
   });
 
   @override
@@ -171,8 +179,8 @@ class OptionCard extends StatelessWidget {
             const SizedBox(height: 18),
             SizedBox(
                 width: double.infinity,
-                child:
-                    VaChooseButton(buttonText: buttonText, onPressed: () {})),
+                child: VaChooseButton(
+                    buttonText: buttonText, onPressed: onPressed)),
           ],
         ),
       ),
