@@ -83,7 +83,7 @@ class _VaOnboardingScreenState extends State<VaOnboardingScreen>
                   RichText(
                     text: const TextSpan(
                       style: TextStyle(
-                          fontSize: 30,
+                          fontSize: 24,
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
                           fontFamily: 'Lato'),

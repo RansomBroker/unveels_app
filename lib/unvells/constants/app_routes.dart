@@ -239,6 +239,7 @@ class AppRoutes {
 
   static const String makeupTryOn = "makeupTryOn";
   static const String accessoriesTryOn = "accessoriesTryOn";
+  static const String tryOn = "tryOn";
 
   // VIRTUAL ASSISTANT
   static const String vaOnboarding = "vaOnboarding";
@@ -712,13 +713,16 @@ class AppRoutes {
 
       case makeupTryOn:
         return MaterialPageRoute(
-            builder: (_) => OcrCameraPage2(showChoices: true));
+            builder: (_) => OcrCameraPage2(makeUpOn: true, accessoriesOn: false, showChoices: false));
 
       case accessoriesTryOn:
         return MaterialPageRoute(
             builder: (_) => OcrCameraPage2(
                 accessoriesOn: true, makeUpOn: false, showChoices: false));
 
+      case tryOn:
+        return MaterialPageRoute(
+            builder: (_) => OcrCameraPage2(showChoices: true));
       // VIRTUAL ASSISTANT
       case vaOnboarding:
         return MaterialPageRoute(builder: (_) => const VaOnboardingScreen());

@@ -131,7 +131,10 @@ class _BottomTabBarWidgetState extends State<BottomTabBarWidget> {
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.vaOnboarding);
               },
-              child: const Icon(CupertinoIcons.sparkles, color: Colors.white,)),
+              child: const Icon(
+                CupertinoIcons.sparkles,
+                color: Colors.white,
+              )),
           initialPosition: const DragballPosition.defaultPosition(),
           onTap: () => debugPrint('Dragball Tapped'),
           withIcon: false,
@@ -144,7 +147,7 @@ class _BottomTabBarWidgetState extends State<BottomTabBarWidget> {
             floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.white,
               onPressed: () {
-                debugPrint(appStoragePref.getCustomerToken());
+                Navigator.pushNamed(context, AppRoutes.tryOn);
               },
               shape: const CircleBorder(),
               child: const FluxImage(
