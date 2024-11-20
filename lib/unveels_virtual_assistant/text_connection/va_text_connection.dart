@@ -4,6 +4,8 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
+import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicator.dart';
 import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_event.dart';
@@ -22,6 +24,7 @@ class _VaTextConnectionState extends State<VaTextConnection> {
   final TextEditingController _textController = TextEditingController();
   final Record _audioRecorder = Record();
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final SpeechToText _speechToText = SpeechToText();
   bool _isRecording = false;
   String? _currentRecordingPath;
 
@@ -29,6 +32,23 @@ class _VaTextConnectionState extends State<VaTextConnection> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    activateSpeechRecognizer();
+    super.initState();
+  }
+
+  void activateSpeechRecognizer() async {
+    await _speechToText.initialize();
+    setState(() {});
+  }
+
+  void onRecognitionResult(SpeechRecognitionResult result) {
+    print('_MyAppState.onRecognitionResult... ${result.recognizedWords}');
+
+    _textController.text = result.recognizedWords;
   }
 
   @override
@@ -61,7 +81,8 @@ class _VaTextConnectionState extends State<VaTextConnection> {
                   } else if (state is VaSuccessState) {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       if (_scrollController.hasClients) {
-                        _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                        _scrollController
+                            .jumpTo(_scrollController.position.maxScrollExtent);
                       }
                     });
                     return ListView.builder(
@@ -348,10 +369,12 @@ class _VaTextConnectionState extends State<VaTextConnection> {
 
   Future<void> _toggleRecording() async {
     if (_isRecording) {
-      _currentRecordingPath = await _audioRecorder.stop();
+      // _currentRecordingPath = await _audioRecorder.stop();
+      await _speechToText.stop();
       setState(() {
         _isRecording = false;
       });
+      _sendMessage();
     } else {
       // Request microphone permission
       PermissionStatus status = await Permission.microphone.request();
@@ -362,7 +385,8 @@ class _VaTextConnectionState extends State<VaTextConnection> {
 
       // Initialize audio session
       try {
-        await _audioRecorder.start();
+        // await _audioRecorder.start();
+        await _speechToText.listen(onResult: onRecognitionResult);
         setState(() {
           _isRecording = true;
         });
