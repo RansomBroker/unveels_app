@@ -41,7 +41,7 @@ class _VaTextConnectionState extends State<VaTextConnection> {
   }
 
   void activateSpeechRecognizer() async {
-    await _speechToText.initialize();
+    await _speechToText.initialize(finalTimeout: const Duration(seconds: 10));
     setState(() {});
   }
 

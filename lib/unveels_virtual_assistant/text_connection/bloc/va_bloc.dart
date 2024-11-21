@@ -30,6 +30,7 @@ class VaTextConnectionBloc
 
         if (isFinished) {
           _messages.clear();
+          isFinished = false;
         }
 
         _messages.add(
