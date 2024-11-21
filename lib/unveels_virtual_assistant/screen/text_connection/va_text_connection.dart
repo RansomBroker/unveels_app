@@ -7,9 +7,9 @@ import 'package:record/record.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicator.dart';
-import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_bloc.dart';
-import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_event.dart';
-import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_state.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_event.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
 
 class VaTextConnection extends StatefulWidget {
   const VaTextConnection({super.key});
