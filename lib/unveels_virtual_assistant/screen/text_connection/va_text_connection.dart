@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:record/record.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -10,6 +11,7 @@ import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicato
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_event.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
+import 'dart:ui' as ui;
 
 class VaTextConnection extends StatefulWidget {
   const VaTextConnection({super.key});
@@ -169,30 +171,29 @@ class _VaTextConnectionState extends State<VaTextConnection> {
               child: message.isLoading
                   ? const VaTypingIndicator()
                   : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
                           message.content,
                           style: const TextStyle(color: Colors.white),
+                          textDirection: Bidi.hasAnyRtl(message.content)
+                              ? ui.TextDirection.rtl
+                              : ui.TextDirection.ltr,
+                          textAlign: Bidi.hasAnyRtl(message.content)
+                              ? TextAlign.right
+                              : TextAlign.left,
                         ),
                         if (message.productInfo != null)
                           _buildProductCard(message.productInfo!),
                         if (message.audioUrl != null)
                           _buildAudioPlayer(message.audioUrl!),
-                        Row(
-                          mainAxisAlignment: message.isUser
-                              ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
-                          children: [
-                            Text(
-                              textAlign: TextAlign.left,
-                              message.timestamp,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
+                        Text(
+                          textAlign: message.isUser ? TextAlign.right : TextAlign.left,
+                          message.timestamp,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
