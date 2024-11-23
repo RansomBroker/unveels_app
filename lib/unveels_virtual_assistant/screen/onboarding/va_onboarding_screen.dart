@@ -113,14 +113,14 @@ class _VaOnboardingScreenState extends State<VaOnboardingScreen>
                   const Spacer(),
                   // Start button
                   Padding(
-                    padding: EdgeInsets.only(bottom: 32.0),
+                    padding: const EdgeInsets.only(bottom: 32.0),
                     child: SizedBox(
                       width: double.infinity,
                       child: VaStartButton(
                         buttonText: 'Start',
                         onPressed: () {
                           Navigator.of(context)
-                              .pushNamed(AppRoutes.vaChooseConnection);
+                              .pushReplacementNamed(AppRoutes.vaChooseConnection);
                         },
                       ),
                     ),

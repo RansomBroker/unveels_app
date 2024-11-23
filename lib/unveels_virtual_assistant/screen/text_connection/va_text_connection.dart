@@ -11,7 +11,10 @@ import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicato
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_event.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
+import 'package:test_new/unvells/constants/arguments_map.dart';
 import 'dart:ui' as ui;
+
+import '../../../unvells/constants/app_routes.dart';
 
 class VaTextConnection extends StatefulWidget {
   const VaTextConnection({super.key});
@@ -187,14 +190,18 @@ class _VaTextConnectionState extends State<VaTextConnection> {
                           _buildProductCard(message.productInfo!),
                         if (message.audioUrl != null)
                           _buildAudioPlayer(message.audioUrl!),
-                        Text(
-                          textAlign: message.isUser ? TextAlign.right : TextAlign.left,
-                          message.timestamp,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
-                        ),
+                        message.productInfo == null
+                            ? Text(
+                                textAlign: message.isUser
+                                    ? TextAlign.right
+                                    : TextAlign.left,
+                                message.timestamp,
+                                style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 12,
+                                ),
+                              )
+                            : const SizedBox(),
                       ],
                     ),
             ),
@@ -212,20 +219,19 @@ class _VaTextConnectionState extends State<VaTextConnection> {
   }
 
   Widget _buildProductCard(ProductInfo product) {
-    return Container(
-      margin: const EdgeInsets.only(top: 8),
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: Colors.brown.shade800,
-        borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pushNamed(
+        AppRoutes.productPage,
+        arguments: getProductDataAttributeMap(
+          product.name,
+          product.id.toString(),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Image.network(
             product.imageUrl,
-            height: 100,
-            width: double.infinity,
             fit: BoxFit.cover,
           ),
           const SizedBox(height: 8),
@@ -241,7 +247,7 @@ class _VaTextConnectionState extends State<VaTextConnection> {
             style: const TextStyle(color: Colors.white70),
           ),
           Text(
-            '\$${product.price}',
+            'KWD ${product.price}',
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,

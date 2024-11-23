@@ -134,55 +134,65 @@ class OptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(17),
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromARGB(60, 255, 217, 0),
-              spreadRadius: 0,
-            ),
-            BoxShadow(color: Color.fromARGB(255, 0, 0, 0), blurRadius: 30),
-          ]),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                SvgPicture.asset(
-                  iconPath,
-                  width: 24,
-                  height: 24,
-                ),
-                const SizedBox(width: 9),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                    fontFamily: 'Lato',
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Text(
-              description,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                color: Colors.white,
-                fontFamily: 'Lato',
-              ),
-            ),
-            const SizedBox(height: 18),
-            SizedBox(
-                width: double.infinity,
-                child: VaChooseButton(
-                    buttonText: buttonText, onPressed: onPressed)),
+        borderRadius: BorderRadius.circular(17),
+        gradient: const LinearGradient(
+          colors: [
+            Color.fromRGBO(202, 156, 67, 0.2),
+            Color.fromRGBO(145, 110, 43, 0.15),
+            Color.fromRGBO(106, 79, 27, 0.1),
+            Color.fromRGBO(71, 50, 9, 0.1),
           ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
         ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.white.withOpacity(0.1),
+            offset: const Offset(4, 4),
+            blurRadius: 15,
+            spreadRadius: -4,
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                iconPath,
+                width: 24,
+                height: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                  fontFamily: 'Lato',
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          Text(
+            description,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: Colors.white,
+              fontFamily: 'Lato',
+            ),
+          ),
+          const SizedBox(height: 18),
+          SizedBox(
+              width: double.infinity,
+              child: VaChooseButton(
+                buttonText: buttonText, onPressed: onPressed))
+        ],
       ),
     );
   }

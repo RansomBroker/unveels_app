@@ -20,12 +20,14 @@ class ChatMessage {
 }
 
 class ProductInfo {
+  final int id;
   final String imageUrl;
   final String name;
   final String brand;
   final double price;
 
   ProductInfo({
+    required this.id,
     required this.imageUrl,
     required this.name,
     required this.brand,
