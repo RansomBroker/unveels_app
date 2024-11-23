@@ -72,16 +72,7 @@ class _SALivePageState extends State<SALivePage> {
         return const SizedBox.shrink();
       case LiveStep.scanningFace:
         // show oval face container
-        return Center(
-          child: ClipOval(
-            clipper: FaceClipper(),
-            child: Container(
-              width: 330,
-              height: 330,
-              color: const Color(0xFF289900).withOpacity(0.5),
-            ),
-          ),
-        );
+        return const SizedBox();
 
       case LiveStep.scannedFace:
         if (_isShowFullAnalysisResults) {

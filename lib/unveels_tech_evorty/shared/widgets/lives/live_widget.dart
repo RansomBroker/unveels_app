@@ -254,7 +254,7 @@ class _LiveWidgetState extends State<LiveWidget> {
               ),
               Padding(
                 padding: const EdgeInsets.only(
-                  top: 90,
+                  top: 40,
                 ),
                 child: RecordingControllersWidget(
                   screenRecordingStatus: null,

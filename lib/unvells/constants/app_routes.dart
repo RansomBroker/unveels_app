@@ -20,12 +20,12 @@ import 'package:test_new/unveels_tech_evorty/main.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/route_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
-import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_bloc.dart';
-import 'package:test_new/unveels_virtual_assistant/text_connection/bloc/va_repository.dart';
-import 'package:test_new/unveels_virtual_assistant/text_connection/va_text_connection.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_repository.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_text_connection.dart';
 import 'package:test_new/unveels_vto_project/src/camera2/camera_page2.dart';
-import 'package:test_new/unveels_virtual_assistant/choose_connection/va_choose_connection.dart';
-import 'package:test_new/unveels_virtual_assistant/onboarding/va_onboarding_screen.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/choose_connection/va_choose_connection.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/onboarding/va_onboarding_screen.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/models/order_details/order_detail_model.dart';
 

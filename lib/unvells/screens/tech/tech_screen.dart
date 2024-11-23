@@ -141,7 +141,7 @@ class TechScreen extends StatelessWidget {
               description: "FIND_THE_LOOK_DESCRIPTION",
               buttonTitle: 'FIND_A_LOOK',
               onButtonPressed: () =>
-                  Navigator.pushNamed(context, AppRoutes.findTheLook),
+                  Navigator.pushNamed(context, AppRoutes.findTheLookLive),
             ),
             CustomTechContainer(
               textColor: Colors.black,
