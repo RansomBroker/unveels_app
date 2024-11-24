@@ -22,6 +22,7 @@ import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_repository.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_audible_connection.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_text_connection.dart';
 import 'package:test_new/unveels_vto_project/src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/choose_connection/va_choose_connection.dart';
@@ -245,6 +246,7 @@ class AppRoutes {
   static const String vaOnboarding = "vaOnboarding";
   static const String vaChooseConnection = "vaChooseConnection";
   static const String vaTextConnection = "vaTextConnection";
+  static const String vaAudibleConnection = "vaAudibleConnection";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -733,6 +735,11 @@ class AppRoutes {
             builder: (_) => BlocProvider(
                 create: (context) => VaTextConnectionBloc(VaTextConnectionRepository()),
                 child: const VaTextConnection()));
+      case vaAudibleConnection:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                create: (context) => VaTextConnectionBloc(VaTextConnectionRepository()),
+                child: const VaAudibleConnection()));
 
       default:
         return _errorRoute();

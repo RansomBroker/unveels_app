@@ -57,7 +57,9 @@ class VaChooseConnection extends StatelessWidget {
                       'Type your thoughts, and I\'ll reply with a voice. Enjoy a hands-free experience.',
                   iconPath: IconPath.userProfileVoice,
                   buttonText: 'Start Audio Response',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.vaAudibleConnection);
+                  },
                 ),
               ],
             ),
@@ -190,8 +192,8 @@ class OptionCard extends StatelessWidget {
           const SizedBox(height: 18),
           SizedBox(
               width: double.infinity,
-              child: VaChooseButton(
-                buttonText: buttonText, onPressed: onPressed))
+              child:
+                  VaChooseButton(buttonText: buttonText, onPressed: onPressed))
         ],
       ),
     );

@@ -19,6 +19,13 @@ class ChatMessage {
   });
 }
 
+class AudibleChatMessage {
+  final String text;
+  final String language;
+
+  AudibleChatMessage({required this.text, required this.language});
+}
+
 class ProductInfo {
   final int id;
   final String imageUrl;
@@ -48,11 +55,13 @@ class VaLoadingState extends VaTextConnectionState {}
 
 class VaSuccessState extends VaTextConnectionState {
   final List<ChatMessage> messages;
+  final AudibleChatMessage? audibleMessage;
+  final List<ProductInfo>? products;
 
-  const VaSuccessState(this.messages);
+  const VaSuccessState(this.messages, [this.audibleMessage, this.products]);
 
   @override
-  List<Object?> get props => [messages];
+  List<Object?> get props => [messages, audibleMessage];
 }
 
 class VaErrorState extends VaTextConnectionState {

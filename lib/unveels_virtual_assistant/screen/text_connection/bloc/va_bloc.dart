@@ -5,7 +5,6 @@ import 'va_event.dart';
 import 'va_repository.dart';
 import 'va_state.dart';
 
-
 class VaTextConnectionBloc
     extends Bloc<VaTextConnectionEvent, VaTextConnectionState> {
   final VaTextConnectionRepository vaRepository;
@@ -14,6 +13,8 @@ class VaTextConnectionBloc
   final List<ProductFilterOption> _colorOptions = [];
   final List<ProductFilterOption> _textureOptions = [];
   final List<Map<String, String>> _chatHistory = [];
+  List<ProductInfo> _products = [];
+
   bool isFinished = false;
 
   VaTextConnectionBloc(this.vaRepository) : super(VaInitialState()) {
@@ -24,6 +25,7 @@ class VaTextConnectionBloc
 
         if (isFinished) {
           _chatHistory.clear();
+          _products.clear();
           isFinished = false;
         }
         _chatHistory.add({"text": event.message, "sender": "user"});
@@ -46,8 +48,8 @@ class VaTextConnectionBloc
         );
         emit(VaSuccessState(List.from(_messages)));
 
-        var result = await vaRepository.sendMessageWithDio(
-            _chatHistory, event.message);
+        var result =
+            await vaRepository.sendMessageWithDio(_chatHistory, event.message);
 
         if (result["chat"] != null) {
           _messages.removeWhere((item) => item.isLoading == true);
@@ -111,13 +113,13 @@ class VaTextConnectionBloc
             }
           }
 
-          var products = await vaRepository.fetchProducts(
+          _products = await vaRepository.fetchProducts(
             categoryId: categoryIds.isEmpty ? null : categoryIds.join(","),
             color: colorIds.isEmpty ? null : colorIds.join(","),
             texture: textureIds.isEmpty ? null : textureIds.join(","),
           );
 
-          for (var product in products) {
+          for (var product in _products) {
             _messages.add(
               ChatMessage(
                   isUser: false,
@@ -128,7 +130,10 @@ class VaTextConnectionBloc
           }
         }
 
-        emit(VaSuccessState(List.from(_messages)));
+        emit(VaSuccessState(
+            List.from(_messages),
+            AudibleChatMessage(text: result["chat"], language: result["lang"]),
+            _products.isEmpty ? null : _products));
       } catch (e) {
         emit(VaErrorState(e.toString()));
       }
