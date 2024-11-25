@@ -24,6 +24,7 @@ import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/v
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_repository.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_audible_connection.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_text_connection.dart';
+import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_voice_connection.dart';
 import 'package:test_new/unveels_vto_project/src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/choose_connection/va_choose_connection.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/onboarding/va_onboarding_screen.dart';
@@ -247,6 +248,7 @@ class AppRoutes {
   static const String vaChooseConnection = "vaChooseConnection";
   static const String vaTextConnection = "vaTextConnection";
   static const String vaAudibleConnection = "vaAudibleConnection";
+  static const String vaVoiceConnection = "vaVoiceConnection";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -715,7 +717,8 @@ class AppRoutes {
 
       case makeupTryOn:
         return MaterialPageRoute(
-            builder: (_) => OcrCameraPage2(makeUpOn: true, accessoriesOn: false, showChoices: false));
+            builder: (_) => OcrCameraPage2(
+                makeUpOn: true, accessoriesOn: false, showChoices: false));
 
       case accessoriesTryOn:
         return MaterialPageRoute(
@@ -733,13 +736,21 @@ class AppRoutes {
       case vaTextConnection:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-                create: (context) => VaTextConnectionBloc(VaTextConnectionRepository()),
+                create: (context) =>
+                    VaTextConnectionBloc(VaTextConnectionRepository()),
                 child: const VaTextConnection()));
       case vaAudibleConnection:
         return MaterialPageRoute(
             builder: (_) => BlocProvider(
-                create: (context) => VaTextConnectionBloc(VaTextConnectionRepository()),
+                create: (context) =>
+                    VaTextConnectionBloc(VaTextConnectionRepository()),
                 child: const VaAudibleConnection()));
+      case vaVoiceConnection:
+        return MaterialPageRoute(
+            builder: (_) => BlocProvider(
+                create: (context) =>
+                    VaTextConnectionBloc(VaTextConnectionRepository()),
+                child: const VaVoiceConnection()));
 
       default:
         return _errorRoute();

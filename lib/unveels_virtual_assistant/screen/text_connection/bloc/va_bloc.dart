@@ -46,7 +46,7 @@ class VaTextConnectionBloc
             timestamp: formattedTimestamp,
           ),
         );
-        emit(VaSuccessState(List.from(_messages)));
+        emit(VaSuccessState(List.from(_messages), null));
 
         var result =
             await vaRepository.sendMessageWithDio(_chatHistory, event.message);

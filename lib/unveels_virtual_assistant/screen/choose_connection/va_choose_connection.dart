@@ -37,7 +37,9 @@ class VaChooseConnection extends StatelessWidget {
                       'Speak freely, and I\'ll respond in real-time. Let\'s talk Speech to Speech!',
                   iconPath: IconPath.speakerSubwoofer,
                   buttonText: 'Start Video Chat',
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.vaVoiceConnection);
+                  },
                 ),
                 const SizedBox(height: 15),
                 OptionCard(

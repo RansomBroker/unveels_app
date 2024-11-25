@@ -10,6 +10,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:test_new/unveels_virtual_assistant/components/va_suggestion_gift.dart';
 import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicator.dart';
+import 'package:test_new/unveels_virtual_assistant/components/va_voice_record_button.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_event.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
@@ -18,14 +19,14 @@ import 'dart:ui' as ui;
 
 import '../../../unvells/constants/app_routes.dart';
 
-class VaAudibleConnection extends StatefulWidget {
-  const VaAudibleConnection({super.key});
+class VaVoiceConnection extends StatefulWidget {
+  const VaVoiceConnection({super.key});
 
   @override
-  _VaAudibleConnection createState() => _VaAudibleConnection();
+  _VaVoiceConnection createState() => _VaVoiceConnection();
 }
 
-class _VaAudibleConnection extends State<VaAudibleConnection> {
+class _VaVoiceConnection extends State<VaVoiceConnection> {
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _textController = TextEditingController();
@@ -34,6 +35,9 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
   final SpeechToText _speechToText = SpeechToText();
   bool _isRecording = false;
   String? _currentRecordingPath;
+  bool _isTextMode = false;
+  String _textInput = '';
+  String _prevOutputText = '';
 
   InAppWebViewController? webViewController;
 
@@ -56,7 +60,9 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
 
   void onRecognitionResult(SpeechRecognitionResult result) {
     print('_MyAppState.onRecognitionResult... ${result.recognizedWords}');
-
+    setState(() {
+      _textInput = result.recognizedWords;
+    });
     _textController.text = result.recognizedWords;
   }
 
@@ -82,12 +88,14 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
               ),
             ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     child: SizedBox(
-                      height: 700,
+                      height: 750,
                       child: InAppWebView(
                         initialSettings: InAppWebViewSettings(
                             mediaPlaybackRequiresUserGesture: false,
@@ -100,32 +108,6 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                         },
                         onReceivedError: (controller, request, error) =>
                             {print('received error: $error')},
-                        // onLoadStart: (controller, url) async {
-                        //   print('loading : $url');
-                        // },
-                        // onPermissionRequest: (controller, permissionRequest) async {
-                        //   return PermissionResponse(
-                        //       resources: permissionRequest.resources,
-                        //       action: PermissionResponseAction.GRANT);
-                        // },
-                        // shouldOverrideUrlLoading: (controller, navigationAction) async {
-                        //   var uri = navigationAction.request.url!;
-
-                        //   if (![
-                        //     "http",
-                        //     "https",
-                        //     "file",
-                        //     "chrome",
-                        //     "data",
-                        //     "javascript",
-                        //     "about"
-                        //   ].contains(uri.scheme)) {}
-
-                        //   return NavigationActionPolicy.ALLOW;
-                        // },
-                        // onLoadStop: (controller, url) async {},
-                        // onProgressChanged: (controller, progress) {},
-                        // onUpdateVisitedHistory: (controller, url, isReload) {},
                         onConsoleMessage: (controller, consoleMessage) {
                           print(consoleMessage);
                         },
@@ -133,51 +115,81 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                     ),
                   ),
                 ),
-                Expanded(
-                  child:
-                      BlocBuilder<VaTextConnectionBloc, VaTextConnectionState>(
-                    builder: (context, state) {
-                      if (state is VaInitialState) {
-                        return const Center(child: Text("Start chatting!"));
-                      } else if (state is VaLoadingState) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is VaSuccessState) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          if (_scrollController.hasClients) {
-                            _scrollController.jumpTo(
-                                _scrollController.position.maxScrollExtent);
-                          }
-                        });
-                        if (state.audibleMessage != null) {
-                          print(state.audibleMessage?.text);
-                          webViewController
-                              ?.evaluateJavascript(
-                                  source:
-                                      'window.receiveTextAndLanguage("${state.audibleMessage?.text}", "${state.audibleMessage?.language}");')
-                              .then((value) => print(value));
-                        }
+                _textInput == ''
+                    ? SizedBox(
+                        height: 260,
+                        child: BlocBuilder<VaTextConnectionBloc,
+                            VaTextConnectionState>(
+                          builder: (context, state) {
+                            if (state is VaInitialState) {
+                              const Center(child: Text("Start chatting!"));
+                            } else if (state is VaLoadingState) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (state is VaSuccessState) {
+                              if (state.messages
+                                  .where((i) => i.isLoading)
+                                  .isEmpty) {
+                                Text(_textInput);
+                              }
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                if (_scrollController.hasClients) {
+                                  _scrollController.jumpTo(_scrollController
+                                      .position.maxScrollExtent);
+                                }
 
-                        if (state.products != null) {
-                          return VaSuggestedGiftsWidget(
-                              products: state.products!);
-                        }
+                                if (state.audibleMessage != null) {
+                                  if (state.audibleMessage!.text !=
+                                      _prevOutputText) {
+                                    setState(() {
+                                      _prevOutputText =
+                                          state.audibleMessage!.text;
+                                    });
+                                    webViewController
+                                        ?.evaluateJavascript(
+                                            source:
+                                                'window.receiveTextAndLanguage("${state.audibleMessage?.text}", "${state.audibleMessage?.language}");')
+                                        .then((value) => print(value));
+                                  }
+                                }
+                              });
 
-                        return ListView.builder(
-                          controller: _scrollController,
-                          itemCount: state.messages.length,
-                          itemBuilder: (context, index) {
-                            final message = state.messages[index];
-                            return _buildMessageBubble(message);
+                              if (state.products != null) {
+                                return VaSuggestedGiftsWidget(
+                                    products: state.products!);
+                              }
+
+                              return ListView.builder(
+                                controller: _scrollController,
+                                itemCount: state.messages.isEmpty
+                                    ? 0
+                                    : state.messages.length,
+                                itemBuilder: (context, index) {
+                                  final message = state.messages[index];
+                                  return _buildMessageBubble(message);
+                                },
+                              );
+                            } else if (state is VaErrorState) {
+                              return Center(
+                                  child: Text("Error: ${state.errorMessage}"));
+                            }
+                            return const SizedBox();
                           },
-                        );
-                      } else if (state is VaErrorState) {
-                        return Center(
-                            child: Text("Error: ${state.errorMessage}"));
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
-                ),
+                        ),
+                      )
+                    : SizedBox(
+                        height: 300,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Text(
+                            _textInput,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 18),
+                          ),
+                        ),
+                      ),
                 _buildInputArea(),
               ],
             ),
@@ -188,7 +200,7 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
   }
 
   Widget _buildMessageBubble(ChatMessage message) {
-    if (!message.isUser && !message.isLoading) {
+    if (!message.isLoading) {
       return const SizedBox.shrink();
     }
     return Padding(
@@ -384,18 +396,47 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
             padding: const EdgeInsets.fromLTRB(11, 12, 9, 12),
             child: Row(
               children: [
-                Expanded(
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isTextMode = !_isTextMode;
+                    });
+                  },
                   child: Container(
-                    // padding: const EdgeInsets.fromLTRB(12, 8, 9, 8),
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(26),
-                      border: Border.all(color: const Color(0xFFCA9C43)),
-                      color: Colors.black,
+                      color: _isTextMode
+                          ? const Color.fromARGB(255, 202, 156, 67)
+                          : const Color(0xFF171717),
+                      borderRadius: BorderRadius.circular(999),
+                      border: Border.all(
+                        color: Colors.white.withOpacity(0.1),
+                        width: 1,
+                      ),
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
+                    child: const Icon(
+                      CupertinoIcons.keyboard,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+                _isTextMode
+                    ? Expanded(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(12, 8, 9, 7),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26),
+                            border: Border.all(color: const Color(0xFFCA9C43)),
+                            color: Colors.black,
+                          ),
                           child: TextField(
+                            onChanged: (value) {
+                              setState(() {
+                                _textInput = value;
+                              });
+                            },
                             onSubmitted: (value) => _sendMessage(),
                             controller: _textController,
                             style: const TextStyle(color: Colors.white),
@@ -411,39 +452,53 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                             ),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(
-                            _isRecording
-                                ? CupertinoIcons.stop
-                                : CupertinoIcons.mic,
+                      )
+                    : Expanded(
+                        child: VaVoiceRecordButton(
+                            recording: _isRecording,
+                            onLongPressStart: () => _toggleRecording(true),
+                            onLongPressEnd: () => _toggleRecording(false)),
+                      ),
+                const SizedBox(width: 10),
+                _isTextMode
+                    ? Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFFCA9C43),
+                              Color(0xFF916E2B),
+                              Color(0xFF6A4F1B),
+                              Color(0xFF473209),
+                            ],
+                            stops: [0.0, 0.274, 0.594, 1.0],
+                          ),
+                        ),
+                        padding: const EdgeInsets.all(0),
+                        child: IconButton(
+                          icon: const Icon(CupertinoIcons.paperplane,
+                              color: Colors.white),
+                          onPressed: _sendMessage,
+                        ))
+                    : Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF171717),
+                          borderRadius: BorderRadius.circular(999),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.1),
+                            width: 1,
+                          ),
+                        ),
+                        child: IconButton(
+                          icon: const Icon(
+                            CupertinoIcons.clear_thick,
                             color: Colors.white,
                           ),
-                          onPressed: _toggleRecording,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFFCA9C43),
-                          Color(0xFF916E2B),
-                          Color(0xFF6A4F1B),
-                          Color(0xFF473209),
-                        ],
-                        stops: [0.0, 0.274, 0.594, 1.0],
                       ),
-                    ),
-                    padding: const EdgeInsets.all(0),
-                    child: IconButton(
-                      icon: const Icon(CupertinoIcons.paperplane,
-                          color: Colors.white),
-                      onPressed: _sendMessage,
-                    )),
               ],
             ),
           ),
@@ -452,13 +507,13 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
     );
   }
 
-  Future<void> _toggleRecording() async {
-    if (_isRecording) {
+  Future<void> _toggleRecording(bool isRecording) async {
+    setState(() {
+      _isRecording = isRecording;
+    });
+    if (!isRecording) {
       // _currentRecordingPath = await _audioRecorder.stop();
       await _speechToText.stop();
-      setState(() {
-        _isRecording = false;
-      });
       _sendMessage();
     } else {
       // Request microphone permission
@@ -468,13 +523,9 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
         return;
       }
 
-      // Initialize audio session
       try {
         // await _audioRecorder.start();
         await _speechToText.listen(onResult: onRecognitionResult);
-        setState(() {
-          _isRecording = true;
-        });
       } catch (e) {
         print('Error starting recording: $e');
       }
@@ -486,14 +537,10 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
       context
           .read<VaTextConnectionBloc>()
           .add(SendMessageEvent(_textController.text));
-      // setState(() {
-      //   messages.add(ChatMessage(
-      //     isUser: true,
-      //     content: _textController.text,
-      //     timestamp: "10 AM",
-      //   ));
-      // });
       _textController.clear();
     }
+    setState(() {
+      _textInput = '';
+    });
   }
 }

@@ -29,14 +29,15 @@ class VaProductCard extends StatelessWidget {
       ),
       child: Container(
         padding: const EdgeInsets.all(8),
-        width: 150,
+        width: 116,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
               imageUrl,
-              width: double.infinity,
-              fit: BoxFit.contain,
+              width: 100,
+              height: 100,
+              fit: BoxFit.cover,
             ),
             const SizedBox(height: 5),
             Text(
