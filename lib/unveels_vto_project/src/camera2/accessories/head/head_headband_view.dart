@@ -3,9 +3,13 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_material.dart';
+import 'package:test_new/logic/get_product_utils/get_product_types.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
@@ -37,6 +41,40 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   int? colorSelected = 0;
   int? headbandSelected = 0;
   int? materialSelected = 0;
+
+  final Dio dio = Dio();
+  List<ProductData>? products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    print("Fetching data");
+    try {
+      List<String>? productTypes = getProductTypesByLabels(
+          "head_accessories_product_type", ["Head Bands"]);
+      print(productTypes);
+
+      var dataResponse = await productRepository.fetchProducts(
+          material: getMaterialByLabel(headbandList[materialSelected!]),
+          productType: "head_accessories_product_type",
+          productTypes: productTypes?.join(","));
+
+      setState(() {
+        products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -100,6 +138,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
       //   }
       // });
     }
+    fetchData();
   }
 
   List<String> lipList = [

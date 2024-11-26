@@ -32,6 +32,10 @@ class ProductRepository {
     String? productTypes,
     String? pattern,
     String? skinTone,
+    String? shape,
+    String? material,
+    String? occasion,
+    String? fabric,
   }) async {
     print("Fetch Product");
     String url = "$_magnetoBaseUrl/rest/V1/products";
@@ -52,6 +56,14 @@ class ProductRepository {
         {'field': 'pattern', 'value': pattern, 'condition_type': 'finset'},
       if (skinTone != null)
         {'field': 'skin_tone', 'value': skinTone, 'condition_type': 'eq'},
+      if (shape != null)
+        {'field': 'shape', 'value': shape, 'condition_type': 'eq'},
+      if (material != null)
+        {'field': 'material', 'value': material, 'condition_type': 'eq'},
+      if (occasion != null)
+        {'field': 'occasion', 'value': occasion, 'condition_type': 'eq'},
+      if (fabric != null)
+        {'field': 'fabric', 'value': fabric, 'condition_type': 'eq'},
     ];
 
     final queryParams = {

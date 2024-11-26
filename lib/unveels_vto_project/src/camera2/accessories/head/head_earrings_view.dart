@@ -3,9 +3,14 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_material.dart';
+import 'package:test_new/logic/get_product_utils/get_product_types.dart';
+import 'package:test_new/logic/get_product_utils/get_shape.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
@@ -37,6 +42,41 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
   int? colorSelected = 0;
   int? shapesSelected = 0;
   int? materialSelected = 0;
+
+  final Dio dio = Dio();
+  List<ProductData>? products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    print("Fetching data");
+    try {
+      List<String>? productTypes = getProductTypesByLabels(
+          "head_accessories_product_type", ["Earrings"]);
+      print(productTypes);
+
+      var dataResponse = await productRepository.fetchProducts(
+          // texture: textures!.isEmpty ? null : textures.join(","),
+          shape: getShapeByLabel(earringsList[shapesSelected!]),
+          productType: "head_accessories_product_type",
+          productTypes: productTypes?.join(","));
+
+      setState(() {
+        products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -100,6 +140,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
       //   }
       // });
     }
+    fetchData();
   }
 
   List<String> lipList = [
@@ -254,6 +295,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
               setState(() {
                 mainColorSelected = index;
               });
+              fetchData();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -298,6 +340,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
                   colorSelected = 0;
                   onOffVisibel = true;
                 });
+                fetchData();
               },
               child: Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
@@ -308,6 +351,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
                 colorSelected = index;
                 onOffVisibel = false;
               });
+              fetchData();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
@@ -342,6 +386,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
               setState(() {
                 shapesSelected = index;
               });
+              fetchData();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8),
@@ -371,14 +416,17 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
   }
 
   Widget lipstickChoice() {
+    if (_isLoading) {
+      return Container(color: Colors.white, width: 150, height: 80);
+    }
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        height: 150,
+        height: 200,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: 5,
+          itemCount: products?.length ?? 0,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
             // if (index == 0)
@@ -387,63 +435,72 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
             //     child: Icon(Icons.do_not_disturb_alt_sharp,
             //         color: Colors.white, size: 25),
             //   );
+            var product = products?[index];
+
             return InkWell(
                 onTap: () async {},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 5, 15, 10),
-                      color: Colors.white,
-                      width: 120,
-                      height: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              flex: 9,
-                              child: Image.asset(Assets.imagesImgLipstick)),
-                          Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.black,
-                                size: 18,
-                              )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Item name Tom Ford",
-                      style: Constant.whiteBold16.copyWith(fontSize: 12),
-                    ),
-                    Text(
-                      "Brand name",
-                      style: Constant.whiteRegular12
-                          .copyWith(fontWeight: FontWeight.w300),
-                    ),
-                    Row(
-                      children: [
-                        Text("\$15", style: Constant.whiteRegular12),
-                        SizedBox(
-                          width: 30,
+                child: SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
+                        color: Colors.white,
+                        width: 150,
+                        height: 100,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Image.network(
+                                  product!.imageUrl,
+                                  width: double.infinity,
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ],
                         ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          color: Color(0xFFC89A44),
-                          child: Center(
-                              child: Text(
-                            "Add to cart",
-                            style: TextStyle(color: Colors.white, fontSize: 10),
-                          )),
-                        )
-                      ],
-                    )
-                  ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        product.name,
+                        style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      ),
+                      Text(
+                        product.brand,
+                        style: Constant.whiteRegular12.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 10),
+                      ),
+                      Row(
+                        children: [
+                          Text("KWD ${product.price.toString()}",
+                              style: Constant.whiteRegular12
+                                  .copyWith(fontSize: 10)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            color: const Color(0xFFC89A44),
+                            child: const Center(
+                                child: Text(
+                              "Add to cart",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ));
           },
         ),
