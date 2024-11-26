@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:test_new/logic/get_product_utils/get_brand_name.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
 
 class ProductFilterOption {
@@ -209,11 +210,14 @@ class VaTextConnectionRepository {
           var customAttribute = item["custom_attributes"] as List<dynamic>;
           var imgLink = customAttribute
               .firstWhere((e) => e["attribute_code"] == "image")['value'];
+          var brandId = customAttribute
+              .firstWhere((e) => e["attribute_code"] == "brand")['value'];
+
           return ProductInfo(
               id: item['id'],
               imageUrl: "$magnetoBaseUrl/media/catalog/product$imgLink",
               name: item['name'],
-              brand: "",
+              brand: getBrandNameByValue(brandId) ?? "",
               price: item['price'].toDouble());
         }).toList();
       } else {

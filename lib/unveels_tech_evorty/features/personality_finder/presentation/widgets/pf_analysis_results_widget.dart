@@ -231,15 +231,41 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(
-        top: 30, // padding to recording controller buttons
-      ),
+    return ColoredBox(
       color: Colors.black,
       child: DefaultTabController(
         length: PFTabBar.values.length,
         child: Column(
           children: [
+            AppBar(
+              titleSpacing: 0,
+              leading: InkWell(
+                onTap: () => Navigator.pop(context),
+                child: Container(
+                  margin: const EdgeInsets.only(top: 8),
+                  decoration: const BoxDecoration(
+                      shape: BoxShape.circle, color: Colors.black26),
+                  child: const Icon(Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white),
+                ),
+              ),
+              actions: [
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    width: 100,
+                    height: 100,
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.black26),
+                    child: const Icon(Icons.close, color: Colors.white),
+                  ),
+                ),
+              ],
+              elevation: 0,
+              backgroundColor: Colors.transparent,
+              foregroundColor: Colors.white,
+            ),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: SizeConfig.horizontalPadding,
@@ -261,8 +287,8 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                             borderRadius: BorderRadius.circular(100),
                             child: Image.memory(
                               imageBytes!,
-                              width: 108,
-                              height: 108,
+                              width: 80,
+                              height: 80,
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -285,7 +311,7 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                     ],
                   ),
                   const SizedBox(
-                    width: 20,
+                    width: 16,
                   ),
                   Expanded(
                     child: Row(
@@ -301,13 +327,14 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 "AI Personality Analysis :",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                 ),
                               ),
+                              const SizedBox(height: 8),
                               Text(
                                 personalityAnalysisResult[widget
                                             .resultDataParsed
@@ -340,7 +367,7 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                 labelColor: ColorConfig.primary,
                 indicatorColor: ColorConfig.primary,
                 labelStyle: const TextStyle(
-                  fontSize: 16,
+                  fontSize: 14,
                 ),
                 padding: EdgeInsets.zero,
                 labelPadding: EdgeInsets.zero,

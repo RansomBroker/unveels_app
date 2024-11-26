@@ -6,10 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_new/unveels_vto_project/common/component/custom_alert.dart';
+import 'package:test_new/unveels_vto_project/common/helper/constant.dart';
 
 import '../../../main.dart';
-import '../../../unveels_smart_beauty/common/component/custom_alert.dart';
-import '../../../unveels_smart_beauty/common/helper/constant.dart';
 import '../../utils/utils.dart';
 import '../helper/xenolog.dart';
 import 'base_state.dart';

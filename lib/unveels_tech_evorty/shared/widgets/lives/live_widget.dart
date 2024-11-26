@@ -126,12 +126,7 @@ class _LiveWidgetState extends State<LiveWidget> {
         //   ),
         // ),
         // body
-        Padding(
-          padding: const EdgeInsets.only(
-            top: SizeConfig.appBarMargin,
-          ),
-          child: _buildBody,
-        ),
+        _buildBody,
       ],
     );
   }

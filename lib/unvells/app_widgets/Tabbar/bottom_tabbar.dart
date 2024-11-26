@@ -126,16 +126,17 @@ class _BottomTabBarWidgetState extends State<BottomTabBarWidget> {
             context, AppStringConstant.pressBackAgainToExit),
         child: Dragball(
           ball: FloatingActionButton(
+              mini: true,
               backgroundColor: const Color(0xFF303030),
               shape: const CircleBorder(),
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.vaOnboarding);
               },
-              child: const Icon(
-                CupertinoIcons.sparkles,
-                color: Colors.white,
+              child: Image.asset(
+                'assets/images/va-logo.png',
               )),
-          initialPosition: const DragballPosition.defaultPosition(),
+          initialPosition: const DragballPosition(
+              top: 500, isRight: true, ballState: BallState.show),
           onTap: () => debugPrint('Dragball Tapped'),
           withIcon: false,
           scrollAndHide: false,

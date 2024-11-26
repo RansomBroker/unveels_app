@@ -275,6 +275,7 @@ class _BodyItemWidget extends StatelessWidget {
         Row(
           children: [
             SvgPicture.asset(
+              width: 24,
               iconPath,
             ),
             const SizedBox(
@@ -284,7 +285,7 @@ class _BodyItemWidget extends StatelessWidget {
               child: Text(
                 title,
                 style: const TextStyle(
-                  fontSize: 32,
+                  fontSize: 20,
                   color: Colors.white,
                 ),
               ),
@@ -363,7 +364,7 @@ class _DetailBodyItem extends StatelessWidget {
         Text(
           title,
           style: const TextStyle(
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: FontWeight.w700,
             color: Colors.white,
           ),

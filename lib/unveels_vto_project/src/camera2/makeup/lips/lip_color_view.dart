@@ -3,16 +3,18 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_product_types.dart';
+import 'package:test_new/logic/get_product_utils/get_textures.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera/camera_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/makeup_page.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -37,6 +39,48 @@ class _LipColorViewState extends State<LipColorView> {
   int? colorSelected = 0;
   int? typeColorSelected = 0;
   int? typeColor2Selected = 0;
+
+  final Dio dio = Dio();
+  List<ProductData>? products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    print("Fetching data");
+    try {
+      print("Trying to fetch");
+      List<String>? textures =
+          getTextureByLabel([chipList[typeColorSelected!]]);
+      print(textures);
+      List<String>? productTypes =
+          getProductTypesByLabels("lips_makeup_product_type", [
+        "Lipsticks",
+        "Lip Stains",
+        "Lip Tints",
+        "Lip Balms",
+      ]);
+      print(productTypes);
+
+      var dataResponse = await productRepository.fetchProducts(
+          texture: textures!.isEmpty ? null : textures.join(","),
+          productType: "lips_makeup_product_type",
+          productTypes: productTypes?.join(","));
+      setState(() {
+        products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -100,6 +144,7 @@ class _LipColorViewState extends State<LipColorView> {
       //   }
       // });
     }
+    fetchData();
   }
 
   List<String> lipList = [
@@ -110,24 +155,24 @@ class _LipColorViewState extends State<LipColorView> {
     "Rose Gold",
   ];
   List<Color> lipColorList = [
-    Color(0xFFFFFF00),
+    const Color(0xFFFFFF00),
     Colors.black,
-    Color(0xffC0C0C0),
-    Color(0xffCA9C43),
-    Color(0xffB76E79),
+    const Color(0xffC0C0C0),
+    const Color(0xffCA9C43),
+    const Color(0xffB76E79),
   ];
   List<Color> colorChoiceList = [
-    Color(0xFF740039),
-    Color(0xFF8D0046),
-    Color(0xFFB20058),
-    Color(0xFFB51F69),
-    Color(0xFFDF1050),
-    Color(0xFFE31B7B),
-    Color(0xFFFE3699),
-    Color(0xFFE861A4),
-    Color(0xFFE0467C),
+    const Color(0xFF740039),
+    const Color(0xFF8D0046),
+    const Color(0xFFB20058),
+    const Color(0xFFB51F69),
+    const Color(0xFFDF1050),
+    const Color(0xFFE31B7B),
+    const Color(0xFFFE3699),
+    const Color(0xFFE861A4),
+    const Color(0xFFE0467C),
   ];
-  List<String> chipList = ['Sheer', 'Matt', 'Gloss', 'Shimmer', 'Satin'];
+  List<String> chipList = texturesLabel;
   List<String> chip2List = [
     'One',
     'Dual',
@@ -189,12 +234,13 @@ class _LipColorViewState extends State<LipColorView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -210,12 +256,13 @@ class _LipColorViewState extends State<LipColorView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color(0xffCA9C43),
+                  color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -251,10 +298,11 @@ class _LipColorViewState extends State<LipColorView> {
             onTap: () {
               setState(() {
                 mainColorSelected = index;
+                fetchData();
               });
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
@@ -269,7 +317,7 @@ class _LipColorViewState extends State<LipColorView> {
                   Constant.xSizedBox4,
                   Text(
                     lipList[index],
-                    style: TextStyle(color: Colors.white, fontSize: 10),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
               ),
@@ -289,26 +337,29 @@ class _LipColorViewState extends State<LipColorView> {
         itemCount: colorChoiceList.length,
         separatorBuilder: (_, __) => Constant.xSizedBox12,
         itemBuilder: (context, index) {
-          if (index == 0)
+          if (index == 0) {
             return InkWell(
               onTap: () async {
                 setState(() {
                   colorSelected = 0;
                   onOffVisibel = true;
+                  fetchData();
                 });
               },
-              child: Icon(Icons.do_not_disturb_alt_sharp,
+              child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
             );
+          }
           return InkWell(
             onTap: () async {
               setState(() {
                 colorSelected = index;
                 onOffVisibel = false;
+                fetchData();
               });
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
@@ -338,12 +389,14 @@ class _LipColorViewState extends State<LipColorView> {
             onTap: () {
               setState(() {
                 typeColorSelected = index;
+                fetchData();
               });
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
-                color: typeColorSelected == index ? Color(0xffCA9C43) : null,
+                color:
+                    typeColorSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: typeColorSelected == index
@@ -352,7 +405,7 @@ class _LipColorViewState extends State<LipColorView> {
               ),
               child: Text(
                 chipList[index],
-                style: TextStyle(color: Colors.white, fontSize: 10),
+                style: const TextStyle(color: Colors.white, fontSize: 10),
               ),
             ),
           );
@@ -384,7 +437,7 @@ class _LipColorViewState extends State<LipColorView> {
                 shadows: typeColor2Selected != index
                     ? null
                     : [
-                        BoxShadow(
+                        const BoxShadow(
                           offset: Offset(0, 0),
                           color: Colors.white,
                           spreadRadius: 0,
@@ -400,14 +453,17 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget lipstickChoice() {
+    if (_isLoading) {
+      return Container(color: Colors.white, width: 150, height: 80);
+    }
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        height: 150,
+        height: 200,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: 5,
+          itemCount: products?.length ?? 0,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
             // if (index == 0)
@@ -416,63 +472,72 @@ class _LipColorViewState extends State<LipColorView> {
             //     child: Icon(Icons.do_not_disturb_alt_sharp,
             //         color: Colors.white, size: 25),
             //   );
+            var product = products?[index];
+
             return InkWell(
                 onTap: () async {},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 5, 15, 10),
-                      color: Colors.white,
-                      width: 120,
-                      height: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              flex: 9,
-                              child: Image.asset(Assets.imagesImgLipstick)),
-                          Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.black,
-                                size: 18,
-                              )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Item name Tom Ford",
-                      style: Constant.whiteBold16.copyWith(fontSize: 12),
-                    ),
-                    Text(
-                      "Brand name",
-                      style: Constant.whiteRegular12
-                          .copyWith(fontWeight: FontWeight.w300),
-                    ),
-                    Row(
-                      children: [
-                        Text("\$15", style: Constant.whiteRegular12),
-                        SizedBox(
-                          width: 30,
+                child: SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
+                        color: Colors.white,
+                        width: 150,
+                        height: 100,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Image.network(
+                                  product!.imageUrl,
+                                  width: double.infinity,
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ],
                         ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          color: Color(0xFFC89A44),
-                          child: Center(
-                              child: Text(
-                            "Add to cart",
-                            style: TextStyle(color: Colors.white, fontSize: 10),
-                          )),
-                        )
-                      ],
-                    )
-                  ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        product.name,
+                        style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      ),
+                      Text(
+                        product.brand,
+                        style: Constant.whiteRegular12.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 10),
+                      ),
+                      Row(
+                        children: [
+                          Text("KWD ${product.price.toString()}",
+                              style: Constant.whiteRegular12
+                                  .copyWith(fontSize: 10)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            color: const Color(0xFFC89A44),
+                            child: const Center(
+                                child: Text(
+                              "Add to cart",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ));
           },
         ),
@@ -481,7 +546,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget typeChip() {
@@ -494,12 +559,12 @@ class _LipColorViewState extends State<LipColorView> {
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white),
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'Sheer',
                 textAlign: TextAlign.center,
@@ -531,7 +596,7 @@ class _LipColorViewState extends State<LipColorView> {
                 shadows: index != 0
                     ? null
                     : [
-                        BoxShadow(
+                        const BoxShadow(
                           offset: Offset(0, 0),
                           color: Colors.white,
                           spreadRadius: 0,
@@ -549,8 +614,8 @@ class _LipColorViewState extends State<LipColorView> {
   Widget sheet() {
     return Container(
       height: 300,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -573,7 +638,7 @@ class _LipColorViewState extends State<LipColorView> {
             separator(),
             chip2Choice(),
             separator(),
-            Align(
+            const Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   "View All",
@@ -635,7 +700,8 @@ class _LipColorViewState extends State<LipColorView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -648,7 +714,7 @@ class _LipColorViewState extends State<LipColorView> {
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],
@@ -713,8 +779,8 @@ class _LipColorViewState extends State<LipColorView> {
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                margin: EdgeInsets.only(right: 16),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.black12,
@@ -723,7 +789,8 @@ class _LipColorViewState extends State<LipColorView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
