@@ -87,7 +87,7 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     child: SizedBox(
-                      height: 700,
+                      height: 750,
                       child: InAppWebView(
                         initialSettings: InAppWebViewSettings(
                             mediaPlaybackRequiresUserGesture: false,
@@ -100,32 +100,6 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                         },
                         onReceivedError: (controller, request, error) =>
                             {print('received error: $error')},
-                        // onLoadStart: (controller, url) async {
-                        //   print('loading : $url');
-                        // },
-                        // onPermissionRequest: (controller, permissionRequest) async {
-                        //   return PermissionResponse(
-                        //       resources: permissionRequest.resources,
-                        //       action: PermissionResponseAction.GRANT);
-                        // },
-                        // shouldOverrideUrlLoading: (controller, navigationAction) async {
-                        //   var uri = navigationAction.request.url!;
-
-                        //   if (![
-                        //     "http",
-                        //     "https",
-                        //     "file",
-                        //     "chrome",
-                        //     "data",
-                        //     "javascript",
-                        //     "about"
-                        //   ].contains(uri.scheme)) {}
-
-                        //   return NavigationActionPolicy.ALLOW;
-                        // },
-                        // onLoadStop: (controller, url) async {},
-                        // onProgressChanged: (controller, progress) {},
-                        // onUpdateVisitedHistory: (controller, url, isReload) {},
                         onConsoleMessage: (controller, consoleMessage) {
                           print(consoleMessage);
                         },
@@ -133,7 +107,8 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                     ),
                   ),
                 ),
-                Expanded(
+                SizedBox(
+                  height: 260,
                   child:
                       BlocBuilder<VaTextConnectionBloc, VaTextConnectionState>(
                     builder: (context, state) {
@@ -188,9 +163,6 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
   }
 
   Widget _buildMessageBubble(ChatMessage message) {
-    if (!message.isUser && !message.isLoading) {
-      return const SizedBox.shrink();
-    }
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(

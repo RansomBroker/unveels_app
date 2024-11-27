@@ -3,9 +3,12 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_product_types.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
@@ -38,6 +41,43 @@ class _ContourViewState extends State<ContourView> {
   bool onOffVisibel1 = false;
   int? skinSelected = 0;
   int? colorSelected = 0;
+
+  final Dio dio = Dio();
+  List<ProductData>? products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    print("Fetching data");
+    try {
+      // print("Trying to fetch");
+      // List<String>? textures =
+      //     getTextureByLabel([chipList[typeColorSelected!]]);
+      // print(textures);
+      List<String>? productTypes =
+          getProductTypesByLabels("face_makeup_product_type", ["Contouring"]);
+      print(productTypes);
+
+      var dataResponse = await productRepository.fetchProducts(
+          // texture: textures!.isEmpty ? null : textures.join(","),
+          productType: "face_makeup_product_type",
+          productTypes: productTypes?.join(","));
+      setState(() {
+        products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
 
   @override
   void initState() {
@@ -102,6 +142,7 @@ class _ContourViewState extends State<ContourView> {
       //   }
       // });
     }
+    fetchData();
   }
 
   List<String> skinList = [
@@ -386,6 +427,7 @@ class _ContourViewState extends State<ContourView> {
                     colorSelected = 0;
                     onOffVisibel = true;
                   });
+                  fetchData();
                 },
                 child: Icon(Icons.do_not_disturb_alt_sharp,
                     color: Colors.white, size: 25),
@@ -396,6 +438,7 @@ class _ContourViewState extends State<ContourView> {
                     colorSelected = index;
                     onOffVisibel = false;
                   });
+                  fetchData();
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
@@ -447,6 +490,7 @@ class _ContourViewState extends State<ContourView> {
                       skinSelected = index;
                       onOffVisibel1 = false;
                     });
+                    fetchData();
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,14 +510,17 @@ class _ContourViewState extends State<ContourView> {
   }
 
   Widget lipstickChoice() {
+    if (_isLoading) {
+      return Container(color: Colors.white, width: 150, height: 80);
+    }
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        height: 150,
+        height: 200,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: 5,
+          itemCount: products?.length ?? 0,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
             // if (index == 0)
@@ -482,63 +529,72 @@ class _ContourViewState extends State<ContourView> {
             //     child: Icon(Icons.do_not_disturb_alt_sharp,
             //         color: Colors.white, size: 25),
             //   );
+            var product = products?[index];
+
             return InkWell(
                 onTap: () async {},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 5, 15, 10),
-                      color: Colors.white,
-                      width: 120,
-                      height: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              flex: 9,
-                              child: Image.asset(Assets.imagesImgLipstick)),
-                          Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.black,
-                                size: 18,
-                              )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Item name Tom Ford",
-                      style: Constant.whiteBold16.copyWith(fontSize: 12),
-                    ),
-                    Text(
-                      "Brand name",
-                      style: Constant.whiteRegular12
-                          .copyWith(fontWeight: FontWeight.w300),
-                    ),
-                    Row(
-                      children: [
-                        Text("\$15", style: Constant.whiteRegular12),
-                        SizedBox(
-                          width: 30,
+                child: SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
+                        color: Colors.white,
+                        width: 150,
+                        height: 100,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Image.network(
+                                  product!.imageUrl,
+                                  width: double.infinity,
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ],
                         ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          color: Color(0xFFC89A44),
-                          child: Center(
-                              child: Text(
-                            "Add to cart",
-                            style: TextStyle(color: Colors.white, fontSize: 10),
-                          )),
-                        )
-                      ],
-                    )
-                  ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        product.name,
+                        style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      ),
+                      Text(
+                        product.brand,
+                        style: Constant.whiteRegular12.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 10),
+                      ),
+                      Row(
+                        children: [
+                          Text("KWD ${product.price.toString()}",
+                              style: Constant.whiteRegular12
+                                  .copyWith(fontSize: 10)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            color: const Color(0xFFC89A44),
+                            child: const Center(
+                                child: Text(
+                              "Add to cart",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ));
           },
         ),
@@ -638,6 +694,7 @@ class _ContourViewState extends State<ContourView> {
                       setState(() {
                         oneOrDual = true;
                       });
+                      fetchData();
                     },
                     child: Text(
                       "One",
@@ -653,6 +710,7 @@ class _ContourViewState extends State<ContourView> {
                       setState(() {
                         oneOrDual = false;
                       });
+                      fetchData();
                     },
                     child: Text(
                       "Two",
