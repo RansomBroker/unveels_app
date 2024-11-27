@@ -3,9 +3,13 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_product_types.dart';
+import 'package:test_new/logic/get_product_utils/get_textures.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
@@ -39,6 +43,43 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
   int? colorSelected = 0;
   int? colorTextSelected = 0;
   int? eyelashSelected = 0;
+
+  final Dio dio = Dio();
+  List<ProductData>? products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    print("Fetching data");
+    List<String>? productTypes = getProductTypesByLabels(
+        "lash_makeup_product_type",
+        lashes
+            ? [
+                "Lash Curlers",
+                "Individual False Lashes",
+                "Full Line Lashes",
+              ]
+            : ["Mascaras"]);
+    try {
+      var dataResponse = await productRepository.fetchProducts(
+        productType: "lash_makeup_product_type",
+        productTypes: productTypes?.join(","),
+      );
+      setState(() {
+        products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   List<Color> colorMainList = [
     Color(0xffFE3699),
@@ -155,6 +196,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
       //   }
       // });
     }
+    fetchData();
   }
 
   @override
@@ -328,6 +370,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                   colorSelected = index;
                   onOffVisible = false;
                 });
+                fetchData();
               },
               child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
@@ -364,6 +407,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                 eyelashSelected = index;
                 onOffVisible = false;
               });
+              fetchData();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -377,6 +421,99 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget lipstickChoice() {
+    if (_isLoading) {
+      return Container(color: Colors.white, width: 150, height: 80);
+    }
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        height: 200,
+        child: ListView.separated(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: products?.length ?? 0,
+          separatorBuilder: (_, __) => Constant.xSizedBox12,
+          itemBuilder: (context, index) {
+            // if (index == 0)
+            //   return InkWell(
+            //     onTap: () async {},
+            //     child: Icon(Icons.do_not_disturb_alt_sharp,
+            //         color: Colors.white, size: 25),
+            //   );
+            var product = products?[index];
+
+            return InkWell(
+                onTap: () async {},
+                child: SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
+                        color: Colors.white,
+                        width: 150,
+                        height: 100,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Image.network(
+                                  product!.imageUrl,
+                                  width: double.infinity,
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        product.name,
+                        style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      ),
+                      Text(
+                        product.brand,
+                        style: Constant.whiteRegular12.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 10),
+                      ),
+                      Row(
+                        children: [
+                          Text("KWD ${product.price.toString()}",
+                              style: Constant.whiteRegular12
+                                  .copyWith(fontSize: 10)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            color: const Color(0xFFC89A44),
+                            child: const Center(
+                                child: Text(
+                              "Add to cart",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ));
+          },
+        ),
       ),
     );
   }
@@ -396,6 +533,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
               setState(() {
                 sliderValue = v;
               });
+              fetchData();
             },
           ),
           Padding(
@@ -432,8 +570,6 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
           Constant.xSizedBox8,
           colorChip(),
           Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox8,
           separator(),
           Constant.xSizedBox4,
           Row(
@@ -445,6 +581,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                     setState(() {
                       lashes = true;
                     });
+                    fetchData();
                   },
                   child: Text(
                     'Lashes',
@@ -476,6 +613,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                     setState(() {
                       lashes = false;
                     });
+                    fetchData();
                   },
                   child: Text(
                     'Mascara',
@@ -501,6 +639,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
           Constant.xSizedBox16,
           typeLashesChip(),
           Constant.xSizedBox32,
+          lipstickChoice(),
         ],
       ),
     );

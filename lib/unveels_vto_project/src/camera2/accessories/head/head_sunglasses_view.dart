@@ -172,7 +172,7 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
   List<String> shapesList = [
     'Square',
     'Clubmaster',
-    'Rectanguler',
+    'Rectangular',
     'Tortoise',
     'Satin'
   ];

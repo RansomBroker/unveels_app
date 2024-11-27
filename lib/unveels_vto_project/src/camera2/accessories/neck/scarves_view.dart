@@ -64,7 +64,7 @@ class _ScarvesViewState extends State<ScarvesView> {
 
       var dataResponse = await productRepository.fetchProducts(
           // texture: textures!.isEmpty ? null : textures.join(","),
-          fabric: getFabricByLabel(chipList[typeSelected!]),
+          // fabric: getFabricByLabel(chipList[typeSelected!]),
           productType: "neck_accessories_product_type",
           productTypes: productTypes?.join(","));
       setState(() {
@@ -172,7 +172,7 @@ class _ScarvesViewState extends State<ScarvesView> {
     Color(0xFFE0467C),
   ];
 
-  List<String> chipList = ['Poliester', 'Cotton', 'Leather', 'Denim'];
+  List<String> chipList = ['Polyester', 'Cotton', 'Leather', 'Denim'];
 
   @override
   void dispose() {

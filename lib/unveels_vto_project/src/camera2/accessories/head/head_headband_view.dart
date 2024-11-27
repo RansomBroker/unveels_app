@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_fabric.dart';
 import 'package:test_new/logic/get_product_utils/get_material.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
@@ -58,7 +59,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
       print(productTypes);
 
       var dataResponse = await productRepository.fetchProducts(
-          material: getMaterialByLabel(headbandList[materialSelected!]),
+          fabric: getFabricByLabel(headbandList[headbandSelected!]),
           productType: "head_accessories_product_type",
           productTypes: productTypes?.join(","));
 
@@ -166,7 +167,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
     Color(0xFFE861A4),
     Color(0xFFE0467C),
   ];
-  List<String> headbandList = ['Poliester', 'Cotton', 'Leather', 'Denim'];
+  List<String> headbandList = ['Polyester', 'Cotton', 'Leather', 'Denim'];
 
   List<String> headbandAssetsList = [
     Assets.iconsIcStuds,
@@ -293,6 +294,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               setState(() {
                 mainColorSelected = index;
               });
+              fetchData();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -337,6 +339,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                   colorSelected = 0;
                   onOffVisibel = true;
                 });
+                fetchData();
               },
               child: Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
@@ -347,6 +350,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                 colorSelected = index;
                 onOffVisibel = false;
               });
+              fetchData();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
@@ -381,6 +385,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               setState(() {
                 headbandSelected = index;
               });
+              fetchData();
             },
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 8),
@@ -403,15 +408,19 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
     );
   }
 
+
   Widget lipstickChoice() {
+    if (_isLoading) {
+      return Container(color: Colors.white, width: 150, height: 80);
+    }
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        height: 150,
+        height: 200,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: 5,
+          itemCount: products?.length ?? 0,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
             // if (index == 0)
@@ -420,63 +429,72 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
             //     child: Icon(Icons.do_not_disturb_alt_sharp,
             //         color: Colors.white, size: 25),
             //   );
+            var product = products?[index];
+
             return InkWell(
                 onTap: () async {},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20, 5, 15, 10),
-                      color: Colors.white,
-                      width: 120,
-                      height: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              flex: 9,
-                              child: Image.asset(Assets.imagesImgLipstick)),
-                          Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.black,
-                                size: 18,
-                              )),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Item name Tom Ford",
-                      style: Constant.whiteBold16.copyWith(fontSize: 12),
-                    ),
-                    Text(
-                      "Brand name",
-                      style: Constant.whiteRegular12
-                          .copyWith(fontWeight: FontWeight.w300),
-                    ),
-                    Row(
-                      children: [
-                        Text("\$15", style: Constant.whiteRegular12),
-                        SizedBox(
-                          width: 30,
+                child: SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
+                        color: Colors.white,
+                        width: 150,
+                        height: 100,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Image.network(
+                                  product!.imageUrl,
+                                  width: double.infinity,
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ],
                         ),
-                        Container(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          color: Color(0xFFC89A44),
-                          child: Center(
-                              child: Text(
-                            "Add to cart",
-                            style: TextStyle(color: Colors.white, fontSize: 10),
-                          )),
-                        )
-                      ],
-                    )
-                  ],
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        product.name,
+                        style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      ),
+                      Text(
+                        product.brand,
+                        style: Constant.whiteRegular12.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 10),
+                      ),
+                      Row(
+                        children: [
+                          Text("KWD ${product.price.toString()}",
+                              style: Constant.whiteRegular12
+                                  .copyWith(fontSize: 10)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            color: const Color(0xFFC89A44),
+                            child: const Center(
+                                child: Text(
+                              "Add to cart",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ));
           },
         ),

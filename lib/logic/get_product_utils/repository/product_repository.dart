@@ -36,6 +36,8 @@ class ProductRepository {
     String? material,
     String? occasion,
     String? fabric,
+    String? browMakeup,
+    String? lenses,
   }) async {
     print("Fetch Product");
     String url = "$_magnetoBaseUrl/rest/V1/products";
@@ -64,6 +66,18 @@ class ProductRepository {
         {'field': 'occasion', 'value': occasion, 'condition_type': 'eq'},
       if (fabric != null)
         {'field': 'fabric', 'value': fabric, 'condition_type': 'eq'},
+      if (browMakeup != null)
+        {
+          'field': 'brow_makeup_product_type',
+          'value': browMakeup,
+          'condition_type': 'notnull'
+        },
+      if (lenses != null)
+        {
+          'field': 'lenses_product_type',
+          'value': lenses,
+          'condition_type': 'notnull'
+        },
     ];
 
     final queryParams = {

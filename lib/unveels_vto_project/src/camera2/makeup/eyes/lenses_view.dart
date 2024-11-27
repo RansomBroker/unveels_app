@@ -3,9 +3,13 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:test_new/logic/get_product_utils/get_product_types.dart';
+import 'package:test_new/logic/get_product_utils/get_textures.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
@@ -36,6 +40,33 @@ class _LensesViewState extends State<LensesView> {
   bool onOffVisible = false;
   int? colorSelected = 0;
   int? lensesSelected = 0;
+
+  final Dio dio = Dio();
+  List<ProductData>? products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    print("Fetching data");
+    try {
+      var dataResponse = await productRepository.fetchProducts(
+          // texture: textures!.isEmpty ? null : textures.join(","),
+          lenses: '');
+      setState(() {
+        products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   List<Color> colorMainList = [
     Color(0xffFE3699),
@@ -149,6 +180,7 @@ class _LensesViewState extends State<LensesView> {
       //   }
       // });
     }
+    fetchData();
   }
 
   @override
@@ -350,6 +382,7 @@ class _LensesViewState extends State<LensesView> {
                 lensesSelected = index;
                 onOffVisible = false;
               });
+              fetchData();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -363,6 +396,99 @@ class _LensesViewState extends State<LensesView> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget lipstickChoice() {
+    if (_isLoading) {
+      return Container(color: Colors.white, width: 150, height: 80);
+    }
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        height: 200,
+        child: ListView.separated(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: products?.length ?? 0,
+          separatorBuilder: (_, __) => Constant.xSizedBox12,
+          itemBuilder: (context, index) {
+            // if (index == 0)
+            //   return InkWell(
+            //     onTap: () async {},
+            //     child: Icon(Icons.do_not_disturb_alt_sharp,
+            //         color: Colors.white, size: 25),
+            //   );
+            var product = products?[index];
+
+            return InkWell(
+                onTap: () async {},
+                child: SizedBox(
+                  width: 150,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
+                        color: Colors.white,
+                        width: 150,
+                        height: 100,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                                flex: 9,
+                                child: Image.network(
+                                  product!.imageUrl,
+                                  width: double.infinity,
+                                )),
+                            const Expanded(
+                                flex: 1,
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                )),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        product.name,
+                        style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      ),
+                      Text(
+                        product.brand,
+                        style: Constant.whiteRegular12.copyWith(
+                            fontWeight: FontWeight.w300, fontSize: 10),
+                      ),
+                      Row(
+                        children: [
+                          Text("KWD ${product.price.toString()}",
+                              style: Constant.whiteRegular12
+                                  .copyWith(fontSize: 10)),
+                          const Spacer(),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 5),
+                            color: const Color(0xFFC89A44),
+                            child: const Center(
+                                child: Text(
+                              "Add to cart",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 10),
+                            )),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                ));
+          },
+        ),
       ),
     );
   }
@@ -382,6 +508,7 @@ class _LensesViewState extends State<LensesView> {
               setState(() {
                 sliderValue = v;
               });
+              fetchData();
             },
           ),
           Padding(
@@ -422,6 +549,7 @@ class _LensesViewState extends State<LensesView> {
           Constant.xSizedBox4,
           typeLensesChip(),
           Constant.xSizedBox32,
+          lipstickChoice(),
         ],
       ),
     );
