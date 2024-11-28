@@ -43,6 +43,10 @@ Map<String, List<Map<String, String>>> _productTypes = {
       "value": "5716",
     },
     {
+      "label": "Blusher",
+      "value": "5716",
+    },
+    {
       "label": "Highlighters",
       "value": "5717",
     },
@@ -502,6 +506,8 @@ String? getProductTypeByLabel(String key, String label) {
       for (var item in list) {
         if (item['label'] == label) {
           return item['value'];
+        } else if (item['label'] == "${label}s") {
+          return item['value'];
         }
       }
     }
@@ -520,9 +526,32 @@ List<String>? getProductTypesByLabels(String key, List<String> labels) {
       for (var item in list) {
         if (labels.contains(item['label'])) {
           result.add(item['value']);
+        } else if (labels.contains("${item['label']}s")) {
+          result.add(item['value']);
         }
       }
       return result;
+    }
+    return null;
+  } catch (e) {
+    print(e);
+    return null;
+  }
+}
+
+String? getProductKeyByLabel(String label) {
+  try {
+    for (var key in _productTypes.keys) {
+      List? list = _productTypes[key];
+      if (list != null) {
+        for (var item in list) {
+          if (item['label'] == label) {
+            return key;
+          } else if (item['label'] == "${label}s") {
+            return key;
+          }
+        }
+      }
     }
     return null;
   } catch (e) {

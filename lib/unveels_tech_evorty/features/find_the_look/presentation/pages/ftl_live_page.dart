@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -6,13 +8,39 @@ import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
 import '../../../../shared/extensions/x_file_parsing.dart';
 import '../../../../shared/widgets/buttons/button_widget.dart';
-import '../../../../shared/widgets/clippers/face_clipper.dart';
 import '../../../../shared/widgets/lives/bottom_copyright_widget.dart';
 import '../../../../shared/widgets/lives/live_widget.dart';
 import '../cubit/product_cart/product_cart_cubit.dart';
 import '../widgets/ftl_all_products_list_widget.dart';
 import '../widgets/ftl_makeup_widget.dart';
 import '../widgets/ftl_small_products_list_widget.dart';
+
+class FTLResult {
+  final String label;
+  final String section;
+  final String? color;
+
+  FTLResult({required this.label, required this.section, required this.color});
+
+  factory FTLResult.fromJson(Map<String, dynamic> json) {
+    return FTLResult(
+      label: json['label'],
+      section: json['section'],
+      color: json['color'], // Opsional, bisa null
+    );
+  }
+  // Override operator == untuk membandingkan properti
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FTLResult) return false;
+    return label == other.label && section == other.section;
+  }
+
+  // Override hashCode untuk memastikan hash-nya sama jika propertinya sama
+  @override
+  int get hashCode => Object.hash(label, section);
+}
 
 enum LiveType {
   importPhoto,
@@ -65,6 +93,8 @@ class __BodyState extends State<_Body> {
   bool _isShowSmallProductsList = false;
   bool _isShowAllProductsList = false;
 
+  List<FTLResult> _results = [];
+
   @override
   void initState() {
     super.initState();
@@ -78,6 +108,20 @@ class __BodyState extends State<_Body> {
 
     // init live makeup type
     _initLiveMakeUpType();
+  }
+
+  void _showResult(String? result) {
+    if (result != null) {
+      setState(() {
+        _results = List<FTLResult>.from(
+          (jsonDecode(result) as List).map(
+            (e) => FTLResult.fromJson(e),
+          ),
+        ).toSet().toList();
+      });
+    }
+    print("=====================================================");
+    print(_results);
   }
 
   @override
@@ -103,6 +147,7 @@ class __BodyState extends State<_Body> {
               });
             }
           }
+          _showResult(result);
         },
       ),
     );
@@ -141,6 +186,7 @@ class __BodyState extends State<_Body> {
           return BottomCopyrightWidget(
             child: FTLSmallProductsListWidget(
               onViewAll: _onViewAllProducts,
+              categories: _results.toList(),
             ),
           );
         }

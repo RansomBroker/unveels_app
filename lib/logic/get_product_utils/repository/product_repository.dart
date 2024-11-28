@@ -108,7 +108,7 @@ class ProductRepository {
               .firstWhere((e) => e["attribute_code"] == "image")['value'];
           var brandId = customAttribute
               .firstWhere((e) => e["attribute_code"] == "brand")['value'];
-
+              print(item);
           return ProductData(
               id: item['id'],
               imageUrl: "$_magnetoBaseUrl/media/catalog/product$imgLink",
