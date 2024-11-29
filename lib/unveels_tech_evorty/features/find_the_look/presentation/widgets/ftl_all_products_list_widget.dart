@@ -328,7 +328,7 @@ class _SmilarTabItemWidget extends StatelessWidget {
             ),
           ),
           child: Text(
-            SmilarProductTab.smilarMakeup.title.toUpperCase(),
+            tab.title.toUpperCase(),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: TextStyle(

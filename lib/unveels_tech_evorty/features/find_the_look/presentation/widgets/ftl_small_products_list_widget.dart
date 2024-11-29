@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
@@ -51,8 +50,6 @@ class _FTLSmallProductsListWidgetState
     }
     if (_makeupCategories.isNotEmpty) {
       _selectedCategory = _makeupCategories[0];
-    } else if (_accessoriesCategories.isNotEmpty) {
-      _selectedCategory = _accessoriesCategories[0];
     }
     fetchData();
   }

@@ -446,6 +446,14 @@ Map<String, List<Map<String, String>>> _productTypes = {
       "label": "Bangles",
       "value": "6503",
     },
+    {
+      "label": "Banglers",
+      "value": "6503",
+    },
+    {
+      "label": "Bangler",
+      "value": "6503",
+    },
   ],
   "nails_product_type": [
     {
@@ -501,40 +509,36 @@ Map<String, List<Map<String, String>>> _productTypes = {
 
 String? getProductTypeByLabel(String key, String label) {
   try {
-    List? list = _productTypes[key];
+    List<Map<String, String>>? list = _productTypes[key];
     if (list != null) {
       for (var item in list) {
-        if (item['label'] == label) {
-          return item['value'];
-        } else if (item['label'] == "${label}s") {
+        if (item['label'] == label || item['label'] == "${label}s") {
           return item['value'];
         }
       }
     }
     return null;
   } catch (e) {
-    print(e);
+    print("Error in getProductTypeByLabel: $e");
     return null;
   }
 }
 
 List<String>? getProductTypesByLabels(String key, List<String> labels) {
   try {
-    List? list = _productTypes[key];
+    List<Map<String, String>>? list = _productTypes[key];
     if (list != null) {
       List<String> result = [];
       for (var item in list) {
-        if (labels.contains(item['label'])) {
-          result.add(item['value']);
-        } else if (labels.contains("${item['label']}s")) {
-          result.add(item['value']);
+        if (labels.contains(item['label']) || labels.contains("${item['label']}s")) {
+          result.add(item['value']!);
         }
       }
-      return result;
+      return result.isNotEmpty ? result : null;
     }
     return null;
   } catch (e) {
-    print(e);
+    print("Error in getProductTypesByLabels: $e");
     return null;
   }
 }
@@ -542,12 +546,10 @@ List<String>? getProductTypesByLabels(String key, List<String> labels) {
 String? getProductKeyByLabel(String label) {
   try {
     for (var key in _productTypes.keys) {
-      List? list = _productTypes[key];
+      List<Map<String, String>>? list = _productTypes[key];
       if (list != null) {
         for (var item in list) {
-          if (item['label'] == label) {
-            return key;
-          } else if (item['label'] == "${label}s") {
+          if (item['label'] == label || item['label'] == "${label}s") {
             return key;
           }
         }
@@ -555,7 +557,7 @@ String? getProductKeyByLabel(String label) {
     }
     return null;
   } catch (e) {
-    print(e);
+    print("Error in getProductKeyByLabel: $e");
     return null;
   }
 }
