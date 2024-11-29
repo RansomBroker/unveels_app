@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/widgets/ftl_product_by_category.dart';
 
 import '../../../../shared/configs/asset_path.dart';
 import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/product_tab_parsing.dart';
 import '../../../../shared/widgets/buttons/button_widget.dart';
 import '../cubit/product_cart/product_cart_cubit.dart';
-import '../../../../shared/widgets/products/product_item_widget.dart';
 
 class FTLAllProductsListWidget extends StatefulWidget {
   final Function() onBack;
   final Function() onTryNow;
+  final List<FTLResult> categories;
 
   const FTLAllProductsListWidget({
     super.key,
     required this.onBack,
     required this.onTryNow,
+    required this.categories,
   });
 
   @override
@@ -26,6 +29,8 @@ class FTLAllProductsListWidget extends StatefulWidget {
 
 class _FTLAllProductsListWidgetState extends State<FTLAllProductsListWidget> {
   SmilarProductTab? _selectedTab;
+  final List<String> _makeupCategories = [];
+  final List<String> _accessoriesCategories = [];
 
   @override
   void initState() {
@@ -36,12 +41,22 @@ class _FTLAllProductsListWidgetState extends State<FTLAllProductsListWidget> {
 
   void _init() {
     _selectedTab = SmilarProductTab.smilarMakeup;
+
+    for (var i = 0; i < widget.categories.length; i++) {
+      FTLResult category = widget.categories[i];
+      if (category.section == "makeup") {
+        _makeupCategories.add(category.label);
+      } else if (category.section == "accessories") {
+        _accessoriesCategories.add(category.label);
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black,
+      padding: const EdgeInsets.only(top: 40),
       child: Column(
         children: [
           Padding(
@@ -160,135 +175,47 @@ class _FTLAllProductsListWidgetState extends State<FTLAllProductsListWidget> {
               ],
             ),
           ),
-          const SizedBox(
-            height: 30,
-          ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: SizeConfig.horizontalPadding,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Lip Color",
-                          style: TextStyle(
-                            color: Color(0xFFE6E5E3),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "View All",
-                          style: TextStyle(
-                            color: Color(0xFFE6E5E3),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    height: 300,
-                    child: ListView.separated(
-                      itemCount: 10,
-                      shrinkWrap: true,
-                      primary: false,
-                      scrollDirection: Axis.horizontal,
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          width: 10,
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        final isFirst = index == 0;
-                        final isEnd = index == 10 - 1;
-
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: isFirst ? SizeConfig.horizontalPadding : 0,
-                            right: isEnd ? SizeConfig.horizontalPadding : 0,
-                          ),
-                          child: ProductItemWidget(
-                            onAddToCart: _onAddToCart,
-                            onSelect: _onSelectProduct,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: SizeConfig.horizontalPadding,
-                    ),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Eyeshadow",
-                          style: TextStyle(
-                            color: Color(0xFFE6E5E3),
-                            fontWeight: FontWeight.w700,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Text(
-                          "View All",
-                          style: TextStyle(
-                            color: Color(0xFFE6E5E3),
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  SizedBox(
-                    height: 300,
-                    child: ListView.separated(
-                      itemCount: 10,
-                      shrinkWrap: true,
-                      primary: false,
-                      scrollDirection: Axis.horizontal,
-                      separatorBuilder: (context, index) {
-                        return const SizedBox(
-                          width: 10,
-                        );
-                      },
-                      itemBuilder: (context, index) {
-                        final isFirst = index == 0;
-                        final isEnd = index == 10 - 1;
-
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: isFirst ? SizeConfig.horizontalPadding : 0,
-                            right: isEnd ? SizeConfig.horizontalPadding : 0,
-                          ),
-                          child: ProductItemWidget(
-                            onAddToCart: _onAddToCart,
-                            onSelect: _onSelectProduct,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 30,
-                  ),
-                ],
-              ),
+            child: IndexedStack(
+              index: _selectedTab == SmilarProductTab.smilarMakeup ? 0 : 1,
+              children: [
+                ListView.separated(
+                  itemCount: _makeupCategories.length,
+                  shrinkWrap: true,
+                  primary: false,
+                  scrollDirection: Axis.vertical,
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 15,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    String category = _makeupCategories[index];
+                    return FtlProductByCategory(
+                        onAddToCart: () {},
+                        onSelectProduct: () {},
+                        sectionTitle: category);
+                  },
+                ),
+                ListView.separated(
+                  itemCount: _accessoriesCategories.length,
+                  shrinkWrap: true,
+                  primary: false,
+                  scrollDirection: Axis.vertical,
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 15,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    String category = _accessoriesCategories[index];
+                    return FtlProductByCategory(
+                        onAddToCart: () {},
+                        onSelectProduct: () {},
+                        sectionTitle: category);
+                  },
+                ),
+              ],
             ),
           ),
           BlocBuilder<ProductCartCubit, ProductCartState>(

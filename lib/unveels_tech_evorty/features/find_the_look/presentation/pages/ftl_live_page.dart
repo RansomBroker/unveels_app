@@ -193,6 +193,7 @@ class __BodyState extends State<_Body> {
 
         if (_isShowAllProductsList) {
           return FTLAllProductsListWidget(
+            categories: _results.toList(),
             onBack: () {
               setState(() {
                 _isShowAllProductsList = false;

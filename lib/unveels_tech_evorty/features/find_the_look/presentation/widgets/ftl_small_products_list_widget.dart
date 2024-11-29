@@ -49,6 +49,11 @@ class _FTLSmallProductsListWidgetState
         _accessoriesCategories.add(category.label);
       }
     }
+    if (_makeupCategories.isNotEmpty) {
+      _selectedCategory = _makeupCategories[0];
+    } else if (_accessoriesCategories.isNotEmpty) {
+      _selectedCategory = _accessoriesCategories[0];
+    }
     fetchData();
   }
 
