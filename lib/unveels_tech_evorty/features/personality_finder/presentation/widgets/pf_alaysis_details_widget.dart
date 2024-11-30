@@ -35,8 +35,8 @@ class PFAnalysisDetailsWidget extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     IconPath.chevronDown,
-                    height: 25,
-                    width: 25,
+                    height: 24,
+                    width: 24,
                   ),
                   const SizedBox(
                     width: 10,
@@ -44,7 +44,7 @@ class PFAnalysisDetailsWidget extends StatelessWidget {
                   Text(
                     title,
                     style: const TextStyle(
-                      fontSize: 32,
+                      fontSize: 20,
                     ),
                   ),
                 ],
@@ -55,7 +55,7 @@ class PFAnalysisDetailsWidget extends StatelessWidget {
               const Text(
                 "Description",
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -66,7 +66,7 @@ class PFAnalysisDetailsWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 30,
+                height: 16,
               ),
               const Text(
                 "Severity",
