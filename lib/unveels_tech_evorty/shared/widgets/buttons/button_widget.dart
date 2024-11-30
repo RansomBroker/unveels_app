@@ -101,8 +101,8 @@ class ButtonWidget extends StatelessWidget {
   Widget? get buttonChild {
     if (isLoading == true) {
       return SizedBox(
-        height: 23,
-        width: 23,
+        height: 18,
+        width: 18,
         child: CircularProgressIndicator(
           color: textColor ?? Colors.white,
           strokeWidth: 2,
@@ -117,7 +117,7 @@ class ButtonWidget extends StatelessWidget {
     TextStyle? style = this.style;
 
     style ??= TextStyle(
-      fontSize: 15,
+      fontSize: 10,
       fontWeight: FontWeight.w600,
       color: textColor ?? Colors.white,
     );
@@ -162,7 +162,7 @@ class ButtonWidget extends StatelessWidget {
     EdgeInsetsGeometry? padding = this.padding;
 
     padding ??= const EdgeInsets.symmetric(
-      vertical: 9,
+      vertical: 0,
     );
 
     return WidgetStateProperty.all(padding);

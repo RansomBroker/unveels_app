@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
 
 import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/context_parsing.dart';
@@ -26,6 +26,7 @@ class _SALivePageState extends State<SALivePage> {
 
   bool _isShowAnalysisResults = false;
   bool _isShowFullAnalysisResults = false;
+  List<SkinAnalysisModel>? _analysisResult;
 
   @override
   void initState() {
@@ -61,6 +62,11 @@ class _SALivePageState extends State<SALivePage> {
               });
             }
           }
+          if (result != null) {
+            setState(() {
+              _analysisResult = SkinAnalysisModel.fromJsonList(result);
+            });
+          }
         },
       ),
     );
@@ -75,8 +81,10 @@ class _SALivePageState extends State<SALivePage> {
         return const SizedBox();
 
       case LiveStep.scannedFace:
-        if (_isShowFullAnalysisResults) {
-          return const SAFullAnalysisResultsWidget();
+        if (_isShowFullAnalysisResults && _analysisResult != null) {
+          return SAFullAnalysisResultsWidget(
+            analysisResult: _analysisResult!,
+          );
         }
 
         if (_isShowAnalysisResults) {
@@ -131,10 +139,10 @@ class _SALivePageState extends State<SALivePage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SAAnalysisResultsWidget(
+                  analysisResult: _analysisResult,
                   onViewAll: () {
                     // close this dialog
-                    context.pop();
-
+                    Navigator.pop(context);
                     _onViewAllProducts();
                   },
                 ),

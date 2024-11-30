@@ -38,6 +38,7 @@ class ProductRepository {
     String? fabric,
     String? browMakeup,
     String? lenses,
+    String? skinConcern,
   }) async {
     print("Fetch Product");
     String url = "$_magnetoBaseUrl/rest/V1/products";
@@ -78,6 +79,8 @@ class ProductRepository {
           'value': lenses,
           'condition_type': 'notnull'
         },
+      if (skinConcern != null)
+        {'field': 'skin_concern', 'value': skinConcern, 'condition_type': 'eq'},
     ];
 
     final queryParams = {
@@ -108,7 +111,7 @@ class ProductRepository {
               .firstWhere((e) => e["attribute_code"] == "image")['value'];
           var brandId = customAttribute
               .firstWhere((e) => e["attribute_code"] == "brand")['value'];
-              print(item);
+          print(item);
           return ProductData(
               id: item['id'],
               imageUrl: "$_magnetoBaseUrl/media/catalog/product$imgLink",

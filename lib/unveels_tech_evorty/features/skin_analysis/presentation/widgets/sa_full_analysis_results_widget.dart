@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
+import 'dart:math';
 import '../../../../shared/configs/asset_path.dart';
 import '../../../../shared/configs/color_config.dart';
 import '../../../../shared/configs/size_config.dart';
@@ -9,7 +10,8 @@ import '../../../../shared/widgets/lives/bottom_copyright_widget.dart';
 import 'sa_alaysis_details_widget.dart';
 
 class SAFullAnalysisResultsWidget extends StatefulWidget {
-  const SAFullAnalysisResultsWidget({super.key});
+  final List<SkinAnalysisModel> analysisResult;
+  const SAFullAnalysisResultsWidget({super.key, required this.analysisResult});
 
   @override
   State<SAFullAnalysisResultsWidget> createState() =>
@@ -18,6 +20,29 @@ class SAFullAnalysisResultsWidget extends StatefulWidget {
 
 class _SAFullAnalysisResultsWidgetState
     extends State<SAFullAnalysisResultsWidget> {
+  double getScoreByCategory(String category) {
+    return SkinAnalysisModel.getScoreByCategory(
+        widget.analysisResult, category);
+  }
+
+  int calculateSkinHealthScore(List<SkinAnalysisModel> skinAnalysisResult) {
+    return SkinAnalysisModel.calculateSkinHealthScore(skinAnalysisResult);
+  }
+
+  int calculateAverageSkinProblemsScore(
+      List<SkinAnalysisModel> skinAnalysisResult) {
+    return SkinAnalysisModel.calculateAverageSkinProblemsScore(
+        skinAnalysisResult);
+  }
+
+  int calculateAverageSkinConditionScore(
+      List<SkinAnalysisModel> skinAnalysisResult) {
+    return SkinAnalysisModel.calculateAverageSkinConditionScore(
+        skinAnalysisResult);
+  }
+
+  int skinAge = 20 + Random().nextInt(64 - 20 + 1);
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -27,6 +52,35 @@ class _SAFullAnalysisResultsWidgetState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              AppBar(
+                titleSpacing: 0,
+                leading: InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 8),
+                    decoration: const BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.black26),
+                    child: const Icon(Icons.arrow_back_ios_new_rounded,
+                        color: Colors.white),
+                  ),
+                ),
+                actions: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      width: 100,
+                      height: 100,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.black26),
+                      child: const Icon(Icons.close, color: Colors.white),
+                    ),
+                  ),
+                ],
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                foregroundColor: Colors.white,
+              ),
               Padding(
                 padding: EdgeInsets.symmetric(
                   horizontal: SizeConfig.horizontalPadding,
@@ -37,7 +91,7 @@ class _SAFullAnalysisResultsWidgetState
                       "Analysis Results",
                       style: TextStyle(
                         color: ColorConfig.primary,
-                        fontSize: 32,
+                        fontSize: 24,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -46,28 +100,40 @@ class _SAFullAnalysisResultsWidgetState
                     ),
                     Row(
                       children: [
-                        Image.asset(
-                          ImagePath.saFaceExample,
-                          width: 120,
-                          height: 120,
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(100),
+                              color: const Color.fromARGB(255, 138, 95, 2)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Image.memory(
+                              SkinAnalysisModel.getImageData(
+                                  widget.analysisResult)!,
+                              width: 90,
+                              height: 90,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         const SizedBox(
-                          width: 20,
+                          width: 16,
                         ),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _SummaryItemWidget(
                                 iconPath: IconPath.connectionChart,
-                                value: "Skin Health Score : 72%",
+                                value:
+                                    "Skin Health Score : ${calculateSkinHealthScore(widget.analysisResult)}%",
                               ),
                               SizedBox(
                                 height: 16,
                               ),
                               _SummaryItemWidget(
                                 iconPath: IconPath.hasTagCircle,
-                                value: "Skin Age: 27",
+                                value: "Skin Age: $skinAge",
                               ),
                             ],
                           ),
@@ -82,7 +148,7 @@ class _SAFullAnalysisResultsWidgetState
                         "Detected Skin Problems",
                         style: GoogleFonts.roboto(
                           color: Colors.white,
-                          fontSize: 20,
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -90,7 +156,7 @@ class _SAFullAnalysisResultsWidgetState
                     const SizedBox(
                       height: 18,
                     ),
-                    const Center(
+                    Center(
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -101,11 +167,11 @@ class _SAFullAnalysisResultsWidgetState
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "80%",
+                                  "${calculateAverageSkinProblemsScore(widget.analysisResult)}%",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
-                                    fontSize: 21,
+                                    fontSize: 16,
                                   ),
                                 ),
                                 SizedBox(
@@ -116,53 +182,53 @@ class _SAFullAnalysisResultsWidgetState
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           _CircularChartBarWidget(
-                            height: 140,
-                            width: 140,
+                            height: 120,
+                            width: 120,
                             color: ColorConfig.green,
-                            value: 0.8,
+                            value: getScoreByCategory("Texture"),
                           ),
                           _CircularChartBarWidget(
-                            height: 160,
-                            width: 160,
+                            height: 145,
+                            width: 145,
                             color: ColorConfig.purple,
-                            value: 0.85,
+                            value: getScoreByCategory("Dark Circles"),
                           ),
                           _CircularChartBarWidget(
-                            height: 180,
-                            width: 180,
+                            height: 170,
+                            width: 170,
                             color: ColorConfig.oceanBlue,
-                            value: 0.75,
+                            value: getScoreByCategory("Eye Bags"),
                           ),
                           _CircularChartBarWidget(
-                            height: 200,
-                            width: 200,
+                            height: 195,
+                            width: 195,
                             color: ColorConfig.blue,
-                            value: 0.8,
+                            value: getScoreByCategory("Wrinkles"),
                           ),
                           _CircularChartBarWidget(
                             height: 220,
                             width: 220,
                             color: ColorConfig.yellow,
-                            value: 0.85,
+                            value: getScoreByCategory("Pores"),
                           ),
                           _CircularChartBarWidget(
-                            height: 240,
-                            width: 240,
+                            height: 245,
+                            width: 245,
                             color: ColorConfig.taffi,
-                            value: 0.75,
+                            value: getScoreByCategory("Spots"),
                           ),
                           _CircularChartBarWidget(
-                            height: 260,
-                            width: 260,
+                            height: 270,
+                            width: 270,
                             color: ColorConfig.pink,
-                            value: 0.9,
+                            value: getScoreByCategory("Acne"),
                           ),
                         ],
                       ),
@@ -170,8 +236,8 @@ class _SAFullAnalysisResultsWidgetState
                     const SizedBox(
                       height: 20,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
                       child: Row(
@@ -181,29 +247,30 @@ class _SAFullAnalysisResultsWidgetState
                               children: [
                                 _LegendItemWidget(
                                   color: ColorConfig.green,
-                                  value: 95,
+                                  value: getScoreByCategory("Texture").toInt(),
                                   label: "Texture",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
                                   color: ColorConfig.purple,
-                                  value: 25,
+                                  value: getScoreByCategory("Dark Circles")
+                                      .toInt(),
                                   label: "Dark Circles",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
                                   color: ColorConfig.oceanBlue,
-                                  value: 66,
+                                  value: getScoreByCategory("Eye Bags").toInt(),
                                   label: "Eyebags",
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                           ),
                           Expanded(
@@ -211,31 +278,31 @@ class _SAFullAnalysisResultsWidgetState
                               children: [
                                 _LegendItemWidget(
                                   color: ColorConfig.blue,
-                                  value: 80,
+                                  value: getScoreByCategory("Wrinkles").toInt(),
                                   label: "Wrinkles",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
                                   color: ColorConfig.yellow,
-                                  value: 40,
+                                  value: getScoreByCategory("Pores").toInt(),
                                   label: "Pores",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
                                   color: ColorConfig.taffi,
-                                  value: 10,
+                                  value: getScoreByCategory("Spots").toInt(),
                                   label: "Spots",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
                                   color: ColorConfig.pink,
-                                  value: 99,
+                                  value: getScoreByCategory("Acne").toInt(),
                                   label: "Acne",
                                 ),
                               ],
@@ -260,7 +327,7 @@ class _SAFullAnalysisResultsWidgetState
                     const SizedBox(
                       height: 18,
                     ),
-                    const Center(
+                    Center(
                       child: Stack(
                         alignment: Alignment.center,
                         children: [
@@ -271,11 +338,11 @@ class _SAFullAnalysisResultsWidgetState
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(
-                                  "80%",
+                                  "${calculateAverageSkinConditionScore(widget.analysisResult)}%",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
-                                    fontSize: 21,
+                                    fontSize: 16,
                                   ),
                                 ),
                                 SizedBox(
@@ -286,53 +353,53 @@ class _SAFullAnalysisResultsWidgetState
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
-                                    fontSize: 16,
+                                    fontSize: 14,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           _CircularChartBarWidget(
-                            height: 140,
-                            width: 140,
+                            height: 120,
+                            width: 120,
+                            color: ColorConfig.primary,
+                            value: getScoreByCategory("Firmness"),
+                          ),
+                          _CircularChartBarWidget(
+                            height: 145,
+                            width: 145,
+                            color: ColorConfig.pink,
+                            value: getScoreByCategory("Droopy Upper Eyelid"),
+                          ),
+                          _CircularChartBarWidget(
+                            height: 170,
+                            width: 170,
+                            color: Colors.green,
+                            value: getScoreByCategory("Droopy Lower Eyelid"),
+                          ),
+                          _CircularChartBarWidget(
+                            height: 195,
+                            width: 195,
                             color: ColorConfig.green,
-                            value: 0.8,
-                          ),
-                          _CircularChartBarWidget(
-                            height: 160,
-                            width: 160,
-                            color: ColorConfig.purple,
-                            value: 0.85,
-                          ),
-                          _CircularChartBarWidget(
-                            height: 180,
-                            width: 180,
-                            color: ColorConfig.oceanBlue,
-                            value: 0.75,
-                          ),
-                          _CircularChartBarWidget(
-                            height: 200,
-                            width: 200,
-                            color: ColorConfig.blue,
-                            value: 0.8,
+                            value: getScoreByCategory("Moisture"),
                           ),
                           _CircularChartBarWidget(
                             height: 220,
                             width: 220,
-                            color: ColorConfig.yellow,
-                            value: 0.85,
+                            color: ColorConfig.purple,
+                            value: getScoreByCategory("Oiliness"),
                           ),
                           _CircularChartBarWidget(
-                            height: 240,
-                            width: 240,
+                            height: 245,
+                            width: 245,
                             color: ColorConfig.taffi,
-                            value: 0.75,
+                            value: getScoreByCategory("Redness"),
                           ),
                           _CircularChartBarWidget(
-                            height: 260,
-                            width: 260,
-                            color: ColorConfig.pink,
-                            value: 0.9,
+                            height: 270,
+                            width: 270,
+                            color: ColorConfig.oceanBlue,
+                            value: getScoreByCategory("Radiance"),
                           ),
                         ],
                       ),
@@ -340,8 +407,8 @@ class _SAFullAnalysisResultsWidgetState
                     const SizedBox(
                       height: 20,
                     ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 20,
                       ),
                       child: Row(
@@ -350,62 +417,66 @@ class _SAFullAnalysisResultsWidgetState
                             child: Column(
                               children: [
                                 _LegendItemWidget(
-                                  color: ColorConfig.green,
-                                  value: 95,
+                                  color: ColorConfig.primary,
+                                  value: getScoreByCategory("Firmness").toInt(),
                                   label: "Firmness",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
-                                  color: ColorConfig.purple,
-                                  value: 25,
+                                  color: ColorConfig.pink,
+                                  value:
+                                      getScoreByCategory("Droopy Upper Eyelid")
+                                          .toInt(),
                                   label: "Droopy Upper Eyelid",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
-                                  color: ColorConfig.oceanBlue,
-                                  value: 66,
+                                  color: Colors.green,
+                                  value:
+                                      getScoreByCategory("Droopy Lower Eyelid")
+                                          .toInt(),
                                   label: "Droopy Lower Eyelid",
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 20,
                           ),
                           Expanded(
                             child: Column(
                               children: [
                                 _LegendItemWidget(
-                                  color: ColorConfig.blue,
-                                  value: 80,
+                                  color: ColorConfig.green,
+                                  value: getScoreByCategory("Moisture").toInt(),
                                   label: "Moisture Level",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
-                                  color: ColorConfig.yellow,
-                                  value: 40,
+                                  color: ColorConfig.purple,
+                                  value: getScoreByCategory("Oiliness").toInt(),
                                   label: "Oiliness",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
                                   color: ColorConfig.taffi,
-                                  value: 10,
+                                  value: getScoreByCategory("Redness").toInt(),
                                   label: "Redness",
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 15,
                                 ),
                                 _LegendItemWidget(
-                                  color: ColorConfig.pink,
-                                  value: 99,
+                                  color: ColorConfig.oceanBlue,
+                                  value: getScoreByCategory("Radiance").toInt(),
                                   label: "Radiance",
                                 ),
                               ],
@@ -417,44 +488,57 @@ class _SAFullAnalysisResultsWidgetState
                   ],
                 ),
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Spots",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Texture",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Dark Circles",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Redness",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Oiliness",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Moisture",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Pores",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Eye Bags",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Radiance",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Firmness",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Droopy Upper Eyelid",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Droopy Lower Eyelid",
+                analysisResult: widget.analysisResult,
               ),
-              const SAAnalysisDetailsWidget(
+              SAAnalysisDetailsWidget(
                 title: "Acne",
+                analysisResult: widget.analysisResult,
               ),
             ],
           ),
@@ -480,8 +564,8 @@ class _LegendItemWidget extends StatelessWidget {
     return Row(
       children: [
         Container(
-          height: 32,
-          width: 32,
+          height: 24,
+          width: 24,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: color,
@@ -491,8 +575,8 @@ class _LegendItemWidget extends StatelessWidget {
             "$value%",
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -504,7 +588,7 @@ class _LegendItemWidget extends StatelessWidget {
             label,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: 11,
             ),
           ),
         ),
@@ -533,9 +617,10 @@ class _CircularChartBarWidget extends StatelessWidget {
         angle: 1.5,
         child: CircularProgressIndicator(
           color: color,
-          value: value,
+          value: value / 100,
           strokeCap: StrokeCap.round,
-          strokeWidth: 6,
+          strokeWidth: 8,
+          backgroundColor: const Color(0xFF151A20),
         ),
       ),
     );
@@ -566,7 +651,7 @@ class _SummaryItemWidget extends StatelessWidget {
             value,
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
           ),
