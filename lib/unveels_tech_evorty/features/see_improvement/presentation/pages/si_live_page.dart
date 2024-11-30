@@ -94,7 +94,7 @@ class _SILivePageState extends State<SILivePage> {
           child: Column(
             children: [
               ButtonWidget(
-                text: 'SEE RESULT',
+                text: 'SEE IMPROVEMENT',
                 width: context.width / 2,
                 backgroundColor: Colors.black,
                 onTap: _onAnalysisResults,
