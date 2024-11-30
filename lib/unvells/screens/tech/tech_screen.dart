@@ -200,7 +200,8 @@ class TechScreen extends StatelessWidget {
               subTitle: "ENVISION_FUTURE_RADIANCE",
               description: "AI_SKIN_SIMULATION_DESCRIPTION",
               buttonTitle: 'SIMULATE_MY_SKIN',
-              onButtonPressed: () => {},
+              onButtonPressed: () =>
+                  Navigator.pushNamed(context, AppRoutes.seeImprovement),
             ),
             CustomTechContainer(
               textColor: Colors.black,

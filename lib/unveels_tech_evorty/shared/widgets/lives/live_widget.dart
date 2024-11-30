@@ -24,6 +24,7 @@ class LiveWidget extends StatefulWidget {
   final Widget body;
   final Color? screenRecordBackrgoundColor;
   final String? url;
+  final Function(ConsoleMessage message)? onConsoleMessage;
 
   const LiveWidget(
       {super.key,
@@ -33,7 +34,8 @@ class LiveWidget extends StatefulWidget {
       required this.onLiveStepChanged,
       required this.body,
       this.screenRecordBackrgoundColor,
-      this.url});
+      this.url,
+      this.onConsoleMessage});
   @override
   State<LiveWidget> createState() => _LiveWidgetState();
 }
@@ -245,6 +247,9 @@ class _LiveWidgetState extends State<LiveWidget> {
                 onUpdateVisitedHistory: (controller, url, isReload) {},
                 onConsoleMessage: (controller, consoleMessage) {
                   print(consoleMessage);
+                  if (widget.onConsoleMessage != null) {
+                      widget.onConsoleMessage!(consoleMessage);
+                  }
                 },
               ),
               Padding(

@@ -13,6 +13,7 @@ import 'package:test_new/logic/get_product_details/get_product_details_bloc.dart
 import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_home_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/find_the_look/presentation/pages/ftl_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/personality_finder/presentation/pages/pf_live_page.dart';
+import 'package:test_new/unveels_tech_evorty/features/see_improvement/presentation/pages/si_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/shop_the_look/presentation/pages/stl_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_analysis/presentation/pages/sa_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_tone_finder/presentation/pages/stf_live_page.dart';
@@ -236,6 +237,7 @@ class AppRoutes {
   static const String personalityFinder = "personalityFinder";
   static const String shopTheLook = "shopTheLook";
   static const String faceAnalyzer = "faceAnalyzer";
+  static const String seeImprovement = "seeImprovement";
 
   static const String smartBeauty = "smartBeauty";
 
@@ -714,6 +716,10 @@ class AppRoutes {
         return MaterialPageRoute(
             builder: (_) => OcrCameraPage2(
                 makeUpOn: true, accessoriesOn: false, showChoices: false));
+
+      case seeImprovement:
+        return MaterialPageRoute(
+            builder: (_) => Theme(data: ThemeConfig.dark, child: const SILivePage()));
 
       case makeupTryOn:
         return MaterialPageRoute(
