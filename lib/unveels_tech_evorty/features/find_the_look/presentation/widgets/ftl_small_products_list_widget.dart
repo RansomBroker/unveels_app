@@ -13,12 +13,19 @@ enum ProductType { makeup, accessories }
 class FTLSmallProductsListWidget extends StatefulWidget {
   final Function() onViewAll;
   final List<FTLResult> categories;
+  final String? selectedCategory;
+  final ProductType? productType;
+  final Function(String? category)? onCategorySelected;
+  final Function(ProductType? productType)? onProductTypeSelected;
 
-  const FTLSmallProductsListWidget({
-    super.key,
-    required this.onViewAll,
-    required this.categories,
-  });
+  const FTLSmallProductsListWidget(
+      {super.key,
+      required this.onViewAll,
+      required this.categories,
+      this.selectedCategory,
+      this.onCategorySelected,
+      this.onProductTypeSelected,
+      this.productType});
 
   @override
   State<FTLSmallProductsListWidget> createState() =>
@@ -27,8 +34,6 @@ class FTLSmallProductsListWidget extends StatefulWidget {
 
 class _FTLSmallProductsListWidgetState
     extends State<FTLSmallProductsListWidget> {
-  String? _selectedCategory;
-  ProductType _productType = ProductType.makeup;
   final List<String> _makeupCategories = [];
   final List<String> _accessoriesCategories = [];
 
@@ -49,7 +54,9 @@ class _FTLSmallProductsListWidgetState
       }
     }
     if (_makeupCategories.isNotEmpty) {
-      _selectedCategory = _makeupCategories[0];
+      if (widget.onCategorySelected != null) {
+        widget.onCategorySelected!(_makeupCategories[0]);
+      }
     }
     fetchData();
   }
@@ -64,11 +71,11 @@ class _FTLSmallProductsListWidgetState
       _isLoading = true;
     });
     try {
-      String? key = getProductKeyByLabel(_selectedCategory!);
+      String? key = getProductKeyByLabel(widget.selectedCategory!);
       var dataResponse = await productRepository.fetchProducts(
           // texture: textures!.isEmpty ? null : textures.join(","),
           productType: key,
-          productTypes: getProductTypeByLabel(key!, _selectedCategory!));
+          productTypes: getProductTypeByLabel(key!, widget.selectedCategory!));
       setState(() {
         products = dataResponse;
       });
@@ -98,9 +105,9 @@ class _FTLSmallProductsListWidgetState
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    setState(() {
-                      _productType = ProductType.makeup;
-                    });
+                    if (widget.onProductTypeSelected != null) {
+                      widget.onProductTypeSelected!(ProductType.makeup);
+                    }
                   },
                   child: Padding(
                     padding:
@@ -111,7 +118,7 @@ class _FTLSmallProductsListWidgetState
                       style: GoogleFonts.luxuriousRoman(
                           color: Colors.white,
                           fontSize: 16,
-                          shadows: _productType == ProductType.makeup
+                          shadows: widget.productType == ProductType.makeup
                               ? [
                                   const BoxShadow(
                                     offset: Offset(0, 0),
@@ -135,9 +142,9 @@ class _FTLSmallProductsListWidgetState
               Expanded(
                 child: InkWell(
                   onTap: () {
-                    setState(() {
-                      _productType = ProductType.accessories;
-                    });
+                    if (widget.onProductTypeSelected != null) {
+                      widget.onProductTypeSelected!(ProductType.accessories);
+                    }
                   },
                   child: Padding(
                     padding:
@@ -148,7 +155,7 @@ class _FTLSmallProductsListWidgetState
                       style: GoogleFonts.luxuriousRoman(
                           color: Colors.white,
                           fontSize: 16,
-                          shadows: ProductType.accessories == _productType
+                          shadows: ProductType.accessories == widget.productType
                               ? [
                                   const BoxShadow(
                                     offset: Offset(0, 0),
@@ -181,7 +188,9 @@ class _FTLSmallProductsListWidgetState
         SizedBox(
           height: 30,
           child: ListView.separated(
-            itemCount: _productType == ProductType.makeup ? _makeupCategories.length :_accessoriesCategories.length,
+            itemCount: widget.productType == ProductType.makeup
+                ? _makeupCategories.length
+                : _accessoriesCategories.length,
             shrinkWrap: true,
             primary: false,
             scrollDirection: Axis.horizontal,
@@ -191,8 +200,10 @@ class _FTLSmallProductsListWidgetState
               );
             },
             itemBuilder: (context, index) {
-              final category = _productType == ProductType.makeup  ? _makeupCategories[index] :_accessoriesCategories[index];
-              final isSelected = _selectedCategory == category;
+              final category = widget.productType == ProductType.makeup
+                  ? _makeupCategories[index]
+                  : _accessoriesCategories[index];
+              final isSelected = widget.selectedCategory == category;
               final isFirst = index == 0;
               final isEnd = index == widget.categories.length - 1;
 
@@ -208,9 +219,9 @@ class _FTLSmallProductsListWidgetState
                   padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
                   borderRadius: BorderRadius.circular(99),
                   onTap: () {
-                    setState(() {
-                      _selectedCategory = category;
-                    });
+                    if (widget.onCategorySelected != null) {
+                      widget.onCategorySelected!(category);
+                    }
                     fetchData();
                   },
                   style: GoogleFonts.lato(

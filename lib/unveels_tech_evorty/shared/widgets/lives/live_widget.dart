@@ -26,6 +26,7 @@ class LiveWidget extends StatefulWidget {
   final Function(ConsoleMessage message)? onConsoleMessage;
   final Function(InAppWebViewController controller)? onWebViewCreated;
   final Function(String? label)? onGetLabel;
+  final Function(String? label, String? section)? onGetLabelTab;
 
   const LiveWidget(
       {super.key,
@@ -38,7 +39,8 @@ class LiveWidget extends StatefulWidget {
       this.url,
       this.onConsoleMessage,
       this.onWebViewCreated,
-      this.onGetLabel});
+      this.onGetLabel,
+      this.onGetLabelTab});
   @override
   State<LiveWidget> createState() => _LiveWidgetState();
 }
@@ -222,6 +224,18 @@ class _LiveWidgetState extends State<LiveWidget> {
                       if (widget.onGetLabel != null) {
                         widget.onGetLabel!(jsonDecode(
                             args[0].toString())['skinAnalysisLabelClick']);
+                      }
+                    },
+                  );
+                  webViewController?.addJavaScriptHandler(
+                    handlerName: 'getLabelTab',
+                    callback: (args) {
+                      if (widget.onGetLabelTab != null) {
+                        widget.onGetLabelTab!(
+                            jsonDecode(
+                                args[0].toString())['findTheLookLabelClick'],
+                            jsonDecode(
+                                args[0].toString())['findTheLookSection']);
                       }
                     },
                   );

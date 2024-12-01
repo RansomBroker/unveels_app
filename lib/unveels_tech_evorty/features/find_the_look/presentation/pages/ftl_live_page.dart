@@ -92,6 +92,8 @@ class __BodyState extends State<_Body> {
 
   bool _isShowSmallProductsList = false;
   bool _isShowAllProductsList = false;
+  ProductType? _productType;
+  String? _selectedCategory;
 
   List<FTLResult> _results = [];
 
@@ -149,6 +151,15 @@ class __BodyState extends State<_Body> {
           }
           _showResult(result);
         },
+        onGetLabelTab: (label, section) {
+          setState(() {
+            _selectedCategory = label;
+            _productType = section == 'accessories'
+                ? ProductType.accessories
+                : ProductType.makeup;
+            _isShowSmallProductsList = true;
+          });
+        },
       ),
     );
   }
@@ -185,6 +196,22 @@ class __BodyState extends State<_Body> {
         if (_isShowSmallProductsList) {
           return BottomCopyrightWidget(
             child: FTLSmallProductsListWidget(
+              productType: _productType,
+              selectedCategory: _selectedCategory,
+              onProductTypeSelected: (productType) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  setState(() {
+                    _productType = productType;
+                  });
+                });
+              },
+              onCategorySelected: (category) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  setState(() {
+                    _selectedCategory = category;
+                  });
+                });
+              },
               onViewAll: _onViewAllProducts,
               categories: _results.toList(),
             ),
