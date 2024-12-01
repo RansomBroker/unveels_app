@@ -10,7 +10,6 @@ import '../../../../shared/widgets/lives/bottom_copyright_widget.dart';
 import '../../../../shared/widgets/lives/live_widget.dart';
 import '../../../find_the_look/presentation/pages/ftl_live_page.dart';
 import '../widgets/see_improvement_results_widget.dart';
-import '../widgets/sa_full_analysis_results_widget.dart';
 
 class SILivePage extends StatefulWidget {
   const SILivePage({
@@ -27,6 +26,8 @@ class _SILivePageState extends State<SILivePage> {
   bool _isShowAnalysisResults = false;
   bool _isShowFullAnalysisResults = false;
   List<SkinAnalysisModel>? _analysisResult;
+  double _sliderValue = 0.1;
+  InAppWebViewController? _webViewController;
 
   @override
   void initState() {
@@ -65,11 +66,16 @@ class _SILivePageState extends State<SILivePage> {
           print(result);
         },
         onConsoleMessage: (value) {
-          if (value.message == "INFO: Created TensorFlow Lite XNNPACK delegate for CPU." && value.messageLevel == ConsoleMessageLevel.ERROR) {
+          if (value.message ==
+                  "INFO: Created TensorFlow Lite XNNPACK delegate for CPU." &&
+              value.messageLevel == ConsoleMessageLevel.ERROR) {
             setState(() {
               step = LiveStep.scannedFace;
             });
           }
+        },
+        onWebViewCreated: (controller) {
+          _webViewController = controller;
         },
       ),
     );
@@ -125,8 +131,8 @@ class _SILivePageState extends State<SILivePage> {
       ),
       isScrollControlled: true,
       builder: (context) {
-        return const Padding(
-          padding: EdgeInsets.only(
+        return Padding(
+          padding: const EdgeInsets.only(
             bottom: SizeConfig.bottomLiveMargin,
           ),
           child: SafeArea(
@@ -136,6 +142,19 @@ class _SILivePageState extends State<SILivePage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 SeeImprovementResultsWidget(
+                  onUpdateSmoothingStrength: (double value) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        _sliderValue = value;
+                      });
+                      _webViewController?.evaluateJavascript(
+                        source: """
+                        window.postMessage(JSON.stringify({ smoothingStrength: $value }), "*");
+                        """,
+                      );
+                    });
+                  },
+                  sliderValue: _sliderValue,
                 ),
               ],
             ),

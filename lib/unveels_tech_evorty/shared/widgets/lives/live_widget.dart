@@ -9,12 +9,10 @@ import 'package:test_new/unveels_tech_evorty/shared/extensions/context_parsing.d
 import 'package:test_new/unveels_tech_evorty/shared/widgets/lives/play_video_widget.dart';
 
 import '../../../features/find_the_look/presentation/pages/ftl_live_page.dart';
-import '../../configs/size_config.dart';
 import '../../extensions/live_configuration_step_parsing.dart';
 import '../../extensions/live_step_parsing.dart';
 import '../app_bars/app_bar_widget.dart';
 import '../buttons/recording_controllers_widget.dart';
-import 'live_configuration_step_widget.dart';
 
 class LiveWidget extends StatefulWidget {
   final LiveStep liveStep;
@@ -25,6 +23,8 @@ class LiveWidget extends StatefulWidget {
   final Color? screenRecordBackrgoundColor;
   final String? url;
   final Function(ConsoleMessage message)? onConsoleMessage;
+  final Function(InAppWebViewController controller)? onWebViewCreated;
+  // final InAppWebViewController? customController;
 
   const LiveWidget(
       {super.key,
@@ -35,7 +35,8 @@ class LiveWidget extends StatefulWidget {
       required this.body,
       this.screenRecordBackrgoundColor,
       this.url,
-      this.onConsoleMessage});
+      this.onConsoleMessage,
+      this.onWebViewCreated});
   @override
   State<LiveWidget> createState() => _LiveWidgetState();
 }
@@ -173,7 +174,12 @@ class _LiveWidgetState extends State<LiveWidget> {
                 // URLRequest(url: WebUri(Uri.base.toString().replaceFirst("/#/", "/") + 'page.html')),
                 // initialFile: "assets/index.html",
                 onWebViewCreated: (controller) async {
+                  if (widget.onWebViewCreated != null) {
+                    widget.onWebViewCreated!(controller);
+                    // webViewController = widget.customController;
+                  }
                   webViewController = controller;
+
                   // Listen to JavaScript handler 'flutterDataHandler'
                   webViewController?.addJavaScriptHandler(
                     handlerName: 'detectionRun',
@@ -248,7 +254,7 @@ class _LiveWidgetState extends State<LiveWidget> {
                 onConsoleMessage: (controller, consoleMessage) {
                   print(consoleMessage);
                   if (widget.onConsoleMessage != null) {
-                      widget.onConsoleMessage!(consoleMessage);
+                    widget.onConsoleMessage!(consoleMessage);
                   }
                 },
               ),

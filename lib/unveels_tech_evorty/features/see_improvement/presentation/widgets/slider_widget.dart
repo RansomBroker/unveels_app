@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class SliderWidget extends StatefulWidget {
   final double valueSlider;
+  final Function(double) onUpdateSmoothingStrength;
 
-  SliderWidget({required this.valueSlider});
+  const SliderWidget(
+      {super.key, required this.valueSlider, required this.onUpdateSmoothingStrength});
 
   @override
   _SliderWidgetState createState() => _SliderWidgetState();
@@ -27,17 +29,19 @@ class _SliderWidgetState extends State<SliderWidget> {
   }
 
   void updateSmoothingStrength() {
-    double mappedValue =
-        minSmoothing + ((value - 0) / (100 - 0)) * (maxSmoothing - minSmoothing);
+    double mappedValue = minSmoothing +
+        ((value - 0) / (100 - 0)) * (maxSmoothing - minSmoothing);
     setState(() {
       smoothingStrength = mappedValue;
     });
+    widget.onUpdateSmoothingStrength(mappedValue);
     print(smoothingStrength); // Debugging
   }
 
   @override
   Widget build(BuildContext context) {
-    final sliderWidth = MediaQuery.of(context).size.width - 32; // Adjust width considering padding
+    final sliderWidth = MediaQuery.of(context).size.width -
+        32; // Adjust width considering padding
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -51,8 +55,9 @@ class _SliderWidgetState extends State<SliderWidget> {
                 label.toString(),
                 style: TextStyle(
                   fontSize: value.round() == label ? 14 : 12,
-                  fontWeight:
-                      value.round() == label ? FontWeight.bold : FontWeight.normal,
+                  fontWeight: value.round() == label
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                   color: value.round() == label ? Colors.white : Colors.grey,
                 ),
               );
@@ -103,7 +108,8 @@ class _SliderWidgetState extends State<SliderWidget> {
               ),
               // Moving "Day" thumb
               Positioned(
-                left: sliderWidth * (value / 100) - 20, // Thumb position adjustment
+                left: sliderWidth * (value / 100) -
+                    20, // Thumb position adjustment
                 child: GestureDetector(
                   onHorizontalDragUpdate: (details) {
                     setState(() {

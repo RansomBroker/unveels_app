@@ -1,20 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 import 'package:test_new/logic/get_product_utils/get_skin_concern.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_tech_evorty/features/see_improvement/presentation/widgets/slider_widget.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
-
-import '../../../../shared/configs/color_config.dart';
-import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/widgets/buttons/button_widget.dart';
 import 'sa_product_item_widget.dart';
 
 class SeeImprovementResultsWidget extends StatefulWidget {
-  const SeeImprovementResultsWidget({
-    super.key,
-  });
+  final Function(double value) onUpdateSmoothingStrength;
+  final double sliderValue;
+
+  const SeeImprovementResultsWidget(
+      {super.key,
+      required this.onUpdateSmoothingStrength,
+      required this.sliderValue});
 
   @override
   State<SeeImprovementResultsWidget> createState() =>
@@ -115,7 +115,10 @@ class _SeeImprovementResultsWidgetState
             },
           ),
         ),
-        SliderWidget(valueSlider: 10),
+        SliderWidget(
+            onUpdateSmoothingStrength: widget.onUpdateSmoothingStrength,
+            valueSlider: widget.sliderValue),
+
         _isLoading
             ? SizedBox(
                 height: 130,
