@@ -11,6 +11,7 @@ import 'package:test_new/logic/get_product_utils/get_material.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project/common/component/custom_navigator.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project/common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project/generated/assets.dart';
 import 'package:test_new/unveels_vto_project/src/camera2/camera_page2.dart' as c;
@@ -427,7 +428,7 @@ class _BanglesViewState extends State<BanglesView> {
     );
   }
 
-  Widget lipstickChoice() {
+ Widget lipstickChoice() {
     if (_isLoading) {
       return Container(color: Colors.white, width: 150, height: 80);
     }
@@ -448,78 +449,16 @@ class _BanglesViewState extends State<BanglesView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-
-            return InkWell(
-                onTap: () async {},
-                child: SizedBox(
-                  width: 150,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
-                        color: Colors.white,
-                        width: 150,
-                        height: 100,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                                flex: 9,
-                                child: Image.network(
-                                  product!.imageUrl,
-                                  width: double.infinity,
-                                )),
-                            const Expanded(
-                                flex: 1,
-                                child: Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.black,
-                                  size: 18,
-                                )),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        product.name,
-                        style: Constant.whiteBold16.copyWith(fontSize: 11),
-                      ),
-                      Text(
-                        product.brand,
-                        style: Constant.whiteRegular12.copyWith(
-                            fontWeight: FontWeight.w300, fontSize: 10),
-                      ),
-                      Row(
-                        children: [
-                          Text("KWD ${product.price.toString()}",
-                              style: Constant.whiteRegular12
-                                  .copyWith(fontSize: 10)),
-                          const Spacer(),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            color: const Color(0xFFC89A44),
-                            child: const Center(
-                                child: Text(
-                              "Add to cart",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 10),
-                            )),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ));
+            if (product !=null) {
+            return VtoProductItem(product: product);
+            } else {
+              return const SizedBox();
+            }
           },
         ),
       ),
     );
   }
-
   Widget colorChip() {
     return Container(
       height: 30,
