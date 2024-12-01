@@ -15,22 +15,22 @@ class VaChooseConnection extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(13, 49, 13, 207),
+            padding: const EdgeInsets.fromLTRB(13, 0, 13, 16),
             child: Column(
               children: [
                 const Header(),
-                const SizedBox(height: 31),
+                const SizedBox(height: 16),
                 const Text(
                   'How would you like to communicate with me today',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 14,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
                     fontFamily: 'Lato',
                   ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 16),
                 OptionCard(
                   title: 'Vocal Connection',
                   description:
@@ -78,11 +78,13 @@ class Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Spacer(flex: 5),
             const Icon(CupertinoIcons.pause_circle,
                 size: 24, color: Colors.white),
             const SizedBox(width: 17),
@@ -107,12 +109,13 @@ class Header extends StatelessWidget {
             const Icon(CupertinoIcons.stop_circle,
                 size: 24, color: Colors.white),
             const SizedBox(width: 20),
+            const Spacer(),
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(CupertinoIcons.clear,
+                    size: 30, color: Colors.white))
           ],
         ),
-        IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon:
-                const Icon(CupertinoIcons.clear, size: 30, color: Colors.white))
       ],
     );
   }
