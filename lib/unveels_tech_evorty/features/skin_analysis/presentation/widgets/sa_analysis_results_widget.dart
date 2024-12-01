@@ -13,12 +13,15 @@ import 'sa_product_item_widget.dart';
 class SAAnalysisResultsWidget extends StatefulWidget {
   final Function() onViewAll;
   final List<SkinAnalysisModel>? analysisResult;
+  final String? selectedCategory;
+  final Function(String category)? onCategoryChanged;
 
-  const SAAnalysisResultsWidget({
-    super.key,
-    required this.onViewAll,
-    this.analysisResult,
-  });
+  const SAAnalysisResultsWidget(
+      {super.key,
+      required this.onViewAll,
+      this.analysisResult,
+      this.selectedCategory,
+      this.onCategoryChanged});
 
   @override
   State<SAAnalysisResultsWidget> createState() =>
@@ -26,11 +29,11 @@ class SAAnalysisResultsWidget extends StatefulWidget {
 }
 
 class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
-  String? _selectedCategory;
   final List<String> _categories = SkinAnalysisModel.categories;
   final Dio dio = Dio();
   List<ProductData>? products;
   bool _isLoading = false;
+
   final ProductRepository productRepository = ProductRepository();
 
   Future<void> fetchData() async {
@@ -38,7 +41,7 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
       _isLoading = true;
     });
     try {
-      String? skinConcernId = getSkinConcernByLabel(_selectedCategory!);
+      String? skinConcernId = getSkinConcernByLabel(widget.selectedCategory!);
       var dataResponse =
           await productRepository.fetchProducts(skinConcern: skinConcernId);
       setState(() {
@@ -61,7 +64,9 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
   }
 
   void _init() {
-    _selectedCategory = _categories.first;
+    if (widget.onCategoryChanged != null) {
+      widget.onCategoryChanged!(_categories.first);
+    }
     fetchData();
   }
 
@@ -94,7 +99,7 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
             },
             itemBuilder: (context, index) {
               final category = _categories[index];
-              final isSelected = _selectedCategory == category;
+              final isSelected = widget.selectedCategory == category;
               final isFirst = index == 0;
               final isEnd = index == _categories.length - 1;
 
@@ -126,9 +131,9 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
                       padding: const EdgeInsets.all(0),
                       borderRadius: BorderRadius.circular(99),
                       onTap: () {
-                        setState(() {
-                          _selectedCategory = category;
-                        });
+                        if (widget.onCategoryChanged != null) {
+                          widget.onCategoryChanged!(category);
+                        }
                         fetchData();
                       },
                     ),
@@ -160,7 +165,8 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
                 height: 2,
               ),
               ReadMoreText(
-                SkinAnalysisModel.getDescriptionByCategory(_selectedCategory!),
+                SkinAnalysisModel.getDescriptionByCategory(
+                    widget.selectedCategory!),
                 trimMode: TrimMode.Line,
                 trimLines: 3,
                 colorClickableText: ColorConfig.primary,

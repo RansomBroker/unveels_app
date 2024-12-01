@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -24,7 +25,7 @@ class LiveWidget extends StatefulWidget {
   final String? url;
   final Function(ConsoleMessage message)? onConsoleMessage;
   final Function(InAppWebViewController controller)? onWebViewCreated;
-  // final InAppWebViewController? customController;
+  final Function(String? label)? onGetLabel;
 
   const LiveWidget(
       {super.key,
@@ -36,7 +37,8 @@ class LiveWidget extends StatefulWidget {
       this.screenRecordBackrgoundColor,
       this.url,
       this.onConsoleMessage,
-      this.onWebViewCreated});
+      this.onWebViewCreated,
+      this.onGetLabel});
   @override
   State<LiveWidget> createState() => _LiveWidgetState();
 }
@@ -212,6 +214,15 @@ class _LiveWidgetState extends State<LiveWidget> {
                         resultData =
                             args.isNotEmpty ? args[0] : "No data received";
                       });
+                    },
+                  );
+                  webViewController?.addJavaScriptHandler(
+                    handlerName: 'getLabel',
+                    callback: (args) {
+                      if (widget.onGetLabel != null) {
+                        widget.onGetLabel!(jsonDecode(
+                            args[0].toString())['skinAnalysisLabelClick']);
+                      }
                     },
                   );
                 },

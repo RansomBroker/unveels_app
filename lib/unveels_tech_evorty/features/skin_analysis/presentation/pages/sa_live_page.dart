@@ -27,6 +27,7 @@ class _SALivePageState extends State<SALivePage> {
   bool _isShowAnalysisResults = false;
   bool _isShowFullAnalysisResults = false;
   List<SkinAnalysisModel>? _analysisResult;
+  String? _selectedCategory;
 
   @override
   void initState() {
@@ -66,6 +67,15 @@ class _SALivePageState extends State<SALivePage> {
             setState(() {
               _analysisResult = SkinAnalysisModel.fromJsonList(result);
             });
+          }
+        },
+        onGetLabel: (label) {
+          if (label != null) {
+            String category = SkinAnalysisModel.categories[SkinAnalysisModel.categoryLabels.indexOf(label)];
+            setState(() {
+              _selectedCategory = category;
+            });
+            _onAnalysisResults();
           }
         },
       ),
@@ -140,6 +150,14 @@ class _SALivePageState extends State<SALivePage> {
               children: [
                 SAAnalysisResultsWidget(
                   analysisResult: _analysisResult,
+                  selectedCategory: _selectedCategory,
+                  onCategoryChanged: (category) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        _selectedCategory = category;
+                      });
+                    });
+                  },
                   onViewAll: () {
                     // close this dialog
                     Navigator.pop(context);
