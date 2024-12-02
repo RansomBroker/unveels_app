@@ -13,6 +13,7 @@ import 'package:test_new/unveels_virtual_assistant/components/va_typing_indicato
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_event.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:test_new/unvells/constants/arguments_map.dart';
 import 'dart:ui' as ui;
 
@@ -94,7 +95,7 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
                             allowBackgroundAudioPlaying: true),
                         initialUrlRequest: URLRequest(
                             url: WebUri(
-                                'https://unveels-webview.netlify.app/virtual-avatar-web')),
+                                '${ApiConstant.techWebUrl}/virtual-avatar-web')),
                         onWebViewCreated: (controller) async {
                           webViewController = controller;
                         },

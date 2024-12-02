@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../get_brand_name.dart';
 
@@ -20,8 +21,7 @@ class ProductData {
 
 class ProductRepository {
   final Dio _dio = Dio();
-  final String _magnetoBaseUrl =
-      "https://magento-1231949-4398885.cloudwaysapps.com";
+  final String _magnetoBaseUrl = ApiConstant.webUrl;
   final String _token = "hb2vxjo1ayu0agrkr97eprrl5rccqotc";
 
   Future<List<ProductData>> fetchProducts({

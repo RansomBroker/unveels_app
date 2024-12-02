@@ -13,7 +13,7 @@ class _ApiClientRetrofit implements ApiClientRetrofit {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://magento-1231949-4398885.cloudwaysapps.com/graphql';
+    baseUrl ??= '${ApiConstant.webUrl}/graphql';
   }
 
   final Dio _dio;

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:test_new/unvells/app_widgets/app_alert_message.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:test_new/unvells/constants/app_routes.dart';
 import 'package:test_new/unvells/constants/app_string_constant.dart';
 import 'package:test_new/unvells/constants/arguments_map.dart';
@@ -132,7 +133,7 @@ class _PFProductItemWidgetState extends State<PFProductItemWidget> {
               widget.lookData == null
                   ? CachedNetworkImage(
                       imageUrl:
-                          "https://magento-1231949-4398885.cloudwaysapps.com/media/catalog/product${widget.productData?.customAttributes.where((e) => e.attributeCode == 'small_image').first.value}",
+                          "${ApiConstant.webUrl}/media/catalog/product${widget.productData?.customAttributes.where((e) => e.attributeCode == 'small_image').first.value}",
                       placeholder: (context, url) {
                         return Container(
                           color: Colors.white,
@@ -158,7 +159,7 @@ class _PFProductItemWidgetState extends State<PFProductItemWidget> {
                     )
                   : CachedNetworkImage(
                       imageUrl:
-                          "https://magento-1231949-4398885.cloudwaysapps.com/media/${widget.lookData?.image}",
+                          "${ApiConstant.webUrl}/media/${widget.lookData?.image}",
                       placeholder: (context, url) {
                         return Container(
                           color: Colors.white,

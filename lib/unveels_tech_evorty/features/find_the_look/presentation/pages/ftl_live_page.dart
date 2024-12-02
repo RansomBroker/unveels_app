@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
@@ -138,7 +139,7 @@ class __BodyState extends State<_Body> {
         liveStep: step,
         liveType: type,
         file: widget.params?.file,
-        url: "https://unveels-webview.netlify.app/find-the-look-web",
+        url: "${ApiConstant.techWebUrl}/find-the-look-web",
         body: _buildBody,
         screenRecordBackrgoundColor: screenRecordBackrgoundColor,
         onLiveStepChanged: (value, result) {

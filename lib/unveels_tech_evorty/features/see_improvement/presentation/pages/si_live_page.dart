@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/context_parsing.dart';
@@ -52,7 +53,7 @@ class _SILivePageState extends State<SILivePage> {
       body: LiveWidget(
         liveStep: step,
         liveType: LiveType.liveCamera,
-        url: "https://unveels-webview.netlify.app/see-improvement-web",
+        url: "${ApiConstant.techWebUrl}/see-improvement-web",
         body: _buildBody,
         screenRecordBackrgoundColor: screenRecordBackrgoundColor,
         onLiveStepChanged: (value, result) {

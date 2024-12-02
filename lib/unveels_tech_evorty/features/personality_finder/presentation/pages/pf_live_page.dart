@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
@@ -68,7 +69,7 @@ class _PFLivePageState extends State<PFLivePage> {
   getSkinTone() async {
     try {
       Uri fullUrl = Uri.parse(
-          'https://magento-1231949-4398885.cloudwaysapps.com/en/rest/V1/products/attributes/personality');
+          '${ApiConstant.webUrl}/en/rest/V1/products/attributes/personality');
       var res = await http.get(fullUrl, headers: {
         "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
       });
@@ -88,7 +89,7 @@ class _PFLivePageState extends State<PFLivePage> {
   getSkinTone2() async {
     try {
       Uri fullUrl = Uri.parse(
-          'https://magento-1231949-4398885.cloudwaysapps.com/en/rest/V1/products/attributes/face_shape');
+          '${ApiConstant.webUrl}/en/rest/V1/products/attributes/face_shape');
       var res = await http.get(fullUrl, headers: {
         "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
       });
@@ -116,7 +117,7 @@ class _PFLivePageState extends State<PFLivePage> {
       body: LiveWidget(
         liveStep: step,
         liveType: LiveType.liveCamera,
-        url: "https://unveels-webview.netlify.app/personality-finder-web",
+        url: "${ApiConstant.techWebUrl}/personality-finder-web",
         body: _buildBody,
         screenRecordBackrgoundColor: screenRecordBackrgoundColor,
         onLiveStepChanged: (value, result) {

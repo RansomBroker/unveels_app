@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:test_new/unvells/constants/app_constants.dart';
 import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
@@ -74,7 +75,7 @@ class _STFLivePageState extends State<STFLivePage> {
   getToneType() async {
     try {
       Uri fullUrl = Uri.parse(
-          'https://magento-1231949-4398885.cloudwaysapps.com/en/rest/V1/products/attributes/tone_type');
+          '${ApiConstant.webUrl}/en/rest/V1/products/attributes/tone_type');
       var res = await http.get(fullUrl, headers: {
         "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
       });
@@ -94,7 +95,7 @@ class _STFLivePageState extends State<STFLivePage> {
   getSkinTone() async {
     try {
       Uri fullUrl = Uri.parse(
-          'https://magento-1231949-4398885.cloudwaysapps.com/en/rest/V1/products/attributes/skin_tone');
+          '${ApiConstant.webUrl}/en/rest/V1/products/attributes/skin_tone');
       var res = await http.get(fullUrl, headers: {
         "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
       });
@@ -118,7 +119,7 @@ class _STFLivePageState extends State<STFLivePage> {
         selectedIndex = null;
       });
       Uri fullUrl = Uri.parse(
-          "https://magento-1231949-4398885.cloudwaysapps.com/rest/V1/products?searchCriteria[filter_groups][0][filters][0][field]=category_id&searchCriteria[filter_groups][0][filters][0][value]=451&searchCriteria[filter_groups][0][filters][0][condition_type]=eq&searchCriteria[filter_groups][1][filters][0][field]=skin_tone&searchCriteria[filter_groups][1][filters][0][value]=$skinId&searchCriteria[filter_groups][2][filters][0][condition_type]=eq&searchCriteria[filter_groups][2][filters][0][field]=tone_type&searchCriteria[filter_groups][2][filters][0][value]=$toneTypeId&searchCriteria[filter_groups][2][filters][0][condition_type]=finset");
+          "${ApiConstant.webUrl}/rest/V1/products?searchCriteria[filter_groups][0][filters][0][field]=category_id&searchCriteria[filter_groups][0][filters][0][value]=451&searchCriteria[filter_groups][0][filters][0][condition_type]=eq&searchCriteria[filter_groups][1][filters][0][field]=skin_tone&searchCriteria[filter_groups][1][filters][0][value]=$skinId&searchCriteria[filter_groups][2][filters][0][condition_type]=eq&searchCriteria[filter_groups][2][filters][0][field]=tone_type&searchCriteria[filter_groups][2][filters][0][value]=$toneTypeId&searchCriteria[filter_groups][2][filters][0][condition_type]=finset");
       var res = await http.get(fullUrl, headers: {
         "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
       });

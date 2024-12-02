@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/context_parsing.dart';
@@ -57,7 +58,7 @@ class __BodyState extends State<_Body> {
         liveStep: step,
         liveType: LiveType.liveCamera,
         body: _buildBody,
-        url: "https://unveels-webview.netlify.app/find-the-look-web",
+        url: "${ApiConstant.techWebUrl}/find-the-look-web",
         onLiveStepChanged: (value, result) {
           if (value != step) {
             if (mounted) {

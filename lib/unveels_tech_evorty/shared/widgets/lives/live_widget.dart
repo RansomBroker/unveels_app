@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/unveels_tech_evorty/shared/extensions/context_parsing.dart';
 import 'package:test_new/unveels_tech_evorty/shared/widgets/lives/play_video_widget.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../features/find_the_look/presentation/pages/ftl_live_page.dart';
 import '../../extensions/live_configuration_step_parsing.dart';
@@ -172,7 +173,7 @@ class _LiveWidgetState extends State<LiveWidget> {
               InAppWebView(
                 initialUrlRequest: URLRequest(
                     url: WebUri(widget.url ??
-                        'https://unveels-webview.netlify.app/skin-tone-finder-web')),
+                        '${ApiConstant.techWebUrl}/skin-tone-finder-web')),
                 //test-js.cibportofolio.com
                 // initialUrlRequest:
                 // URLRequest(url: WebUri(Uri.base.toString().replaceFirst("/#/", "/") + 'page.html')),

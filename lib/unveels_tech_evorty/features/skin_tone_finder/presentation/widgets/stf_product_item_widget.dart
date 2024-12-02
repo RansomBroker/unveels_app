@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:test_new/unvells/constants/app_routes.dart';
 import 'package:test_new/unvells/constants/arguments_map.dart';
 
@@ -36,7 +37,7 @@ class STFProductItemWidget extends StatelessWidget {
                   )
                 : CachedNetworkImage(
                     imageUrl:
-                        "https://magento-1231949-4398885.cloudwaysapps.com/media/catalog/product${data?.customAttributes?.where((e) => e.attributeCode == 'small_image').first.value ?? ''}",
+                        "${ApiConstant.webUrl}/media/catalog/product${data?.customAttributes?.where((e) => e.attributeCode == 'small_image').first.value ?? ''}",
                     placeholder: (context, url) {
                       return Container(
                         color: Colors.white,

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:test_new/logic/get_product_utils/get_brand_name.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_state.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 class ProductFilterOption {
   final String label;
@@ -12,8 +13,7 @@ class ProductFilterOption {
 class VaTextConnectionRepository {
   final Dio _dio = Dio();
   final String _endpoint = "https://chat-bot.evorty.id/chat";
-  final String magnetoBaseUrl =
-      "https://magento-1231949-4398885.cloudwaysapps.com";
+  final String magnetoBaseUrl = ApiConstant.webUrl;
   final String token = "hb2vxjo1ayu0agrkr97eprrl5rccqotc";
 
   Future<void> sendMessage(String message) async {
