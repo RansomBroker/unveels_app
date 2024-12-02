@@ -204,7 +204,7 @@ class _VaVoiceConnection extends State<VaVoiceConnection> {
       return const SizedBox.shrink();
     }
     return const Padding(
-      padding: EdgeInsets.symmetric(horizontal:16.0),
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: VaTypingIndicator(),
     );
   }
@@ -357,8 +357,8 @@ class _VaVoiceConnection extends State<VaVoiceConnection> {
                     : Expanded(
                         child: VaVoiceRecordButton(
                             recording: _isRecording,
-                            onLongPressStart: () => _toggleRecording(true),
-                            onLongPressEnd: () => _toggleRecording(false)),
+                            onLongPressStart: () => _toggleRecording(),
+                            onLongPressEnd: () => _toggleRecording()),
                       ),
                 const SizedBox(width: 10),
                 _isTextMode
@@ -408,11 +408,8 @@ class _VaVoiceConnection extends State<VaVoiceConnection> {
     );
   }
 
-  Future<void> _toggleRecording(bool isRecording) async {
-    setState(() {
-      _isRecording = isRecording;
-    });
-    if (!isRecording) {
+  Future<void> _toggleRecording() async {
+    if (_isRecording) {
       // _currentRecordingPath = await _audioRecorder.stop();
       await _speechToText.stop();
       _sendMessage();
@@ -426,7 +423,13 @@ class _VaVoiceConnection extends State<VaVoiceConnection> {
 
       try {
         // await _audioRecorder.start();
-        await _speechToText.listen(onResult: onRecognitionResult);
+        await _speechToText.listen(
+            onResult: onRecognitionResult,
+            listenOptions:
+                SpeechListenOptions(listenMode: ListenMode.dictation));
+        setState(() {
+          _isRecording = true;
+        });
       } catch (e) {
         print('Error starting recording: $e');
       }
@@ -442,6 +445,7 @@ class _VaVoiceConnection extends State<VaVoiceConnection> {
     }
     setState(() {
       _textInput = '';
+      _isRecording = false;
     });
   }
 }

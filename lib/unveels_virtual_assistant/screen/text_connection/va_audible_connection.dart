@@ -428,9 +428,6 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
     if (_isRecording) {
       // _currentRecordingPath = await _audioRecorder.stop();
       await _speechToText.stop();
-      setState(() {
-        _isRecording = false;
-      });
       _sendMessage();
     } else {
       // Request microphone permission
@@ -440,10 +437,12 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
         return;
       }
 
-      // Initialize audio session
       try {
         // await _audioRecorder.start();
-        await _speechToText.listen(onResult: onRecognitionResult);
+        await _speechToText.listen(
+            onResult: onRecognitionResult,
+            listenOptions:
+                SpeechListenOptions(listenMode: ListenMode.dictation));
         setState(() {
           _isRecording = true;
         });
@@ -465,6 +464,9 @@ class _VaAudibleConnection extends State<VaAudibleConnection> {
       //     timestamp: "10 AM",
       //   ));
       // });
+      setState(() {
+        _isRecording = false;
+      });
       _textController.clear();
     }
   }
