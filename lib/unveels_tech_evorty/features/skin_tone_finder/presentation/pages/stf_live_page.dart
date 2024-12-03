@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:test_new/unvells/constants/app_constants.dart';
+import 'package:test_new/unvells/constants/app_routes.dart';
 import '../../../../shared/configs/size_config.dart';
-import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
-import '../../../../shared/widgets/buttons/button_widget.dart';
 import '../../../../shared/widgets/lives/bottom_copyright_widget.dart';
 import '../../../../shared/widgets/lives/live_widget.dart';
 import '../../../find_the_look/presentation/pages/ftl_live_page.dart';
@@ -43,6 +42,7 @@ class _STFLivePageState extends State<STFLivePage> {
   bool isLoadingProductt = true;
   bool _isShowShades = false;
   String? resultData;
+  bool _isFullScreen = false;
 
   @override
   void initState() {
@@ -202,17 +202,97 @@ class _STFLivePageState extends State<STFLivePage> {
         }
 
         return BottomCopyrightWidget(
-          child: Column(
-            children: [
-              ButtonWidget(
-                  text: 'SHOW SHADES',
-                  width: context.width / 2,
-                  backgroundColor: Colors.black,
-                  onTap: () {
-                    _onShowShades(
-                        skinToneProductModel, skinToneModel, toneTypeModel);
-                  }),
-            ],
+          child: SafeArea(
+            bottom: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: Colors.black12,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                InkWell(
+                                  onTap: () {},
+                                  child: Image.asset(
+                                      'assets/icons/ic-camera.png',
+                                      width: 24,
+                                      height: 24,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(height: 8),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Image.asset(
+                                      'assets/icons/ic-flip-camera.png',
+                                      width: 24,
+                                      height: 24,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(height: 8),
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      _isFullScreen = !_isFullScreen;
+                                    });
+                                  },
+                                  child: Image.asset(
+                                      'assets/icons/ic-scale.png',
+                                      width: 24,
+                                      height: 24,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(height: 8),
+                                InkWell(
+                                  onTap: () {},
+                                  child: Image.asset(
+                                      'assets/icons/ic-compare.png',
+                                      width: 24,
+                                      height: 24,
+                                      color: Colors.white),
+                                ),
+                                const SizedBox(height: 8),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.pushReplacementNamed(context, AppRoutes.skinToneFinder);
+                                  },
+                                  child: Image.asset(
+                                      'assets/icons/ic-reset.png',
+                                      width: 24,
+                                      height: 24,
+                                      color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                !_isFullScreen
+                    ? STFShadesWidget(
+                        skinToneModel: skinToneModel,
+                        toneTypeModel: toneTypeModel,
+                        resultData: resultData,
+                      )
+                    : const SizedBox(height: 300),
+              ],
+            ),
           ),
         );
       case LiveStep.makeup:

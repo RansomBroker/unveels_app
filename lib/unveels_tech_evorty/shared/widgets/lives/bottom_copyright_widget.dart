@@ -25,9 +25,6 @@ class BottomCopyrightWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             child,
-            const SizedBox(
-              height: 30,
-            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -46,9 +43,7 @@ class BottomCopyrightWidget extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
-              height: SizeConfig.bottomPadding,
-            ),
+            const SizedBox(height: 16),
           ],
         ),
       ),

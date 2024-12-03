@@ -238,9 +238,6 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
             ],
           ),
         ),
-        const SizedBox(
-          height: 10,
-        ),
         if (_selectedToneTab == ToneTab.other) ...[
           SizedBox(
             height: 35,
@@ -493,9 +490,6 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
           ),
         ],
         if (_selectedToneTab == ToneTab.matched) ...[
-          const SizedBox(
-            height: 10,
-          ),
           Container(
             alignment: Alignment.centerLeft,
             padding:
