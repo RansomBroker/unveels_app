@@ -53,32 +53,9 @@ class _STFLivePageState extends State<STFLivePage> {
 
   void _init() async {
     // default step
-    step = LiveStep.scannedFace;
+    step = LiveStep.photoSettings;
     await getToneType();
     await getSkinTone();
-    var result = """
-{
-    "hexColor": "#d0997e",
-    "skinType": "Medium Skin"
-}""";
-    getProduct(
-        skinToneModel.options!
-                .where((e) =>
-                    e.label.toString().toLowerCase() ==
-                    jsonDecode(result)["skinType"]
-                        .toString()
-                        .split(' ')[0]
-                        .toLowerCase())
-                .first
-                .value ??
-            '',
-        toneTypeModel.options
-                ?.where(
-                    (e) => e.label?.toLowerCase() == selectedTone.toLowerCase())
-                .first
-                .value ??
-            '');
-    resultData = result;
   }
 
   Color hexToColor(String hexString) {
