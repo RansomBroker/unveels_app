@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:test_new/unveels_tech_evorty/shared/configs/asset_path.dart';
 import '../../configs/size_config.dart';
 
 class BottomCopyrightWidget extends StatelessWidget {
@@ -26,22 +28,22 @@ class BottomCopyrightWidget extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // const Text(
-                //   "Powered by",
-                //   style: TextStyle(
-                //     color: Colors.white,
-                //     fontSize: 8,
-                //   ),
-                // ),
-                // const SizedBox(
-                //   width: 2,
-                // ),
-                // SvgPicture.asset(
-                //   IconPath.unveelsLogo,
-                // ),
+                const Text(
+                  "Powered by",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 8,
+                  ),
+                ),
+                const SizedBox(
+                  width: 2,
+                ),
+                SvgPicture.asset(
+                  IconPath.unveelsLogo,
+                ),
               ],
             ),
             SizedBox(
