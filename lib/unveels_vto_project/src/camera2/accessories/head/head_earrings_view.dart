@@ -230,7 +230,8 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -251,7 +252,8 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -529,32 +531,32 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
         ),
       ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            colorChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            shapesChoice(),
-            Constant.xSizedBox4,
-            separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox8,
-            lipstickChoice(),
-            // Constant.xSizedBox4,
-            // separator(),
-            // typeText(),
-            // Constant.xSizedBox8,
-          ],
-        ),
-      );
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          colorChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          shapesChoice(),
+          Constant.xSizedBox4,
+          separator(),
+          const Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "View All",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              )),
+          Constant.xSizedBox8,
+          lipstickChoice(),
+          // Constant.xSizedBox4,
+          // separator(),
+          // typeText(),
+          // Constant.xSizedBox8,
+        ],
+      ),
+    );
   }
 
   Widget cameraPreview(double scale) {
@@ -601,7 +603,8 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -689,7 +692,8 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

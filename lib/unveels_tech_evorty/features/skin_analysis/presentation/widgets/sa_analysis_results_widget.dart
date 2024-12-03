@@ -220,7 +220,7 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
                   ],
                 ))
             : SizedBox(
-                height: 130,
+                height: 150,
                 child: ListView.separated(
                   itemCount: products?.length ?? 0,
                   shrinkWrap: true,

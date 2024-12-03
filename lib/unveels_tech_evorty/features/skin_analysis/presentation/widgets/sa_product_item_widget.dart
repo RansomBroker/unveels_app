@@ -121,20 +121,19 @@ class _SAProductItemWidgetState extends State<SAProductItemWidget> {
               widget.product.name, widget.product.id.toString()),
         ),
         child: SizedBox(
-          height: 100,
-          width: 100,
+          width: 120,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
                 color: Colors.white,
-                width: 100,
-                height: 100 * 0.65,
+                width: 120,
+                height: 120 * 0.65,
                 child: Image.network(
                   widget.product.imageUrl,
-                  width: 100,
-                  height: 100 * 0.65,
+                  width: 120,
+                  height: 120 * 0.65,
                   fit: BoxFit.contain,
                 ),
               ),

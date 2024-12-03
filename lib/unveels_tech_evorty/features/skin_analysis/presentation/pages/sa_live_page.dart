@@ -109,8 +109,6 @@ class _SALivePageState extends State<SALivePage> {
               });
             },
             onViewAll: () {
-              // close this dialog
-              Navigator.pop(context);
               _onViewAllProducts();
             },
           ),
