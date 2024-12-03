@@ -58,6 +58,8 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>FirebaseAppDelegateProxyEnabled</key>
+    <false/>
 	<key>NSCameraUsageDescription</key>
 	<string>For customer profile picture</string>
 	<key>NSFaceIDUsageDescription</key>

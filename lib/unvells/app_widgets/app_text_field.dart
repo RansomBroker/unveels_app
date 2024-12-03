@@ -94,41 +94,42 @@ class _AppTextFieldState extends State<AppTextField> {
             isRequired: widget.isRequired,
             suffix: widget.isPassword
                 ? IconButton(
-              icon: Icon(
-                _obscureText
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
-                size: 24,
-              ),
-              onPressed: () {
-                setState(() {
-                  _obscureText = !_obscureText;
-                });
-              },
-            )
+                    icon: Icon(
+                      _obscureText
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 24,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscureText = !_obscureText;
+                      });
+                    },
+                  )
                 : widget.suffix,
             isDense: widget.isDense,
             outline: widget.outline,
           ),
-          validator: ((widget.isRequired == true) && (widget.validation == null))
+          validator: ((widget.isRequired == true) &&
+                  (widget.validation == null))
               ? (value) {
-            if (value?.isEmpty ?? false) {
-              return (widget.validationMessage != '')
-                  ? widget.validationMessage
-                  : "${AppLocalizations.of(context)?.translate(AppStringConstant.required)}";
-            } else if (widget.validationType == AppStringConstant.email) {
-              return Validator.isEmailValid(value ?? '', context);
-            } else if (widget.validationType == AppStringConstant.password) {
-              return Validator.isValidPassword(
-                AppLocalizations.of(context)
-                    ?.translate(value ?? "") ??
-                    '',
-                context,
-              );
-            } else {
-              return null;
-            }
-          }
+                  if (value?.isEmpty ?? false) {
+                    return (widget.validationMessage != '')
+                        ? widget.validationMessage
+                        : "${AppLocalizations.of(context)?.translate(AppStringConstant.required)}";
+                  } else if (widget.validationType == AppStringConstant.email) {
+                    return Validator.isEmailValid(value ?? '', context);
+                  } else if (widget.validationType ==
+                      AppStringConstant.password) {
+                    return Validator.isValidPassword(
+                      AppLocalizations.of(context)?.translate(value ?? "") ??
+                          '',
+                      context,
+                    );
+                  } else {
+                    return null;
+                  }
+                }
               : widget.validation,
         ),
       ],
@@ -138,65 +139,72 @@ class _AppTextFieldState extends State<AppTextField> {
 
 // Function to create a common form field decoration for both text fields and dropdowns
 InputDecoration formFieldDecoration(
-    BuildContext context,
-    String? helperText,
-    String? hintText, {
-      bool? isDense = true,
-      bool? isRequired,
-      Widget? suffix,
-      bool outline = false,
-    }) {
+  BuildContext context,
+  String? helperText,
+  String? hintText, {
+  bool? isDense = true,
+  bool? isRequired,
+  Widget? suffix,
+  Color? fillColor,borderColor,
+  prefixIcon,
+  bool outline = false,
+}) {
   return InputDecoration(
-    contentPadding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-    isDense: isDense,
-    hintText: hintText,
-    label: RichText(
-      text: TextSpan(
-        text: hintText ?? "",
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-          color: const Color(0xff555555),
-          fontWeight: FontWeight.w500,
+      contentPadding:
+          const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+      isDense: isDense,
+
+      hintText: hintText,
+      label: RichText(
+        text: TextSpan(
+          text: hintText ?? "",
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: const Color(0xff555555),
+                fontWeight: FontWeight.w500,
+              ),
+          children: (isRequired ?? false)
+              ? [
+                  const TextSpan(
+                    text: " *",
+                    style: TextStyle(
+                      color: Colors.red, // Make the required sign red
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ]
+              : [],
         ),
-        children: (isRequired ?? false)
-            ? [
-          const TextSpan(
-            text: " *",
-            style: TextStyle(
-              color: Colors.red, // Make the required sign red
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ]
-            : [],
       ),
-    ),
-    hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-      color: const Color(0xffB0BEC5),
-    ),
-    filled: true,
-    fillColor: const Color(0xffFAFAFA), // Match with text field background
-    border: outline
-        ? OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(color: Color(0xffDDDDDD), width: 1.2),
-    )
-        : const UnderlineInputBorder(
-      borderSide: BorderSide(color: Color(0xFFA2A2A2)),
-    ),
-    enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: const BorderSide(color: Color(0xffE0E0E0), width: 1.5),
-    ),
-    focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide(color: AppColors.gold, width: 1.5),
-    ),
-    errorBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
-      borderSide: BorderSide(color: Colors.red.shade500, width: 1.5),
-    ),
-    suffixIcon: suffix,
-  );
+      hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: const Color(0xffB0BEC5),
+          ),
+      filled: true,
+
+      fillColor: fillColor?? const Color(0xffFAFAFA),
+      // Match with text field background
+      border: outline
+          ? OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide:
+                  const BorderSide(color: Color(0xffDDDDDD), width: 1.2),
+            )
+          : const UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFFA2A2A2)),
+            ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(25),
+        borderSide:  BorderSide(color:borderColor?? const Color(0xffE0E0E0), width: 1.5),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.gold, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: BorderSide(color: Colors.red.shade500, width: 1.5),
+      ),
+      suffixIcon: suffix,
+      prefixIcon: prefixIcon);
 }
 
 class CommonDropDownField extends StatelessWidget {

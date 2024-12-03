@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../../shared/configs/size_config.dart';
@@ -25,8 +24,6 @@ class _SILivePageState extends State<SILivePage> {
   late LiveStep step;
 
   bool _isShowAnalysisResults = false;
-  bool _isShowFullAnalysisResults = false;
-  List<SkinAnalysisModel>? _analysisResult;
   double _sliderValue = 0.1;
   InAppWebViewController? _webViewController;
 
@@ -45,9 +42,6 @@ class _SILivePageState extends State<SILivePage> {
   @override
   Widget build(BuildContext context) {
     Color? screenRecordBackrgoundColor;
-    if (_isShowFullAnalysisResults) {
-      screenRecordBackrgoundColor = Colors.black;
-    }
 
     return Scaffold(
       body: LiveWidget(
@@ -64,7 +58,6 @@ class _SILivePageState extends State<SILivePage> {
               // });
             }
           }
-          print(result);
         },
         onConsoleMessage: (value) {
           if (value.message ==
@@ -170,10 +163,4 @@ class _SILivePageState extends State<SILivePage> {
     });
   }
 
-  void _onViewAllProducts() {
-    setState(() {
-      _isShowAnalysisResults = false;
-      _isShowFullAnalysisResults = true;
-    });
-  }
 }

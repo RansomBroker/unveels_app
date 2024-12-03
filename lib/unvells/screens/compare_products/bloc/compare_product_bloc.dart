@@ -27,10 +27,10 @@ class CompareProductBloc extends Bloc<CompareProductEvent, CompareProductState> 
           if (model.success??false) {
             emit(CompareProductSuccess(model));
           } else {
-            emit(CompareProductError(''));
+            emit(const CompareProductError(''));
           }
         } else {
-          emit(CompareProductError(''));
+          emit(const CompareProductError(''));
         }
       } catch (error, str) {
         print(str.toString());

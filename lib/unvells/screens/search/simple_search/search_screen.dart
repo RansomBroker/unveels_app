@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:test_new/unvells/app_widgets/flux_image.dart';
 import 'package:test_new/unvells/helper/utils.dart';
 import 'package:test_new/unvells/screens/search/simple_search/bloc/search_events.dart';
 import 'package:test_new/unvells/screens/search/simple_search/bloc/search_state.dart';
@@ -20,6 +21,7 @@ import 'package:test_new/unvells/screens/search/simple_search/views/category_lis
 import 'package:test_new/unvells/screens/search/simple_search/views/search_container.dart';
 import 'package:test_new/unvells/screens/search/simple_search/views/search_suggestion.dart';
 import '../../../app_widgets/app_alert_message.dart';
+import '../../../app_widgets/app_text_field.dart';
 import '../../../app_widgets/dialog_helper.dart';
 import '../../../configuration/unvells_theme.dart';
 import '../../../constants/app_constants.dart';
@@ -85,7 +87,7 @@ class _SearchScreenState extends State<SearchScreen>
       vsync: this,
       lowerBound: 0.5,
       duration: const Duration(seconds: 3),
-    )..repeat();
+    );
     await _speechToText.initialize();
     setState(() {});
   }
@@ -129,116 +131,306 @@ class _SearchScreenState extends State<SearchScreen>
       }
       return Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Utils.hideSoftKeyBoard();
-                Navigator.of(context).pop();
-              },
-              icon: const Icon(
-                Icons.arrow_back,
-              ),
+            backgroundColor: Colors.transparent,
+
+            automaticallyImplyLeading: true,
+            // leading: IconButton(
+            //   color: Colors.bll,
+            //   onPressed: () {
+            //     Utils.hideSoftKeyBoard();
+            //     Navigator.of(context).pop();
+            //   },
+            //   icon: const Icon(
+            //     Icons.arrow_back,
+            //   ),
+            // ),
+            // leadingWidth: 0,
+            // title: Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: TextField(
+            //
+            //
+            //
+            //
+            //     readOnly: _isListening,
+            //     controller: _searchText,
+            //     onChanged: (searchKey) {
+            //       print("Search key ---> " + searchKey);
+            //       searchBloc?.add(SearchSuggestionEvent(searchKey));
+            //     },
+            //     onSubmitted: (searchKey) {
+            //       Navigator.pushNamed(
+            //         context,
+            //         AppRoutes.catalog,
+            //         arguments: getCatalogMap(
+            //           searchKey ?? "",
+            //           searchKey,
+            //           BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+            //           false,
+            //         ),
+            //       );
+            //     },
+            //
+            //     decoration: formFieldDecoration(
+            //       context,
+            //         Utils.getStringValue(context, AppStringConstant.search),
+            //       '',
+            //       // Utils.getStringValue(context, AppStringConstant.search),
+            //       isRequired: false,
+            //       fillColor: const Color(0xff333333),
+            //       borderColor: Colors.transparent,
+            //
+            //       prefixIcon: const Icon(Icons.search,color: Colors.white,),
+            //
+            //       // isDense: false,
+            //       // suffix: Row(
+            //       //   mainAxisAlignment: MainAxisAlignment.end,
+            //       //   children: [
+            //       //     (_isListening)
+            //       //         ? Center(
+            //       //       child: Text(
+            //       //         _localizations
+            //       //             ?.translate(AppStringConstant.listening) ??
+            //       //             '',
+            //       //         style: Theme.of(context)
+            //       //             .textTheme
+            //       //             .titleSmall
+            //       //             ?.copyWith(fontWeight: FontWeight.normal),
+            //       //       ),
+            //       //     )
+            //       //         : IconButton(
+            //       //       onPressed: () {
+            //       //         DialogHelper.searchDialog(context, () {
+            //       //           Navigator.of(context).pop();
+            //       //           _checkPermission(_permission, searchImage);
+            //       //         }, () {
+            //       //           Navigator.of(context).pop();
+            //       //           _checkPermission(_permission, searchText);
+            //       //         });
+            //       //       },
+            //       //       icon: const Icon(
+            //       //         Icons.camera_alt,
+            //       //         size: AppSizes.size20,
+            //       //       ),
+            //       //     ),
+            //       //     _buildVoiceInput(
+            //       //       onPressed: _speechToText.isNotListening ? start : stop,
+            //       //     ),
+            //       //     _searchText.text != "" && _searchText.text != null
+            //       //         ? IconButton(
+            //       //       onPressed: () {
+            //       //         Utils.hideSoftKeyBoard();
+            //       //         _searchText.text = "";
+            //       //         searchModel = null;
+            //       //         searchBloc?.add(InitialSearchSuggestionEvent());
+            //       //       },
+            //       //       icon: const Icon(
+            //       //         Icons.close,
+            //       //         size: AppSizes.size20,
+            //       //       ),
+            //       //     )
+            //       //         : Container(),
+            //       //   ],
+            //       // ),
+            //
+            //       // prefix:
+            //
+            //       outline: true, // Ensure outline is true for dropdowns to match
+            //     ),
+            //     style: Theme.of(context)
+            //         .textTheme
+            //         .headlineSmall
+            //         ?.copyWith(fontWeight: FontWeight.w500, height: 1.5),
+            //     cursorColor: Theme.of(context).iconTheme.color,
+            //   ),
+            // ),
+            // actions: [
+            //     (_isListening)
+            //         ? Center(
+            //             child: Text(
+            //               _localizations
+            //                       ?.translate(AppStringConstant.listening) ??
+            //                   '',
+            //               style: Theme.of(context)
+            //                   .textTheme
+            //                   .titleSmall
+            //                   ?.copyWith(fontWeight: FontWeight.normal),
+            //             ),
+            //           )
+            //         : IconButton(
+            //             onPressed: () {
+            //               DialogHelper.searchDialog(context, () {
+            //                 Navigator.of(context).pop();
+            //                 _checkPermission(_permission, searchImage);
+            //               }, () {
+            //                 Navigator.of(context).pop();
+            //                 _checkPermission(_permission, searchText);
+            //               });
+            //             },
+            //             icon: const Icon(
+            //               Icons.camera_alt,
+            //               size: AppSizes.size20,
+            //             ),
+            //           ),
+            //     _buildVoiceInput(
+            //       onPressed: _speechToText.isNotListening ? start : stop,
+            //     ),
+            //     _searchText.text != "" && _searchText.text != null
+            //         ? IconButton(
+            //             onPressed: () {
+            //               Utils.hideSoftKeyBoard();
+            //               _searchText.text = "";
+            //               searchModel = null;
+            //               searchBloc?.add(InitialSearchSuggestionEvent());
+            //             },
+            //             icon: const Icon(
+            //               Icons.close,
+            //               size: AppSizes.size20,
+            //             ),
+            //           )
+            //         : Container(),
+            // ],
+          ),
+          body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const FluxImage(
+              imageUrl: "assets/images/unveels.png",
+              height: 44,
             ),
-            title: TextField(
-              readOnly: _isListening,
-              controller: _searchText,
-              onChanged: (searchKey) {
-                print("Search key ---> " + searchKey);
-                searchBloc?.add(SearchSuggestionEvent(searchKey));
-              },
-              onSubmitted: (searchKey) {
-                Navigator.pushNamed(context, AppRoutes.catalog,
+            const SizedBox(
+              height: 21,
+            ),
+            Container(
+              width: double.infinity,
+              color: Colors.black,
+              padding: const EdgeInsets.all(15),
+              child: TextField(
+                readOnly: _isListening,
+                controller: _searchText,
+                onChanged: (searchKey) {
+                  print("Search key ---> " + searchKey);
+                  searchBloc?.add(SearchSuggestionEvent(searchKey));
+                },
+                onSubmitted: (searchKey) {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.catalog,
                     arguments: getCatalogMap(
                       searchKey ?? "",
                       searchKey,
                       BUNDLE_KEY_CATALOG_TYPE_SEARCH,
                       false,
-                    ));
-              },
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText:
-                    _localizations?.translate(AppStringConstant.search) ?? '',
-                hintStyle: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.normal,
                     ),
-              ),
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall
-                  ?.copyWith(fontWeight: FontWeight.w500, height: 1.5),
-              cursorColor: Theme.of(context).iconTheme.color,
-            ),
-            actions: [
-              (_isListening)
-                  ? Center(
-                      child: Text(
-                          _localizations
-                                  ?.translate(AppStringConstant.listening) ??
-                              '',
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleSmall
-                              ?.copyWith(fontWeight: FontWeight.normal)))
-                  : IconButton(
-                      onPressed: () {
-                        DialogHelper.searchDialog(context, () {
-                          Navigator.of(context).pop();
-                          _checkPermission(_permission, searchImage);
-                        }, () {
-                          Navigator.of(context).pop();
-                          _checkPermission(_permission, searchText);
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.camera_alt,
-                        size: AppSizes.size20,
-                      ),
-                    ),
-              _buildVoiceInput(
-                onPressed: _speechToText.isNotListening ? start : stop,
-              ),
-              _searchText.text != "" && _searchText.text != null
-                  ? IconButton(
-                      onPressed: () {
-                        Utils.hideSoftKeyBoard();
-                        _searchText.text = "";
-                        searchModel = null;
-                        searchBloc?.add(InitialSearchSuggestionEvent());
-                      },
-                      icon: const Icon(
-                        Icons.close,
-                        size: AppSizes.size20,
-                      ),
-                    )
-                  : Container(),
-            ],
-          ),
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Visibility(
-                  visible: _isLoading,
-                  child: LinearProgressIndicator(
-                    backgroundColor: Theme.of(context).iconTheme.color,
-                    valueColor:const AlwaysStoppedAnimation(AppColors.white),
-                  ),
-                ),
-                if (AppConstant.advanceSearch)
-                  advanceSearchContainer(context, () {
-                    Navigator.pushNamed(context, AppRoutes.advanceSearch);
-                  }),
-                Visibility(
-                    visible: !_isLoading,
-                    child: suggestionList(
-                        searchModel, context, _localizations, _searchText)),
+                  );
+                },
+                decoration: formFieldDecoration(
+                  context,
+                  Utils.getStringValue(context, AppStringConstant.search),
+                  '',
+                  // Utils.getStringValue(context, AppStringConstant.search),
+                  isRequired: false,
+                  fillColor: const Color(0xff333333),
+                  borderColor: Colors.transparent,
 
-                // Visibility(visible:!_isLoading && ,child: Text(Utils.getStringValue(context, AppStringConstant.noProductAvailable)))
-                if ((GlobalData.homePageData?.categories ?? []).isNotEmpty)
-                  categoryList(
-                      context, GlobalData.homePageData?.categories, () {})
-              ],
+                  prefixIcon: const Icon(
+                    Icons.search,
+                    color: Colors.white,
+                    size: 25,
+                  ),
+
+                  // isDense: false,
+                  suffix: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      (_isListening)
+                          ? Center(
+                              child: Text(
+                                _localizations?.translate(
+                                        AppStringConstant.listening) ??
+                                    '',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(
+                                        fontWeight: FontWeight.normal),
+                              ),
+                            )
+                          : IconButton(
+                              color: Colors.white,
+                              onPressed: () {
+                                DialogHelper.searchDialog(context, () {
+                                  Navigator.of(context).pop();
+                                  _checkPermission(
+                                      _permission, searchImage);
+                                }, () {
+                                  Navigator.of(context).pop();
+                                  _checkPermission(_permission, searchText);
+                                });
+                              },
+                              icon: const Icon(
+                                Icons.qr_code_scanner,
+                                size: AppSizes.size20,
+                              ),
+                            ),
+                      _buildVoiceInput(
+                        onPressed:
+                            _speechToText.isNotListening ? start : stop,
+                      ),
+                      _searchText.text != "" && _searchText.text != null
+                          ? IconButton(
+                              color: Colors.white,
+                              onPressed: () {
+                                Utils.hideSoftKeyBoard();
+                                _searchText.text = "";
+                                searchModel = null;
+                                searchBloc
+                                    ?.add(InitialSearchSuggestionEvent());
+                              },
+                              icon: const Icon(
+                                Icons.close,
+                                size: AppSizes.size20,
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
+
+                  // prefix:
+
+                  outline:
+                      true, // Ensure outline is true for dropdowns to match
+                ),
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                    color: Colors.white),
+                cursorColor: Theme.of(context).iconTheme.color,
+              ),
             ),
-          ));
+            Visibility(
+              visible: _isLoading,
+              child: LinearProgressIndicator(
+                backgroundColor: Theme.of(context).iconTheme.color,
+                valueColor: const AlwaysStoppedAnimation(AppColors.white),
+              ),
+            ),
+            if (AppConstant.advanceSearch)
+              advanceSearchContainer(context, () {
+                Navigator.pushNamed(context, AppRoutes.advanceSearch);
+              }),
+            Visibility(
+                visible: !_isLoading,
+                child: suggestionList(
+                    searchModel, context, _localizations, _searchText)),
+
+            // Visibility(visible:!_isLoading && ,child: Text(Utils.getStringValue(context, AppStringConstant.noProductAvailable)))
+            if ((GlobalData.homePageData?.categories ?? []).isNotEmpty)
+              categoryList(
+                  context, GlobalData.homePageData?.categories, () {})
+          ],
+        ),
+      ));
     });
   }
 
@@ -281,9 +473,10 @@ class _SearchScreenState extends State<SearchScreen>
                         40 * (_isListening ? _controller!.value : 0)),
                     Align(
                       child: Icon(
+                        color: Colors.white,
                         _speechRecognitionAvailable && !_isListening
                             ? Icons.mic_off
-                            : Icons.mic,
+                            : Icons.mic_none_outlined,
                         size: AppSizes.size20,
                       ),
                     ),
@@ -302,7 +495,6 @@ class _SearchScreenState extends State<SearchScreen>
   }
 
   Future<void> _checkPermission(Permission permission, String type) async {
-
     if (Platform.isIOS) {
       try {
         const platform = MethodChannel(AppConstant.channelName);
@@ -335,7 +527,6 @@ class _SearchScreenState extends State<SearchScreen>
         openAppSettings();
       }
     }
-
   }
 
   Future<void> onImageSearch(data) async {

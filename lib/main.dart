@@ -59,19 +59,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> init() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // bloc observer
   Bloc.observer = BlocObserverInfo();
-
-  if (!kIsWeb) {
-    // if not web, set orientation
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
-  }
-
-  // Initialize dependency injection
   await di.init();
 }
 

@@ -109,7 +109,7 @@ class _SAFullAnalysisResultsWidgetState
                             borderRadius: BorderRadius.circular(100),
                             child: Image.memory(
                               SkinAnalysisModel.getImageData(
-                                  widget.analysisResult)!,
+                                  widget.analysisResult),
                               width: 90,
                               height: 90,
                               fit: BoxFit.cover,
@@ -128,7 +128,7 @@ class _SAFullAnalysisResultsWidgetState
                                 value:
                                     "Skin Health Score : ${calculateSkinHealthScore(widget.analysisResult)}%",
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 16,
                               ),
                               _SummaryItemWidget(
@@ -168,16 +168,16 @@ class _SAFullAnalysisResultsWidgetState
                               children: [
                                 Text(
                                   "${calculateAverageSkinProblemsScore(widget.analysisResult)}%",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
-                                Text(
+                                const Text(
                                   "Skin Problems",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,
@@ -339,16 +339,16 @@ class _SAFullAnalysisResultsWidgetState
                               children: [
                                 Text(
                                   "${calculateAverageSkinConditionScore(widget.analysisResult)}%",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w700,
                                     color: Colors.white,
                                     fontSize: 16,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
-                                Text(
+                                const Text(
                                   "Skin Condition",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w700,

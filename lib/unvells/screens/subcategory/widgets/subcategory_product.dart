@@ -42,10 +42,10 @@ Widget buildSubCategoryProducts(
             color: Theme.of(context).cardColor,
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: AppSizes.size8,
+                  top: AppSizes.size16,
                   bottom: AppSizes.size4,
-                  left: AppSizes.size4,
-                  right: AppSizes.size4),
+                  left: AppSizes.size8,
+                  right: AppSizes.size8),
               child: Column(
                 children: [
                   Row(

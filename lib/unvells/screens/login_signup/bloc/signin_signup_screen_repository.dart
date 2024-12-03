@@ -82,8 +82,8 @@ class SigninSignupScreenRepositoryImp implements AuthRepository {
       String email,
       String password,
       String mobile) async {
-    var firebaseToken = await PushNotificationsManager().createFcmToken();
-    print("deviceId==>$firebaseToken");
+    // var firebaseToken = await PushNotificationsManager().createFcmToken();
+    // print("deviceId==>$firebaseToken");
     SignupResponseModel? responseModel;
     try {
       responseModel = await ApiClient().createAccount(
@@ -98,7 +98,8 @@ class SigninSignupScreenRepositoryImp implements AuthRepository {
           email,
           password,
           mobile,
-          firebaseToken ?? "",
+          // firebaseToken ?? "",
+          '',
           0);
     } catch (e, stacktrace) {
       print("Error --> $e");
@@ -121,12 +122,12 @@ class SigninSignupScreenRepositoryImp implements AuthRepository {
 
   @override
   Future login(String email, String password) async {
-    var firebaseToken = await PushNotificationsManager().createFcmToken();
-    print("deviceId==>$firebaseToken");
+    // var firebaseToken = await PushNotificationsManager().createFcmToken();
+    // print("deviceId==>$firebaseToken");
     LoginResponseModel? responseModel;
     try {
       responseModel =
-          await ApiClient().customerLogin(email, password, firebaseToken ?? "");
+          await ApiClient().customerLogin(email, password, "" ?? "");
     } catch (e, stacktrace) {
       print("Error --> $e");
       print("StackTrace --> $stacktrace");

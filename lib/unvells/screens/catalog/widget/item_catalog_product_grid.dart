@@ -357,7 +357,8 @@ class _ItemCatalogProductGridState extends State<ItemCatalogProductGrid> {
                     widget.product?.formattedPrice ?? '',
                     style: KTextStyle.of(context)
                         .twelve
-                        .copyWith(color: Colors.grey),
+                        .copyWith(color: Colors.grey,decoration: TextDecoration.lineThrough),
+
                   ),
                 ),
               ],

@@ -61,96 +61,96 @@ class Constant {
   static Color blueColor = const Color(0xFF093CA9);
 
   static TextStyle primaryTextStyle =
-      TextStyle(fontFamily: 'Inter', color: textColor);
+      TextStyle(fontFamily: 'Lato', color: textColor);
   static TextStyle secondaryTextStyle =
-      TextStyle(fontFamily: 'Inter', color: textColor2);
+      TextStyle(fontFamily: 'Lato', color: textColor2);
   static TextStyle komisiTextStyle =
-      TextStyle(fontFamily: 'Inter', color: textKomisiColor);
+      TextStyle(fontFamily: 'Lato', color: textKomisiColor);
   static TextStyle priceTextStyle =
-      TextStyle(fontFamily: 'Inter', color: textPriceColor);
+      TextStyle(fontFamily: 'Lato', color: textPriceColor);
   static TextStyle s12BoldBlack = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColor,
     fontWeight: FontWeight.bold,
   );
 
   static TextStyle primaryTextStyle2 =
-      TextStyle(fontFamily: 'Inter', color: textColor);
+      TextStyle(fontFamily: 'Lato', color: textColor);
   static TextStyle secondaryTextStyle2 =
-      TextStyle(fontFamily: 'Inter', color: textColor2);
+      TextStyle(fontFamily: 'Lato', color: textColor2);
   static TextStyle komisiTextStyle2 =
-      TextStyle(fontFamily: 'Inter', color: textKomisiColor);
+      TextStyle(fontFamily: 'Lato', color: textKomisiColor);
   static TextStyle priceTextStyle2 =
-      TextStyle(fontFamily: 'Inter', color: textPriceColor);
+      TextStyle(fontFamily: 'Lato', color: textPriceColor);
   static TextStyle s12BoldBlack2 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColor,
     fontWeight: FontWeight.bold,
   );
-  static TextStyle iBlack = const TextStyle(fontFamily: 'Inter');
+  static TextStyle iBlack = const TextStyle(fontFamily: 'Lato');
 
   static TextStyle iPrimaryMedium8 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: primaryColor,
     fontSize: 8,
     fontWeight: medium,
   );
   static TextStyle iPrimaryMedium14 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: primaryColor,
     fontSize: 14,
     fontWeight: medium,
   );
   static TextStyle iPrimaryMedium12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: primaryColor,
     fontSize: 12,
     fontWeight: medium,
   );
 
   static TextStyle iBlackMedium8 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 8,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium10 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 8,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 12,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium13 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 13,
     fontWeight: medium,
   );
   static TextStyle blackRegular12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 12,
     fontWeight: FontWeight.w300,
   );
   static TextStyle iBlackMedium = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium18 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 18,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium16StrkWhite = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 16,
     shadows: const [
@@ -174,19 +174,19 @@ class Constant {
     fontWeight: medium,
   );
   static TextStyle iBlackMedium16 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 16,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium20 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 20,
     fontWeight: medium,
   );
   static TextStyle iBlackMedium40StrkWhite = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 40,
     shadows: const [
@@ -211,179 +211,179 @@ class Constant {
   );
 
   static TextStyle primaryBold15 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: primaryColor,
     fontSize: 15,
     fontWeight: bold,
   );
   static TextStyle primaryBold20 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: primaryColor,
     fontSize: 20,
     fontWeight: bold,
   );
   static TextStyle quartenary = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: quarteryColor,
     fontWeight: regular,
   );
   static TextStyle whiteExtraBold18 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: Colors.white,
     fontSize: 18,
     fontWeight: bold,
   );
 
   static TextStyle blackBold10 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 10,
     fontWeight: bold,
   );
   static TextStyle blackBold13 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 13,
     fontWeight: bold,
   );
   static TextStyle blackBold = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontWeight: bold,
   );
   static TextStyle blackBold15 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 15,
     fontWeight: bold,
   );
   static TextStyle blackBold16 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 16,
     fontWeight: bold,
   );
   static TextStyle blackBold20 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: textColorBlack,
     fontSize: 20,
     fontWeight: bold,
   );
 
   static TextStyle grayRegular = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
   );
   static TextStyle grayRegular8 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 8,
   );
   static TextStyle grayRegular12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 12,
   );
   static TextStyle grayRegular13 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: grayColor,
     fontSize: 13,
   );
   static TextStyle grayMedium10 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 10,
     fontWeight: medium,
   );
   static TextStyle grayMedium13 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 13,
     fontWeight: medium,
   );
   static TextStyle grayMedium = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontWeight: medium,
   );
   static TextStyle grayMedium15 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 15,
     fontWeight: medium,
   );
   static TextStyle grayBold12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 12,
     fontWeight: bold,
   );
   static TextStyle grayBold15 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 15,
     fontWeight: bold,
   );
   static TextStyle grayBold16 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: lightGrayColor,
     fontSize: 16,
     fontWeight: bold,
   );
   static TextStyle whiteRegular12 = const TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: Colors.white,
     fontSize: 12,
   );
   static TextStyle whiteBold = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: Colors.white,
     fontWeight: bold,
   );
   static TextStyle whiteBold15 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: Colors.white,
     fontSize: 15,
     fontWeight: bold,
   );
   static TextStyle whiteBold16 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: Colors.white,
     fontSize: 16,
     fontWeight: bold,
   );
   static TextStyle whiteExtraBold = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: Colors.white,
     fontWeight: extraBold,
   );
 
   static TextStyle greenBold12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: greenColor,
     fontSize: 12,
     fontWeight: bold,
   );
   static TextStyle blueBold12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: blueColor,
     fontSize: 12,
     fontWeight: bold,
   );
   static TextStyle redBold12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: redColor,
     fontSize: 12,
     fontWeight: bold,
   );
   static TextStyle redRegular12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: redColor,
     fontSize: 12,
     fontWeight: regular,
   );
   static TextStyle redMedium12 = TextStyle(
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     color: redColor,
     fontSize: 12,
     fontWeight: medium,
@@ -432,7 +432,7 @@ class Constant {
     scaffoldBackgroundColor: Constant.backgroundColor,
     primaryColor: primaryColor,
     focusColor: Colors.black,
-    fontFamily: 'Inter',
+    fontFamily: 'Lato',
     colorScheme: ColorScheme.fromSeed(
       seedColor: primaryColor,
       primary: primaryColor, //<-- SEE HERE

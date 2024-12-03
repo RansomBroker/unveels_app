@@ -280,7 +280,7 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                           initData();
                         },
                         child: Container(
-                          padding: EdgeInsets.all(3),
+                          padding: const EdgeInsets.all(3),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(100),
                               color: const Color.fromARGB(255, 138, 95, 2)),
@@ -304,7 +304,7 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                                 .first
                                 .outputLabel ??
                             '-',
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 12,
                         ),
@@ -345,7 +345,7 @@ class _PFAnalysisResultsWidgetState extends State<PFAnalysisResultsWidget> {
                                             .outputLabel ??
                                         '-'] ??
                                     '',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
                                 ),

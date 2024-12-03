@@ -4,7 +4,6 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unvells/constants/app_routes.dart';
 import 'package:test_new/unvells/constants/arguments_map.dart';
 
-import '../../configs/asset_path.dart';
 import '../buttons/button_widget.dart';
 
 class SmallProductItemWidget extends StatelessWidget {

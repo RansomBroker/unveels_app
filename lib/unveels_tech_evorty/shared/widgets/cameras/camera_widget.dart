@@ -154,53 +154,6 @@ class _CameraWidgetState extends State<CameraWidget>
     });
   }
 
-  // FIXME: If using this throwing error when app is in background
-  // The following CameraException was thrown building ValueListenableBuilder<CameraValue>(state: _ValueListenableBuilderState<CameraValue>#58d03):
-  // CameraException(Disposed CameraController, buildPreview() was called on a disposed CameraController.)
-  // @override
-  // void didChangeAppLifecycleState(AppLifecycleState state) {
-  //   final cameraController = controller;
-
-  //   // App state changed before we got the chance to initialize.
-  //   if (cameraController == null || !cameraController.value.isInitialized) {
-  //     return;
-  //   }
-
-  //   if (state == AppLifecycleState.inactive) {
-  //     // FIXME: Fix camera inactive
-
-  //     // dispose the camera controller.
-  //     cameraController.dispose();
-
-  //     if (widget.isShowScreenRecording == true) {
-  //       // dispose the timer
-  //       _timer?.cancel();
-
-  //       // dispose the screen recording status
-  //       setState(() {
-  //         _screenRecordingStatus = null;
-  //       });
-  //     }
-  //   } else if (state == AppLifecycleState.resumed) {
-  //     // FIXME: Fix camera resumed
-  //     // initialize the camera controller.
-  //     _initializeCameraController(
-  //       cameraController.description,
-  //     );
-
-  //     // initialize the screen recording status.
-  //     _initScreenRecordingStatus();
-
-  //     // initialize the timer
-  //     if (_screenRecordingStatus == ScreenRecordingStatus.recording) {
-  //       _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-  //         setState(() {
-  //           _recordingDuration += const Duration(seconds: 1);
-  //         });
-  //       });
-  //     }
-  //   }
-  // }
 
   Future<void> _onRecordVideo() async {
     try {

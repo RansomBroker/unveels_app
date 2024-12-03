@@ -161,7 +161,6 @@ class _PlayVideoWidgetState extends State<PlayVideoWidget> {
       // show full screen loading
       context.showFullScreenLoading();
 
-      // TODO: start screen recording
 
       // update screen recording status
       setState(() {
@@ -196,7 +195,6 @@ class _PlayVideoWidgetState extends State<PlayVideoWidget> {
 
   Future<void> _onResume() async {
     try {
-      // TODO: resume screen recording
 
       // update screen recording status
       setState(() {
@@ -222,7 +220,6 @@ class _PlayVideoWidgetState extends State<PlayVideoWidget> {
       // show full screen loading
       context.showFullScreenLoading();
 
-      // TODO: stop screen recording
 
       // share the recorded video
       // _onShareVideo(

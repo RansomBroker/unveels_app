@@ -76,6 +76,7 @@ class _SubCategoryScreenState extends State<SubCategoryScreen> {
     return (isLoading == true)
         ? const Loader()
         : SingleChildScrollView(
+      padding: const EdgeInsets.all(8),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

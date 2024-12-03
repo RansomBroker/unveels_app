@@ -70,7 +70,8 @@ class ProductTileData{
   Map<String, dynamic> toJson() => _$ProductTileDataToJson(this);
 
   bool hasSpecialPrice(){
-    return  double.parse(finalPrice) != 0.0 && double.parse(finalPrice.toString()) < double.parse(price.toString()) && (isInRange ?? true);
+    // && (isInRange ?? true
+    return  double.parse(finalPrice) != 0.0 && double.parse(finalPrice.toString()) < double.parse(price.toString() );
   }
 
   String getDiscountPercentage(){

@@ -112,7 +112,7 @@ class PFPersonalityAnalysisWidget extends StatelessWidget {
                 height: 20,
               ),
               Padding(
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ),
                 child: Row(
@@ -138,7 +138,7 @@ class PFPersonalityAnalysisWidget extends StatelessWidget {
                                     .labels?[0] ??
                                 '-',
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           _LegendItemWidget(
@@ -159,7 +159,7 @@ class PFPersonalityAnalysisWidget extends StatelessWidget {
                                     .labels?[1] ??
                                 '-',
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           _LegendItemWidget(
@@ -183,7 +183,7 @@ class PFPersonalityAnalysisWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     Expanded(
@@ -207,7 +207,7 @@ class PFPersonalityAnalysisWidget extends StatelessWidget {
                                     .labels?[3] ??
                                 '-',
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 15,
                           ),
                           _LegendItemWidget(
@@ -238,7 +238,7 @@ class PFPersonalityAnalysisWidget extends StatelessWidget {
           ),
           ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: resultParsedData
                     .where((element) => element.name == "Personality Finder")
                     .first

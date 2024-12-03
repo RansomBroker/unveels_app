@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+// import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:record/record.dart';
+// import 'package:record/record.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:test_new/unveels_virtual_assistant/components/va_suggestion_gift.dart';
@@ -23,18 +23,18 @@ class VaAudibleConnection extends StatefulWidget {
   const VaAudibleConnection({super.key});
 
   @override
-  _VaAudibleConnection createState() => _VaAudibleConnection();
+  State<VaAudibleConnection> createState() => _VaAudibleConnection();
 }
 
 class _VaAudibleConnection extends State<VaAudibleConnection> {
   final ScrollController _scrollController = ScrollController();
 
   final TextEditingController _textController = TextEditingController();
-  final Record _audioRecorder = Record();
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  // final Record _audioRecorder = Record();
+  // final AudioPlayer _audioPlayer = AudioPlayer();
   final SpeechToText _speechToText = SpeechToText();
   bool _isRecording = false;
-  String? _currentRecordingPath;
+  // String? _currentRecordingPath;
 
   InAppWebViewController? webViewController;
 

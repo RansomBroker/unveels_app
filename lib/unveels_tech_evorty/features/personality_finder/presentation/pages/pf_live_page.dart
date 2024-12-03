@@ -4,7 +4,6 @@ import 'package:test_new/unvells/constants/app_constants.dart';
 import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
 import '../../../../shared/widgets/buttons/button_widget.dart';
-import '../../../../shared/widgets/clippers/face_clipper.dart';
 import '../../../../shared/widgets/lives/bottom_copyright_widget.dart';
 import '../../../../shared/widgets/lives/live_widget.dart';
 import '../../../find_the_look/presentation/pages/ftl_live_page.dart';

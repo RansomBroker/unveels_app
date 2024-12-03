@@ -9,7 +9,6 @@ import '../../../../shared/configs/size_config.dart';
 import '../../../../shared/extensions/context_parsing.dart';
 import '../../../../shared/extensions/live_step_parsing.dart';
 import '../../../../shared/widgets/buttons/button_widget.dart';
-import '../../../../shared/widgets/clippers/face_clipper.dart';
 import '../../../../shared/widgets/lives/bottom_copyright_widget.dart';
 import '../../../../shared/widgets/lives/live_widget.dart';
 import '../../../find_the_look/presentation/pages/ftl_live_page.dart';
@@ -54,9 +53,32 @@ class _STFLivePageState extends State<STFLivePage> {
 
   void _init() async {
     // default step
-    step = LiveStep.photoSettings;
+    step = LiveStep.scannedFace;
     await getToneType();
     await getSkinTone();
+    var result = """
+{
+    "hexColor": "#d0997e",
+    "skinType": "Medium Skin"
+}""";
+    getProduct(
+        skinToneModel.options!
+                .where((e) =>
+                    e.label.toString().toLowerCase() ==
+                    jsonDecode(result)["skinType"]
+                        .toString()
+                        .split(' ')[0]
+                        .toLowerCase())
+                .first
+                .value ??
+            '',
+        toneTypeModel.options
+                ?.where(
+                    (e) => e.label?.toLowerCase() == selectedTone.toLowerCase())
+                .first
+                .value ??
+            '');
+    resultData = result;
   }
 
   Color hexToColor(String hexString) {

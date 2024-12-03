@@ -18,7 +18,7 @@ AppBar commonAppBar(String heading, BuildContext context,
     bool isElevated = true,
     bool isLeadingEnable = false,
     List<Widget>? actions,
-    Color? bgColor,
+    Color? bgColor,textColor,
     VoidCallback? onPressed}) {
   return AppBar(
       backgroundColor:bgColor?? Colors.transparent,
@@ -34,7 +34,7 @@ AppBar commonAppBar(String heading, BuildContext context,
       centerTitle: true,
       title: Text(
         heading,
-        style: KTextStyle.of(context).boldSixteen,
+        style: KTextStyle.of(context).boldSixteen.copyWith(color:textColor),
         overflow: TextOverflow.ellipsis,
         softWrap: true,
       ),

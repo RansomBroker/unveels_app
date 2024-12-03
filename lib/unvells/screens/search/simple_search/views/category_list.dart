@@ -7,6 +7,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:test_new/unvells/configuration/text_theme.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:test_new/unvells/constants/app_string_constant.dart';
 import 'package:test_new/unvells/helper/utils.dart';
@@ -19,18 +20,18 @@ import '../../../../models/categoryPage/category.dart';
 Widget categoryList(BuildContext context, List<Category> ?data, Function callback,  ){
   return Container(
     color: Theme.of(context).cardColor,
-    height: 100,
+    padding: EdgeInsets.all(8),
+    // height: 120,
+
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(AppSizes.size16),
-          child: Text(Utils.getStringValue(context, AppStringConstant.categories).toUpperCase() ?? '' ,
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
+        Text(Utils.getStringValue(context, AppStringConstant.categories).toUpperCase() ?? '' ,
+          style: KTextStyle.of(context).boldSixteen,
         ),
-
-        Expanded(
+SizedBox(height: 8,),
+        SizedBox(
+          height: AppSizes.deviceHeight*.06,
           child: ListView.builder(
             // shrinkWrap: true,
               itemCount: data?.length,
@@ -46,13 +47,14 @@ Widget categoryList(BuildContext context, List<Category> ?data, Function callbac
 
                   },
                   child: Container(
-                    margin: const EdgeInsets.only(right:AppSizes.size8,left: AppSizes.size4, bottom: AppSizes.size16),
+                    margin: const EdgeInsets.only(right:AppSizes.size6, bottom: AppSizes.size16),
                   padding: const EdgeInsets.symmetric(vertical: AppSizes.size4, horizontal: AppSizes.size16),
-                   decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular( 20.0)),
-                     color: AppColors.black,
+                   decoration:  BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular( 5.0)),
+                     color: AppColors.transparent,
+                     border: Border.all(color: AppColors.gold,width: 2)
                     ),
-                    child: Center(child: Text(data?[index].name??'', style: Theme.of(context).textTheme.titleSmall?.copyWith(color: AppColors.white),)),
+                    child: Center(child: Text(data?[index].name??'', style: KTextStyle.of(context).boldSixteen,)),
 
 
 

@@ -125,6 +125,33 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return (total > _products.length && !_loading);
   }
 
+  void applyFilters() {
+    _selectedFilterData = [];
+    selectedFiltersLabel = [];
+
+    for (var element in _filterGroups) {
+      List<String> selectedValues = [];
+      element.options?.forEach((filter) {
+        if (filter.selected ?? false) {
+          selectedValues.add(filter.id.toString());
+          selectedFiltersLabel?.add("${element.label}: ${filter.label}");
+        }
+      });
+
+      if (selectedValues.isNotEmpty) {
+        _selectedFilterData.add({
+          "code": element.code ?? '',
+          "value": "\"${selectedValues.join(",")}\"", // Wrap in double quotes
+        });
+      }
+    }
+
+    _page = 1;
+    _products = [];
+    _filterApplied = _selectedFilterData.isNotEmpty;
+    _callAPI();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,12 +198,15 @@ class _CatalogScreenState extends State<CatalogScreen> {
             ),
             onPressed: () {
               if (_sorts.isEmpty == true) {
-                WidgetsBinding.instance?.addPostFrameCallback((_) {
-                  AlertMessage.showWarning(
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (_) {
+                    AlertMessage.showWarning(
                       Utils.getStringValue(
                           context, AppStringConstant.sortOptionsNotAvailable),
-                      context);
-                });
+                      context,
+                    );
+                  },
+                );
                 return;
               }
               showModalBottomSheet(
@@ -202,7 +232,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
           IconButton(
               onPressed: () {
                 if (_filterGroups.isEmpty == true && _filterApplied == false) {
-                  WidgetsBinding.instance?.addPostFrameCallback((_) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
                     AlertMessage.showWarning(
                         Utils.getStringValue(context,
                             AppStringConstant.filterOptionsNotAvailable),
@@ -210,39 +240,54 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   });
                   return;
                 }
+                // Show the bottom sheet and handle the filter selection
                 showModalBottomSheet(
                   context: context,
                   builder: (ctx) => FilterBottomSheet(
                     _filterGroups,
                     () {
-                      print("TEST_LOG");
-                      setState(() {});
-                      _selectedFilterData = [];
-                      selectedFiltersLabel = [];
-                      Navigator.of(context).pop();
-                      for (var element in _filterGroups) {
-                        element.options?.forEach((filter) {
-                          if (filter.selected == true) {
-                            _selectedFilterDataItem["code"] =
-                                "\"${element.code}\"";
-                            _selectedFilterDataItem["value"] =
-                                "\"${filter.id}\"";
-                            _selectedFilterData.add(_selectedFilterDataItem);
-                            selectedFiltersLabel
-                                ?.add("${element.label}: ${filter.label}");
-                          }
-                        });
-                      }
-                      _page = 1;
-                      _products = [];
-                      _callAPI();
-
-                      _filterApplied = _selectedFilterData.isNotEmpty;
+                      setState(() {
+                        applyFilters();
+                      });
                     },
                     _selectedFilterData,
                     selectedFiltersLabel: selectedFiltersLabel,
                   ),
                 );
+
+                // showModalBottomSheet(
+                //   context: context,
+                //   builder: (ctx) => FilterBottomSheet(
+                //     _filterGroups,
+                //     () {
+                //       print("TEST_LOG");
+                //       setState(() {});
+                //       _selectedFilterData = [];
+                //       selectedFiltersLabel = [];
+                //       Navigator.of(context).pop();
+                //       for (var element in _filterGroups) {
+                //         element.options?.forEach((filter) {
+                //           if (filter.selected == true) {
+                //             _selectedFilterDataItem["code"] =
+                //                 "\"${element.code}\"";
+                //             _selectedFilterDataItem["value"] =
+                //                 "\"${filter.id}\"";
+                //             _selectedFilterData.add(_selectedFilterDataItem);
+                //             selectedFiltersLabel
+                //                 ?.add("${element.label}: ${filter.label}");
+                //           }
+                //         });
+                //       }
+                //       _page = 1;
+                //       _products = [];
+                //       _callAPI();
+                //
+                //       _filterApplied = _selectedFilterData.isNotEmpty;
+                //     },
+                //     _selectedFilterData,
+                //     selectedFiltersLabel: selectedFiltersLabel,
+                //   ),
+                // );
               },
               icon: FluxImage(
                 imageUrl: "assets/icons/filter.svg",
@@ -277,7 +322,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
             _isGrid = currentState.isGrid;
           } else if (currentState is CatalogErrorState) {
             _loading = false;
-            WidgetsBinding.instance?.addPostFrameCallback((_) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
               AlertMessage.showError(currentState.message ?? '', context);
             });
           }
@@ -310,7 +355,11 @@ class _CatalogScreenState extends State<CatalogScreen> {
                           collapseMode: CollapseMode.parallax,
                           background: Column(
                             children: <Widget>[
-                              HomeSliders(_banners ?? [], false)
+                              HomeSliders(
+                                _banners ?? [],
+                                false,
+                                radius: 0,
+                              )
                             ],
                           )),
                       titleSpacing: AppSizes.size0,
@@ -401,7 +450,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
             Utils.getStringValue(context, AppStringConstant.sort),
             () {
               if (_sorts.isEmpty == true) {
-                WidgetsBinding.instance?.addPostFrameCallback((_) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
                   AlertMessage.showWarning(
                       Utils.getStringValue(
                           context, AppStringConstant.sortOptionsNotAvailable),
@@ -435,7 +484,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
               Utils.getStringValue(context, AppStringConstant.filter),
               () {
                 if (_filterGroups.isEmpty == true && _filterApplied == false) {
-                  WidgetsBinding.instance?.addPostFrameCallback((_) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
                     AlertMessage.showWarning(
                         Utils.getStringValue(context,
                             AppStringConstant.filterOptionsNotAvailable),
@@ -451,7 +500,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                       print("TEST_LOG");
                       _selectedFilterData = [];
                       selectedFiltersLabel = [];
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop();
                       for (var element in _filterGroups) {
                         element.options?.forEach((filter) {
                           if (filter.selected == true) {

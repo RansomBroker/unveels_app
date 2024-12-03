@@ -12,7 +12,7 @@ class IconPath {
   static const orientationActive = 'assets/icons/orientation_active.svg';
   static const unveelsLogo = 'assets/icons/unveels_logo.svg';
   static const uploadPhoto = 'assets/icons/upload_photo.svg';
-  static const cart = 'assets/icons/cart.svg';
+  static const cart = 'assets/icons/cart_tech.svg';
   static const love = 'assets/icons/love.svg';
   static const fourStarsExample = 'assets/icons/four_stars_example.svg';
   static const trash = 'assets/icons/trash.svg';

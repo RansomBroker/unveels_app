@@ -63,26 +63,26 @@ class _CategoryBannersState extends State<CategoryBanners> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Container(
-          padding: const EdgeInsets.only(
-              left: AppSizes.spacingGeneric,
-              right: AppSizes.spacingGeneric,
-              top: AppSizes.spacingGeneric),
-          height: AppSizes.deviceWidth / 4 + 30,
-          width: AppSizes.deviceWidth.toDouble(),
+        SizedBox(
+          // padding: const EdgeInsets.only(
+              // left: AppSizes.spacingGeneric,
+              // right: AppSizes.spacingGeneric,
+              // top: AppSizes.spacingGeneric),
+          height: AppSizes.deviceWidth / 2 + 40,
+          // width: AppSizes.deviceWidth.toDouble(),
           child: PageView.builder(
+
             controller: _pageController,
             itemCount: widget.banners.length,
             itemBuilder: (BuildContext context, int index) {
               return InkWell(
                 onTap: () => {},
-                child: Card(
-                    margin: EdgeInsets.zero,
-                    child: ImageView(
-                      url: widget.banners[index].url ?? "",
-                      fit: BoxFit.fill,
-                      isBottomPadding: false,
-                    )),
+                child: ImageView(
+                  url: widget.banners[index].url ?? "",
+                  fit: BoxFit.fitWidth,
+                  isBottomPadding: true,
+
+                ),
               );
             },
             onPageChanged: (int index) {

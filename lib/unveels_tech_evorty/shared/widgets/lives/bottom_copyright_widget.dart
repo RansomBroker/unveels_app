@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-
-import '../../configs/asset_path.dart';
 import '../../configs/size_config.dart';
 
 class BottomCopyrightWidget extends StatelessWidget {

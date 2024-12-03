@@ -8,6 +8,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:test_new/unvells/configuration/text_theme.dart';
 
 import '../../../constants/app_constants.dart';
 import '../../../constants/app_routes.dart';
@@ -41,15 +42,21 @@ class _SubCategoryListItemState extends State<SubCategoryListItem> {
               padding: const EdgeInsets.only(left: AppSizes.size4,right: AppSizes.size4),
               child: Column(
                 children: [
-                  Card(
-                    elevation: AppSizes.size4,
+                  Container(
+                    margin: EdgeInsets.only(top: AppSizes.size16),
+                    padding: EdgeInsets.zero,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(AppSizes.size6),
+                      // color: Colors.grey[200],
+                      border: Border.all(color: Colors.black,width: .5),
+
+                    ),
                     child: ListTile(
+                      // contentPadding: EdgeInsets.zero,
+                      minTileHeight: 20,
                       title: Text(
                         widget.subCategories?[index].name ?? "",
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge
-                            ?.copyWith(fontSize: AppSizes.textSizeSmall),
+                        style: KTextStyle.of(context).boldSixteen,
                       ),
                       trailing: const Icon(Icons.arrow_right),
                       onTap: () {

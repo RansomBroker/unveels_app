@@ -313,6 +313,7 @@ class AppStringConstant {
   static const String offlineData = "offlineData";
   static const String trackAndShowRecentlyViewedProducts = "trackAndShowRecentlyViewedProducts";
   static const String clearRecentlyViewedProducts = "clearRecentlyViewedProducts";
+  static const String clear = "clear";
   static const String recentlyViewedProductsCleared = "recentlyViewedProductsCleared";
   static const String trackAndShowSearchHistory = "trackAndShowSearchHistory";
   static const String showSearchTag = "showSearchTag";

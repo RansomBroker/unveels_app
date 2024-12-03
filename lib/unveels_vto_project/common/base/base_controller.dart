@@ -179,7 +179,7 @@ class BaseController<S extends BaseState> {
       log("URL : $url");
       log("BODY : $body");
       // log("HEADERS : ${h}");
-      final uri = Uri.parse(url);
+      // final uri = Uri.parse(url);
       // final bodyUri = Uri.https(uri.authority, uri.path, body);
       Response response = await http
           .post(Uri.parse(url),

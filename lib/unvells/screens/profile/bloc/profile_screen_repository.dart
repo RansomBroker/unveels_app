@@ -21,7 +21,8 @@ class ProfileScreenRepositoryImp implements ProfileScreenRepository{
   @override
   Future<BaseModel> logOut() async{
     BaseModel? model;
-    var firebaseToken = await PushNotificationsManager().createFcmToken();
+    // var firebaseToken = await PushNotificationsManager().createFcmToken();
+    var firebaseToken = "";
     print("deviceId for logOut==>$firebaseToken");
     model = await ApiClient().logout(firebaseToken ?? "");
     return model!;

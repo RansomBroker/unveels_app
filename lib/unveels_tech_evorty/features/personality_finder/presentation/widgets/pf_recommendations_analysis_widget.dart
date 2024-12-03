@@ -32,7 +32,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: 20,
       ),
       child: Column(
@@ -43,7 +43,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
             productList: parfumeData,
             isLoading: isLoadingParfume,
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           _ProductItemWidget(
@@ -59,7 +59,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
                 '-',
             isLoading: isLoadLook,
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           _ProductItemWidget(
@@ -68,7 +68,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
             productList: lipData,
             isLoading: isLoadingLip,
           ),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           _ProductItemWidget(
@@ -140,7 +140,7 @@ class _ProductItemWidget extends StatelessWidget {
         SizedBox(
           height: 242,
           child: isLoading
-              ? Center(
+              ? const Center(
                   child: CircularProgressIndicator(),
                 )
               : lookModel != null
@@ -159,15 +159,15 @@ class _ProductItemWidget extends StatelessWidget {
                                 .first,
                           ),
                         )
-                      : Center(
+                      : const Center(
                           child: Text('No Product'),
                         )
                   : productList.items == null
-                      ? Center(
+                      ? const Center(
                           child: Text('No Product'),
                         )
                       : productList.items!.isEmpty
-                          ? Center(
+                          ? const Center(
                               child: Text('No Product'),
                             )
                           : ListView.separated(

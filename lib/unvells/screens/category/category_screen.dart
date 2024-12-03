@@ -61,7 +61,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
       appBar: commonAppBar(
         Utils.getStringValue(context, AppStringConstant.categories),
         context,
+        textColor: Colors.white
+
       ),
+      backgroundColor: Colors.black,
+
       body: _buildMainUi(),
     );
   }
@@ -84,124 +88,128 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   Widget _buildUI() {
-    return Container(
-      color: Theme.of(context).cardColor,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          categoryListView(),
-          (isLoading == true)
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width -
-                      MediaQuery.of(context).size.width / 3.5,
-                  child: const Loader(),
-                )
-              : subcategoryListView()
+    return Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: CustomScrollView(
+
+        slivers: [
+          // SizedBox(),
+          SliverPersistentHeader(
+            pinned: true,
+            floating: true,
+            delegate: _SliverAppBarDelegate(
+              minHeight: 30.0,  // Minimum height when collapsed
+              maxHeight: 40.0,  // Maximum height when expanded
+              child: categoryListView(),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : subcategoryListView(),
+          ),
         ],
       ),
     );
   }
 
+
   //========For Left (main) categories==========//
   Widget categoryListView() {
-    return Container(
-      color: Colors.white,
-      child: SizedBox(
-        width: AppSizes.deviceWidth / 3.5,
-        height: AppSizes.deviceHeight,
-        child: ListView.separated(
-          shrinkWrap: true,
-          itemCount: (homePageData?.categories ?? []).length,
-          // padding: EdgeInsets.all(14),
-          itemBuilder: (BuildContext context, int index) {
-            //unvells  pre-cache
-            precCacheCategoryPage(homePageData?.categories?[index].id ?? 0);
-            return InkWell(
-                onTap: () {
-                  _categoryPageResponse?.productList = null;
-                  categoryScreenBloc?.add(CategoryScreenDataFetchEvent(
-                      homePageData?.categories?[index].id ?? 0));
-                  categoryScreenBloc?.emit(CategoryScreenInitial());
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                },
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: _selectedIndex == index
-                          ? const Color(0xffF5F5F5)
-                          : Colors.transparent,
-                    ),
-                    height: AppSizes.deviceHeight * 0.06,
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Text(homePageData?.categories?[index].name ?? "",
-                          textAlign: TextAlign.center,
-                          style: KTextStyle.of(context).boldTwelve.copyWith(
-                              color: _selectedIndex == index
-                                  ? AppColors.gold
-                                  : null)
+    return ListView.separated(
+      // shrinkWrap: true,
+      scrollDirection: Axis.horizontal,
+      itemCount: (homePageData?.categories ?? []).length,
+      // padding: EdgeInsets.all(14),
+      itemBuilder: (BuildContext context, int index) {
+        //unvells  pre-cache
+        precCacheCategoryPage(homePageData?.categories?[index].id ?? 0);
+        return InkWell(
+            onTap: () {
+              _categoryPageResponse?.productList = null;
+              categoryScreenBloc?.add(CategoryScreenDataFetchEvent(
+                  homePageData?.categories?[index].id ?? 0));
+              categoryScreenBloc?.emit(CategoryScreenInitial());
+              setState(() {
+                _selectedIndex = index;
+              });
+            },
+            child: Container(
+                decoration: BoxDecoration(
+                  color: _selectedIndex == index
+                      ?  AppColors.gold
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(
+                    color: _selectedIndex == index
+                       ? AppColors.white
+                        : AppColors.gold,
+                    width: 2.5,)
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                // width: AppSizes.deviceWidth * .1,
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(homePageData?.categories?[index].name?.toUpperCase() ?? "",
+                      textAlign: TextAlign.center,
+                      style: KTextStyle.of(context).boldSixteen.copyWith(
+                          color: _selectedIndex == index
+                              ? AppColors.white
+                              : Colors.black)
 
-                          //
-                          // _selectedIndex == index
-                          //     ? Theme.of(context)
-                          //         .textTheme
-                          //         .bodyMedium
-                          //         ?.copyWith(
-                          //             fontSize: AppSizes.textSizeSmall,
-                          //             color: Theme.of(context).iconTheme.color)
-                          //     : Theme.of(context)
-                          //         .textTheme
-                          //         .bodyMedium
-                          //         ?.copyWith(fontSize: AppSizes.textSizeSmall),
-                          ),
-                    )));
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return  Container(
-              color: const Color(0x7FE3E4E5),
-              height: 1,
-              width: double.infinity,
-            );
-          },
+                      //
+                      // _selectedIndex == index
+                      //     ? Theme.of(context)
+                      //         .textTheme
+                      //         .bodyMedium
+                      //         ?.copyWith(
+                      //             fontSize: AppSizes.textSizeSmall,
+                      //             color: Theme.of(context).iconTheme.color)
+                      //     : Theme.of(context)
+                      //         .textTheme
+                      //         .bodyMedium
+                      //         ?.copyWith(fontSize: AppSizes.textSizeSmall),
+                      ),
+                )));
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return  const SizedBox(
 
-        ),
-      ),
+          width: 5,
+        );
+      },
+
     );
   }
 
   //======For Right (sub) categories========//
   Widget subcategoryListView() {
-    var width = MediaQuery.of(context).size.width -
-        MediaQuery.of(context).size.width / 3.5;
-    return SingleChildScrollView(
-      child: Container(
-        color: const Color(0xffF9F9F9),
-        child: Column(
-          children: [
-            if ((_categoryPageResponse?.smallBannerImage ?? []).isNotEmpty)
-              SizedBox(
-                width: width,
-                child: CategoryBanners(
-                    (_categoryPageResponse?.smallBannerImage ?? [])),
-              ),
-            SizedBox(
-              width: width,
-              child: (_categoryPageResponse?.categories ?? []).isNotEmpty
-                  ? Column(
-                      children: [
-                        CategoryTile(
-                          subCategories: _categoryPageResponse?.categories,
-                        ),
-                        // const SizedBox(height: AppSizes.size15),
-                        // categoryProducts()
-                      ],
-                    )
-                  : categoryProducts(),
-            ),
+    var width = MediaQuery.of(context).size.width;
+    return Column(
+      children: [
+        if ((_categoryPageResponse?.smallBannerImage ?? []).isNotEmpty)
+          ...[
+            const SizedBox(height: 20,),
+            CategoryBanners(
+                (_categoryPageResponse?.smallBannerImage ?? [])),
           ],
+
+        const SizedBox(height: 30,),
+        SizedBox(
+          width: width,
+          child: (_categoryPageResponse?.categories ?? []).isNotEmpty
+              ? Column(
+                  children: [
+                    CategoryTile(
+                      subCategories: _categoryPageResponse?.categories,
+                    ),
+                    // const SizedBox(height: AppSizes.size15),
+                    // categoryProducts()
+                  ],
+                )
+              : categoryProducts(),
         ),
-      ),
+      ],
     );
   }
 
@@ -216,5 +224,34 @@ class _CategoryScreenState extends State<CategoryScreen> {
           homePageData?.categories?[_selectedIndex].id.toString(),
           homePageData?.categories?[_selectedIndex].name ?? ""),
     );
+  }
+}
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.child,
+  });
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(covariant _SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

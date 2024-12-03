@@ -123,8 +123,6 @@ class __BodyState extends State<_Body> {
         ).toSet().toList();
       });
     }
-    print("=====================================================");
-    print(_results);
   }
 
   @override

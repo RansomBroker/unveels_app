@@ -17,10 +17,7 @@ import 'package:test_new/unveels_tech_evorty/features/see_improvement/presentati
 import 'package:test_new/unveels_tech_evorty/features/shop_the_look/presentation/pages/stl_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_analysis/presentation/pages/sa_live_page.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_tone_finder/presentation/pages/stf_live_page.dart';
-import 'package:test_new/unveels_tech_evorty/main.dart';
-import 'package:test_new/unveels_tech_evorty/shared/configs/route_config.dart';
 import 'package:test_new/unveels_tech_evorty/shared/configs/theme_config.dart';
-import 'package:test_new/unveels_tech_evorty/shared/extensions/app_route_parsing.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_bloc.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/bloc/va_repository.dart';
 import 'package:test_new/unveels_virtual_assistant/screen/text_connection/va_audible_connection.dart';

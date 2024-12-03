@@ -11,7 +11,7 @@ import 'package:test_new/unveels_tech_evorty/shared/widgets/lives/play_video_wid
 import 'package:test_new/unvells/constants/app_constants.dart';
 
 import '../../../features/find_the_look/presentation/pages/ftl_live_page.dart';
-import '../../extensions/live_configuration_step_parsing.dart';
+// import '../../extensions/live_configuration_step_parsing.dart';
 import '../../extensions/live_step_parsing.dart';
 import '../app_bars/app_bar_widget.dart';
 import '../buttons/recording_controllers_widget.dart';
@@ -47,7 +47,7 @@ class LiveWidget extends StatefulWidget {
 }
 
 class _LiveWidgetState extends State<LiveWidget> {
-  LiveConfigurationStep? _liveConfigurationStep;
+  // LiveConfigurationStep? _liveConfigurationStep;
   int? _countdownFaceScanning;
   InAppWebViewController? webViewController;
   String? resultData;
@@ -142,7 +142,6 @@ class _LiveWidgetState extends State<LiveWidget> {
   Widget get _buildImage {
     switch (widget.liveType) {
       case LiveType.importPhoto:
-        // TODO: Recording screen
         // show image
         return Image.file(
           File(widget.file!.path),
@@ -151,7 +150,6 @@ class _LiveWidgetState extends State<LiveWidget> {
           height: context.height,
         );
       case LiveType.importVideo:
-        // TODO: Recording screen
         // show video
         return PlayVideoWidget(
           file: File(widget.file!.path),
@@ -205,7 +203,6 @@ class _LiveWidgetState extends State<LiveWidget> {
                         widget.onLiveStepChanged(
                             LiveStep.scannedFace, resultData);
 
-                        print(resultData);
                       });
                     },
                   );
@@ -278,7 +275,6 @@ class _LiveWidgetState extends State<LiveWidget> {
                 onProgressChanged: (controller, progress) {},
                 onUpdateVisitedHistory: (controller, url, isReload) {},
                 onConsoleMessage: (controller, consoleMessage) {
-                  print(consoleMessage);
                   if (widget.onConsoleMessage != null) {
                     widget.onConsoleMessage!(consoleMessage);
                   }

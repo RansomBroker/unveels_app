@@ -7,6 +7,7 @@
  */
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -52,34 +53,40 @@ class _ProductConfigurableViewState extends State<ProductConfigurableView> {
     return Container(
       color: Theme.of(context).cardColor,
       width: AppSizes.deviceWidth,
+      // height: 100,
       padding: const EdgeInsets.symmetric(horizontal: 24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ...attributeList.map((attribute) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                // Padding(
-                //   padding: const EdgeInsets.only(
-                //       top: AppSizes.linePadding, bottom: AppSizes.linePadding),
-                //   child: Text(
-                //     attribute.label ?? "",
-                //     style: Theme.of(context).textTheme.titleMedium,
-                //   ),
-                // ),
-                (attribute.swatchType == "visual" ||
-                        attribute.swatchType == "text")
-                    ? addVisualTypeSwatch(attributeList.indexOf(attribute),
-                        attribute, widget.data?.swatchData ?? "")
-                    : addDropDownTypeOptions(attributeList.indexOf(attribute),
-                        attribute, widget.data?.swatchData ?? ""),
-                const SizedBox(height: AppSizes.spacingNormal),
-              ],
-            );
-          })
-        ],
+      child: InkWell(
+        onTap: () {
+          log(attributeList.length.toString() );
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ...attributeList.map((attribute) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  // Padding(
+                  //   padding: const EdgeInsets.only(
+                  //       top: AppSizes.linePadding, bottom: AppSizes.linePadding),
+                  //   child: Text(
+                  //     attribute.label ?? "",
+                  //     style: Theme.of(context).textTheme.titleMedium,
+                  //   ),
+                  // ),
+                  (attribute.swatchType == "visual" ||
+                          attribute.swatchType == "text")
+                      ? addVisualTypeSwatch(attributeList.indexOf(attribute),
+                          attribute, widget.data?.swatchData ?? "")
+                      : addDropDownTypeOptions(attributeList.indexOf(attribute),
+                          attribute, widget.data?.swatchData ?? ""),
+                  const SizedBox(height: AppSizes.spacingNormal),
+                ],
+              );
+            })
+          ],
+        ),
       ),
     );
   }

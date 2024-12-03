@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:double_back_to_close/double_back_to_close.dart';
-import 'package:drag_ball/drag_ball.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -109,6 +108,7 @@ class _BottomTabBarWidgetState extends State<BottomTabBarWidget> {
         child: const CategoryScreen(),
       ),
       const TechScreen(),
+
       MultiBlocProvider(
         providers: [
           BlocProvider<ProfileScreenBloc>(
@@ -122,118 +122,98 @@ class _BottomTabBarWidgetState extends State<BottomTabBarWidget> {
     ];
 
     return DoubleBack(
-        message: Utils.getStringValue(
-            context, AppStringConstant.pressBackAgainToExit),
-        child: Dragball(
-          ball: FloatingActionButton(
-              mini: true,
-              backgroundColor: const Color(0xFF303030),
-              shape: const CircleBorder(),
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.vaOnboarding);
-              },
-              child: Image.asset(
-                'assets/images/va-logo.png',
-              )),
-          initialPosition: const DragballPosition(
-              top: 500, isRight: true, ballState: BallState.show),
-          onTap: () => debugPrint('Dragball Tapped'),
-          withIcon: false,
-          scrollAndHide: false,
-          onPositionChanged: (DragballPosition position) =>
-              debugPrint(position.toString()),
-          child: Scaffold(
-            body: widgetList.elementAt(_selectedIndex),
-            extendBody: true,
-            floatingActionButton: FloatingActionButton(
-              backgroundColor: Colors.white,
-              onPressed: () {
-                Navigator.pushNamed(context, AppRoutes.tryOn);
-              },
-              shape: const CircleBorder(),
-              child: const FluxImage(
-                  imageUrl: "assets/icons/camera.svg", color: Colors.black),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-            bottomNavigationBar: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-              child: BottomAppBar(
-                elevation: 0,
-                color: Colors.black,
+      message:
+          Utils.getStringValue(context, AppStringConstant.pressBackAgainToExit),
+      child: Scaffold(
+        body: widgetList.elementAt(_selectedIndex),
+        extendBody: true,
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.white,
+          onPressed: () {
+            debugPrint(appStoragePref.getCustomerToken());
+            Navigator.pushNamed(context, AppRoutes.tryOn);
+          },
+          shape: const CircleBorder(),
+          child: const FluxImage(
+              imageUrl: "assets/icons/camera.svg", color: Colors.black),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: ClipRRect(
+          borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+          child: BottomAppBar(
+            elevation: 0,
+            color: Colors.black,
 
-                // notchMargin: 7,
-                height: AppSizes.deviceHeight * .067,
+            // notchMargin: 7,
+            height: AppSizes.deviceHeight * .067,
 
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                shape: const CircularNotchedRectangle(),
-                child: BottomNavigationBar(
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  type: BottomNavigationBarType.fixed,
-                  currentIndex: _selectedIndex,
-                  onTap: (index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  selectedItemColor: AppColors.gold,
-                  unselectedItemColor: Colors.white,
-                  selectedLabelStyle: KTextStyle.of(context).boldTwelve,
-                  unselectedLabelStyle: KTextStyle.of(context)
-                      .boldTwelve
-                      .copyWith(color: Colors.white),
-                  items: [
-                    BottomNavigationBarItem(
-                      label:
-                          Utils.getStringValue(context, AppStringConstant.home),
-                      icon: _selectedIndex == 0
-                          ? const FluxImage(
-                              imageUrl: "assets/icons/home.svg",
-                              color: AppColors.gold)
-                          : const FluxImage(
-                              imageUrl: "assets/icons/home.svg",
-                              color: Colors.white),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: _selectedIndex == 1
-                          ? const FluxImage(
-                              imageUrl: "assets/icons/category.svg",
-                              color: AppColors.gold)
-                          : const FluxImage(
-                              imageUrl: "assets/icons/category.svg",
-                              color: Colors.white),
-                      label: Utils.getStringValue(
-                          context, AppStringConstant.categories),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: _selectedIndex == 2
-                          ? const FluxImage(
-                              imageUrl: "assets/icons/ai.png",
-                              color: AppColors.gold)
-                          : const FluxImage(
-                              imageUrl: "assets/icons/ai.png",
-                              color: Colors.white),
-                      label:
-                          Utils.getStringValue(context, AppStringConstant.tech),
-                    ),
-                    BottomNavigationBarItem(
-                      icon: _selectedIndex == 3
-                          ? const FluxImage(
-                              imageUrl: "assets/icons/More.svg",
-                              color: AppColors.gold)
-                          : const FluxImage(
-                              imageUrl: "assets/icons/More.svg",
-                              color: Colors.white),
-                      label: Utils.getStringValue(
-                          context, AppStringConstant.account),
-                    ),
-                  ],
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            shape: const CircularNotchedRectangle(),
+            child: BottomNavigationBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              type: BottomNavigationBarType.fixed,
+              currentIndex: _selectedIndex,
+              onTap: (index) {
+                setState(() {
+                  _selectedIndex = index;
+                });
+              },
+              selectedItemColor: AppColors.gold,
+              unselectedItemColor: Colors.white,
+              selectedLabelStyle: KTextStyle.of(context).boldTwelve,
+              unselectedLabelStyle: KTextStyle.of(context)
+                  .boldTwelve
+                  .copyWith(color: Colors.white),
+              items: [
+                BottomNavigationBarItem(
+                  label: Utils.getStringValue(context, AppStringConstant.home),
+                  icon: _selectedIndex == 0
+                      ? const FluxImage(
+                          imageUrl: "assets/icons/home.svg",
+                          color: AppColors.gold)
+                      : const FluxImage(
+                          imageUrl: "assets/icons/home.svg",
+                          color: Colors.white),
                 ),
-              ),
+                BottomNavigationBarItem(
+                  icon: _selectedIndex == 1
+                      ? const FluxImage(
+                      imageUrl: "assets/icons/category.svg",
+                      color: AppColors.gold)
+                      : const FluxImage(
+                      imageUrl: "assets/icons/category.svg",
+                      color: Colors.white),
+                  label: Utils.getStringValue(
+                      context, AppStringConstant.categories),
+                ),
+
+                BottomNavigationBarItem(
+                  icon: _selectedIndex == 2
+                      ? const FluxImage(
+                          imageUrl: "assets/icons/ai.png",
+                          color: AppColors.gold)
+                      : const FluxImage(
+                          imageUrl: "assets/icons/ai.png", color: Colors.white),
+                  label: Utils.getStringValue(context, AppStringConstant.tech),
+                ),
+                BottomNavigationBarItem(
+                  icon: _selectedIndex == 3
+                      ? const FluxImage(
+                          imageUrl: "assets/icons/More.svg",
+                          color: AppColors.gold)
+                      : const FluxImage(
+                          imageUrl: "assets/icons/More.svg",
+                          color: Colors.white),
+                  label:
+                      Utils.getStringValue(context, AppStringConstant.account),
+                ),
+              ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

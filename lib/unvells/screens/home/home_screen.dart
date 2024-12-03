@@ -1,6 +1,6 @@
 /*
  *
-  
+
 
  *
  * /
@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen>
   HomePageData? homePageData;
   List<Widget> homePageWidgets = [];
   List<SortOrder> sortedOrder = [];
+
   // bool appStoragePref.isFirstTime()=true;
 
   @override
@@ -78,24 +79,22 @@ class _HomeScreenState extends State<HomeScreen>
     debugPrint("appStoragePref.isFirstTime() $homePageData");
     debugPrint("${appStoragePref.getBearerToken()} bearerToken");
     debugPrint("${appStoragePref.getCartId()} cartId");
-    if(appStoragePref.isFirstTime()){
-      PushNotificationsManager().setUpFirebase(context);
-      PushNotificationsManager().checkInitialMessage(context);
+    if (appStoragePref.isFirstTime()) {
+      // PushNotificationsManager().setUpFirebase(context);
+      // PushNotificationsManager().checkInitialMessage(context);
       HiveStore.openBox("graphqlClientStore").then((value) {
         mainBox = value;
       });
-      if (homePageData?.categories != null && homePageData!.categories!.isNotEmpty) {
+      if (homePageData?.categories != null &&
+          homePageData!.categories!.isNotEmpty) {
         precCacheCategoryPage(homePageData?.categories?[0].id ?? 0);
       }
-
     }
-
 
     // Get the BLoC
     homePageBloc = context.read<HomeScreenBloc>();
 
     // Initialize Hive box asynchronously
-
 
     // Set isFirstTime to false after the first check
 
@@ -104,9 +103,8 @@ class _HomeScreenState extends State<HomeScreen>
       // Always override homePageData with GlobalData.homePageData to ensure the data is fresh
       homePageData = GlobalData.homePageData;
 
-
       // Emit loading state, then let the UI react to this new data
-      homePageBloc?.emit(HomeScreenSuccess(homePageData!,false));
+      homePageBloc?.emit(HomeScreenSuccess(homePageData!, false));
     } else {
       // If there's no global data, fetch the data fresh from the network or cache
       homePageBloc?.add(const HomeScreenDataFetchEvent(false));
@@ -119,13 +117,32 @@ class _HomeScreenState extends State<HomeScreen>
     // Set up Firebase after page load
   }
 
-
   @override
   Widget build(BuildContext context) {
     print("first call${appStoragePref.isFirstTime()}");
     super.build(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
+      // floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      // floatingActionButton: Column(
+      //
+      //   children: [
+      //     FloatingActionButton(
+      //       onPressed: () {
+      //       },
+      //       backgroundColor: Colors.transparent,
+      //       child: const FluxImage(imageUrl: 'assets/icons/ai1.png',),
+      //     ),
+      //     FloatingActionButton(
+      //       onPressed: () {
+      //       },
+      //       backgroundColor: Colors.transparent,
+      //       child: const FluxImage(imageUrl: 'assets/icons/ai2.png',),
+      //
+      //     ),
+      //
+      //   ],
+      // ),
       appBar: AppBar(
         backgroundColor: Colors.black,
         toolbarHeight: AppSizes.deviceHeight * .08,
@@ -229,22 +246,18 @@ class _HomeScreenState extends State<HomeScreen>
         } else if (currentState is HomeScreenDataLoading) {
           // isLoading = false;
           // setUpDynamicLayouts();
-
-
         } else if (currentState is HomeScreenSuccess) {
           debugPrint("asdasdasdasdds");
           // HiveStore().reset();
 
-
           isLoading = false;
           homePageWidgets = [];
-          homePageData==null;
+          homePageData == null;
           setUpDynamicLayouts();
           GlobalData.homePageData = currentState.homePageData;
           homePageData = currentState.homePageData;
           appStoragePref
               .setWatchEnabled(currentState.homePageData.watchEnabled ?? false);
-
 
           homePageBloc?.add(const CartCountFetchEvent());
           homePageBloc?.emit(HomeScreenDataLoading());
@@ -302,99 +315,150 @@ class _HomeScreenState extends State<HomeScreen>
           },
           child: Visibility(
               visible: (homePageData != null),
-              child: SingleChildScrollView(
-                primary: false,
-                controller: _scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    if (appStoragePref.isLoggedIn())
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        // crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
+                children: [
+                  SingleChildScrollView(
+                    primary: false,
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        if (appStoragePref.isLoggedIn())
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
 
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                              Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const FluxImage(
-                                      imageUrl:
-                                      "assets/icons/home_welcome.png"),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      const FluxImage(
+                                          imageUrl:
+                                              "assets/icons/home_welcome.png"),
+                                      const SizedBox(
+                                        width: 3,
+                                      ),
+                                      Text(
+                                        "${Utils.getStringValue(context, Utils.getStringValue(context, AppStringConstant.hello))}${appStoragePref.getUserData()?.name}",
+                                        style:
+                                            KTextStyle.of(context).boldSixteen,
+                                      ),
+                                    ],
+                                  ),
                                   const SizedBox(
-                                    width: 3,
+                                    height: 2,
                                   ),
-                                  Text(
-                                    "${Utils.getStringValue(context, Utils.getStringValue(context, AppStringConstant.hello))}${appStoragePref.getUserData()?.name}",
-                                    style: KTextStyle.of(context).boldSixteen,
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 2,
-                              ),
-                              SizedBox(
-                                  width: AppSizes.deviceHeight * .3,
-                                  child: Text(
-                                    Utils.getStringValue(
-                                        context,
+                                  SizedBox(
+                                      width: AppSizes.deviceHeight * .3,
+                                      child: Text(
                                         Utils.getStringValue(
                                             context,
-                                            AppStringConstant
-                                                .homeHelloMessage)),
-                                    style: KTextStyle.of(context)
-                                        .twelve
-                                        .copyWith(
-                                        color: const Color(0xff959393)),
-                                  ))
+                                            Utils.getStringValue(
+                                                context,
+                                                AppStringConstant
+                                                    .homeHelloMessage)),
+                                        style: KTextStyle.of(context)
+                                            .twelve
+                                            .copyWith(
+                                                color: const Color(0xff959393)),
+                                      ))
+                                ],
+                              ),
+                              Container(
+                                width: 65.80,
+                                height: 65.80,
+                                decoration: const ShapeDecoration(
+                                  color: Colors.white,
+                                  shape: OvalBorder(),
+                                ),
+                                child: Center(
+                                    child: ClipOval(
+                                        child: FluxImage(
+                                  imageUrl: appStoragePref
+                                          .getUserData()
+                                          ?.profileImage ??
+                                      "assets/icons/profile-header.svg",
+                                  fit: BoxFit.contain,
+                                  color: AppColors.gold,
+                                  height: 40,
+                                  width: 40,
+                                ))),
+                              ),
                             ],
                           ),
-                          Container(
-                            width: 65.80,
-                            height: 65.80,
-                            decoration: const ShapeDecoration(
-                              color: Colors.white,
-                              shape: OvalBorder(),
-                            ),
-                            child: Center(
-                                child: ClipOval(
-                                    child: FluxImage(
-                                      imageUrl:
-                                      appStoragePref.getUserData()?.profileImage ??
-                                          "assets/icons/profile-header.svg",
-                                      fit: BoxFit.contain,
-                                      color: AppColors.gold,
-                                      height: 40,
-                                      width: 40,
-                                    ))),
-                          ),
-                        ],
-                      ),
-                    Column(
-                      children: homePageWidgets,
-                    ),
-                    space(),
+                        Column(
+                          children: homePageWidgets,
+                        ),
+                        space(),
 
-                    (appStoragePref.getShowRecentProduct())
-                        ? Column(children: [
-                      const RecentView(),
-                      space(),
-                    ])
-                        : Container(),
-                    //Will show at the end of the page!
-                    footer(context),
-                  ],
-                ),
+                        (appStoragePref.getShowRecentProduct())
+                            ? Column(children: [
+                                const RecentView(),
+                                space(),
+                              ])
+                            : Container(),
+                        //Will show at the end of the page!
+                        footer(context),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: AppSizes.deviceHeight * .58,
+                    right: 10,
+                    child: Column(
+                      children: [
+                        FloatingActionButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.vaOnboarding);
+                          },
+                          backgroundColor: Colors.transparent,
+                          child: const FluxImage(
+                            imageUrl: 'assets/icons/ai2.png',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 6,
+                        ),
+                        FloatingActionButton(
+                          onPressed: () {},
+                          backgroundColor: Colors.transparent,
+                          child: const FluxImage(
+                            imageUrl: 'assets/icons/ai1.png',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               )),
         ),
-        Visibility(visible: isLoading, child: const Loader())
+        Visibility(visible: isLoading, child: const Loader()),
+        // Column(
+        //   children: [
+        //     FloatingActionButton(
+        //       onPressed: () {
+        //
+        //       },
+        //       child: const FluxImage(
+        //         imageUrl: 'assets/icons/ai1.svg',
+        //       ),
+        //     ),
+        //     FloatingActionButton(
+        //       onPressed: () {},
+        //       child: const FluxImage(
+        //         imageUrl: 'assets/icons/ai2.svg',
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
@@ -428,7 +492,6 @@ class _HomeScreenState extends State<HomeScreen>
           homePageData?.carousel?.add(category);
         }
         appStoragePref.setFirstTime(false);
-
       }
 
       sortedOrder.forEach((element) {
@@ -462,9 +525,9 @@ class _HomeScreenState extends State<HomeScreen>
                       space(),
                       homePageData?.themeType != 1
                           ? CategoryWidgetType2(
-                          carousel: item.featuredCategories)
+                              carousel: item.featuredCategories)
                           : CategoryWidgetType1(
-                          context, item.featuredCategories),
+                              context, item.featuredCategories),
                     ],
                   ));
                   break;
@@ -526,7 +589,7 @@ class _HomeScreenState extends State<HomeScreen>
           (carousel.productList ?? []),
           context,
           carousel.id ?? '',
-          carousel.category_id??'',
+          carousel.category_id ?? '',
           (carousel.block_title ?? ''),
           description: carousel.block_description,
         ),
@@ -645,7 +708,7 @@ class _HomeScreenState extends State<HomeScreen>
   void setOnBoardingVersion() {
     if (homePageData?.walkthroughVersion?.isNotEmpty ?? false) {
       if (double.parse(
-          appStoragePref.getWalkThroughVersion().toString() ?? "") <
+              appStoragePref.getWalkThroughVersion().toString() ?? "") <
           double.parse(homePageData?.walkthroughVersion.toString() ?? "0.0")) {
         appStoragePref.setShowWalkThrough(true);
         appStoragePref.setWalkThroughVersion(

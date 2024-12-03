@@ -6,7 +6,6 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
 
 import '../../../../shared/configs/asset_path.dart';
-import '../../../../shared/configs/color_config.dart';
 import '../../../../shared/configs/size_config.dart';
 import 'sa_product_item_widget.dart';
 

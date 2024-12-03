@@ -172,12 +172,12 @@ class _ItemCardState extends State<ItemCard> {
                   color: Colors.white.withOpacity(.9),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
-                    side: BorderSide(
-                      width: .7,
-                      color: Colors.grey.withOpacity(
-                        0.1,
-                      ),
-                    ),
+                    // side: BorderSide(
+                    //   width: .7,
+                    //   color: Colors.grey.withOpacity(
+                    //     0.1,
+                    //   ),
+                    // ),
                   ),
                 ),
                 child: FluxImage(

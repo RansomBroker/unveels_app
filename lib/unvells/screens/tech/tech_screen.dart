@@ -63,9 +63,9 @@ class TechScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 style: KTextStyle.of(context).semiBoldSixteen.copyWith(
-                      color: const Color(0xFFB1B1B1),
-                      height: 1,
-                    ),
+                  color: const Color(0xFFB1B1B1),
+                  height: 1,
+                ),
               ),
             ),
           ),
@@ -111,8 +111,7 @@ class TechScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    Utils.getStringValue(
-                        context, "EXCLUSIVE_TECHNOLOGIES_DESCRIPTION"),
+                    Utils.getStringValue(context, "EXCLUSIVE_TECHNOLOGIES_DESCRIPTION"),
                     style: KTextStyle.of(context)
                         .sixteen
                         .copyWith(color: AppColors.white),
@@ -282,8 +281,8 @@ class CustomTechContainer extends StatelessWidget {
             Utils.getStringValue(context, subTitle),
             textAlign: TextAlign.center,
             style: KTextStyle.of(context).twenty.copyWith(
-                  color: AppColors.gold,
-                ),
+              color: AppColors.gold,
+            ),
           ),
           const SizedBox(height: 4),
           Text(

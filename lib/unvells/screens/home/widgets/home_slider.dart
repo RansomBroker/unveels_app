@@ -30,8 +30,9 @@ import '../../category/widgets/category_products.dart';
 class HomeSliders extends StatefulWidget {
   List<Banners> banners = [];
   bool showTitle;
+  double? radius;
 
-  HomeSliders(this.banners, this.showTitle);
+  HomeSliders(this.banners, this.showTitle, {this.radius});
 
   @override
   _HomeSlidersState createState() => _HomeSlidersState();
@@ -76,50 +77,53 @@ class _HomeSlidersState extends State<HomeSliders> {
   @override
   Widget build(BuildContext context) {
     final bool multiImage = widget.banners.length > 1;
-    return multiImage?CarouselSlider(
-      options: CarouselOptions(
-        autoPlay: false,
-        pauseAutoPlayOnTouch: true,
-        viewportFraction: .95 ,
-        enlargeCenterPage: false,
-        clipBehavior: Clip.none,
-        disableCenter: true,
-        padEnds: false,
-        height: AppSizes.deviceHeight*.24,
+    return multiImage
+        ? CarouselSlider(
+            options: CarouselOptions(
+              autoPlay: false,
+              pauseAutoPlayOnTouch: true,
+              viewportFraction: .95,
+              enlargeCenterPage: false,
+              clipBehavior: Clip.none,
+              disableCenter: true,
+              padEnds: false,
+              height: AppSizes.deviceHeight * .24,
 
-
-        autoPlayInterval: const Duration(seconds: 5),
-        // aspectRatio: 1.6,
-        enableInfiniteScroll: false,
-        onPageChanged: (index, reason) {},
-      ),
-      items: widget.banners
-          .map((item) => Padding(
-            padding:  EdgeInsetsDirectional.only(end: AppSizes.deviceWidth*.03),
-            child: InkWell(
-              onTap: () => handleBannerClicks(item, context),
-              child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: FluxImage(
-                    useExtendedImage: true,
-                    imageUrl: item.url ?? item.bannerImage ?? "",
-                    fit: BoxFit.fill,
-                  )),
+              autoPlayInterval: const Duration(seconds: 5),
+              // aspectRatio: 1.6,
+              enableInfiniteScroll: false,
+              onPageChanged: (index, reason) {},
             ),
-          ))
-          .toList(), // Passing the item to VacationRequestItem
-    ):InkWell(
-      onTap: () => handleBannerClicks(widget.banners.first, context),
-      child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: FluxImage(
-            useExtendedImage: true,
-            imageUrl: widget.banners.first.url ?? widget.banners.first.bannerImage ?? "",
-            fit: BoxFit.contain,
-          )),
-    );
+            items: widget.banners
+                .map((item) => Padding(
+                      padding: EdgeInsetsDirectional.only(
+                          end: AppSizes.deviceWidth * .03),
+                      child: InkWell(
+                        onTap: () => handleBannerClicks(item, context),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: FluxImage(
+                              useExtendedImage: true,
+                              imageUrl: item.url ?? item.bannerImage ?? "",
+                              fit: BoxFit.fill,
+                            )),
+                      ),
+                    ))
+                .toList(), // Passing the item to VacationRequestItem
+          )
+        : InkWell(
+            onTap: () => handleBannerClicks(widget.banners.first, context),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(widget.radius ?? 20),
+                child: FluxImage(
+                  useExtendedImage: true,
+                  imageUrl: widget.banners.first.url ??
+                      widget.banners.first.bannerImage ??
+                      "",
+                  fit: BoxFit.contain,
+                )),
+          );
   }
-
 
   void handleBannerClicks(Banners banner, BuildContext context) {
     if (banner.type == "category") {

@@ -70,7 +70,7 @@ class ToneTypeModel {
 
   ToneTypeModel.fromJson(Map<String, dynamic> json) {
     extensionAttributes = json['extension_attributes'] != null
-        ? new ExtensionAttributes.fromJson(json['extension_attributes'])
+        ? ExtensionAttributes.fromJson(json['extension_attributes'])
         : null;
     isWysiwygEnabled = json['is_wysiwyg_enabled'];
     isHtmlAllowedOnFront = json['is_html_allowed_on_front'];
@@ -97,7 +97,7 @@ class ToneTypeModel {
     if (json['options'] != null) {
       options = <Options>[];
       json['options'].forEach((v) {
-        options!.add(new Options.fromJson(v));
+        options!.add(Options.fromJson(v));
       });
     }
     isUserDefined = json['is_user_defined'];
@@ -105,7 +105,7 @@ class ToneTypeModel {
     if (json['frontend_labels'] != null) {
       frontendLabels = <FrontendLabels>[];
       json['frontend_labels'].forEach((v) {
-        frontendLabels!.add(new FrontendLabels.fromJson(v));
+        frontendLabels!.add(FrontendLabels.fromJson(v));
       });
     }
     backendType = json['backend_type'];
@@ -115,45 +115,45 @@ class ToneTypeModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.extensionAttributes != null) {
-      data['extension_attributes'] = this.extensionAttributes!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (extensionAttributes != null) {
+      data['extension_attributes'] = extensionAttributes!.toJson();
     }
-    data['is_wysiwyg_enabled'] = this.isWysiwygEnabled;
-    data['is_html_allowed_on_front'] = this.isHtmlAllowedOnFront;
-    data['used_for_sort_by'] = this.usedForSortBy;
-    data['is_filterable'] = this.isFilterable;
-    data['is_filterable_in_search'] = this.isFilterableInSearch;
-    data['is_used_in_grid'] = this.isUsedInGrid;
-    data['is_visible_in_grid'] = this.isVisibleInGrid;
-    data['is_filterable_in_grid'] = this.isFilterableInGrid;
-    data['position'] = this.position;
-    data['is_searchable'] = this.isSearchable;
-    data['is_visible_in_advanced_search'] = this.isVisibleInAdvancedSearch;
-    data['is_comparable'] = this.isComparable;
-    data['is_used_for_promo_rules'] = this.isUsedForPromoRules;
-    data['is_visible_on_front'] = this.isVisibleOnFront;
-    data['used_in_product_listing'] = this.usedInProductListing;
-    data['is_visible'] = this.isVisible;
-    data['scope'] = this.scope;
-    data['attribute_id'] = this.attributeId;
-    data['attribute_code'] = this.attributeCode;
-    data['frontend_input'] = this.frontendInput;
-    data['entity_type_id'] = this.entityTypeId;
-    data['is_required'] = this.isRequired;
-    if (this.options != null) {
-      data['options'] = this.options!.map((v) => v.toJson()).toList();
+    data['is_wysiwyg_enabled'] = isWysiwygEnabled;
+    data['is_html_allowed_on_front'] = isHtmlAllowedOnFront;
+    data['used_for_sort_by'] = usedForSortBy;
+    data['is_filterable'] = isFilterable;
+    data['is_filterable_in_search'] = isFilterableInSearch;
+    data['is_used_in_grid'] = isUsedInGrid;
+    data['is_visible_in_grid'] = isVisibleInGrid;
+    data['is_filterable_in_grid'] = isFilterableInGrid;
+    data['position'] = position;
+    data['is_searchable'] = isSearchable;
+    data['is_visible_in_advanced_search'] = isVisibleInAdvancedSearch;
+    data['is_comparable'] = isComparable;
+    data['is_used_for_promo_rules'] = isUsedForPromoRules;
+    data['is_visible_on_front'] = isVisibleOnFront;
+    data['used_in_product_listing'] = usedInProductListing;
+    data['is_visible'] = isVisible;
+    data['scope'] = scope;
+    data['attribute_id'] = attributeId;
+    data['attribute_code'] = attributeCode;
+    data['frontend_input'] = frontendInput;
+    data['entity_type_id'] = entityTypeId;
+    data['is_required'] = isRequired;
+    if (options != null) {
+      data['options'] = options!.map((v) => v.toJson()).toList();
     }
-    data['is_user_defined'] = this.isUserDefined;
-    data['default_frontend_label'] = this.defaultFrontendLabel;
-    if (this.frontendLabels != null) {
+    data['is_user_defined'] = isUserDefined;
+    data['default_frontend_label'] = defaultFrontendLabel;
+    if (frontendLabels != null) {
       data['frontend_labels'] =
-          this.frontendLabels!.map((v) => v.toJson()).toList();
+          frontendLabels!.map((v) => v.toJson()).toList();
     }
-    data['backend_type'] = this.backendType;
-    data['backend_model'] = this.backendModel;
-    data['default_value'] = this.defaultValue;
-    data['is_unique'] = this.isUnique;
+    data['backend_type'] = backendType;
+    data['backend_model'] = backendModel;
+    data['default_value'] = defaultValue;
+    data['is_unique'] = isUnique;
     return data;
   }
 }
@@ -168,8 +168,8 @@ class ExtensionAttributes {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['is_pagebuilder_enabled'] = this.isPagebuilderEnabled;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['is_pagebuilder_enabled'] = isPagebuilderEnabled;
     return data;
   }
 }
@@ -186,9 +186,9 @@ class Options {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['label'] = this.label;
-    data['value'] = this.value;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['label'] = label;
+    data['value'] = value;
     return data;
   }
 }
@@ -205,9 +205,9 @@ class FrontendLabels {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['store_id'] = this.storeId;
-    data['label'] = this.label;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['store_id'] = storeId;
+    data['label'] = label;
     return data;
   }
 }

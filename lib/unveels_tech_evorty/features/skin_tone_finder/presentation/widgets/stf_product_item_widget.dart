@@ -37,7 +37,7 @@ class STFProductItemWidget extends StatelessWidget {
                   )
                 : CachedNetworkImage(
                     imageUrl:
-                        "${ApiConstant.webUrl}/media/catalog/product${data?.customAttributes?.where((e) => e.attributeCode == 'small_image').first.value ?? ''}",
+                        "${ApiConstant.webUrl}/media/catalog/product${data?.customAttributes.where((e) => e.attributeCode == 'small_image').first.value ?? ''}",
                     placeholder: (context, url) {
                       return Container(
                         color: Colors.white,

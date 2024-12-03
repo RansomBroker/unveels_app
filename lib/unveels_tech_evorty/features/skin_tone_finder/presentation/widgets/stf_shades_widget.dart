@@ -68,7 +68,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
   ToneTab? _selectedToneTab;
   String _selectedSkinTone = "perfect fit";
   String _selectedOtherTone = "Fair";
-  String? _selectedMatchedTone;
+  // String? _selectedMatchedTone;
 
   SkinToneProductModel skinToneProductModel = SkinToneProductModel();
   SkinToneProductModel otherToneProductModel = SkinToneProductModel();
@@ -86,7 +86,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
 
     _selectedSkinTone = "perfect fit";
 
-    _selectedMatchedTone = _matchedTones.first;
+    // _selectedMatchedTone = _matchedTones.first;
     getProduct(
         widget.skinToneModel!.options!
                 .where((e) =>
@@ -100,7 +100,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
             '',
         widget.toneTypeModel!.options
                 ?.where((e) =>
-                    e.label?.toLowerCase() == _selectedSkinTone!.toLowerCase())
+                    e.label?.toLowerCase() == _selectedSkinTone.toLowerCase())
                 .first
                 .value ??
             '');
@@ -261,7 +261,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
                 final isEnd =
                     index == (widget.skinToneModel?.options?.length ?? 0) - 1;
                 // get opacity from index, example: 1 => 0.1
-                final opacity = (1 - index / 10);
+                // final opacity = (1 - index / 10);
 
                 if (widget.skinToneModel?.options?[index].label == ' ') {
                   return Container();
@@ -302,11 +302,11 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
             height: 4,
           ),
           isLoadingProductOther
-              ? SizedBox()
+              ? const SizedBox()
               : otherToneProductModel.items == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : otherToneProductModel.items!.isEmpty
-                      ? SizedBox()
+                      ? const SizedBox()
                       : Container(
                           height: 35,
                           padding: EdgeInsets.symmetric(
@@ -324,10 +324,10 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
                               );
                             },
                             itemBuilder: (context, index) {
-                              final isFirst = index == 0;
-                              final isEnd = index ==
-                                  (otherToneProductModel.items?.length ?? 0) -
-                                      1;
+                              // final isFirst = index == 0;
+                              // final isEnd = index ==
+                              //     (otherToneProductModel.items?.length ?? 0) -
+                              //         1;
                               if (index == 0) {
                                 return InkWell(
                                   onTap: () {
@@ -392,7 +392,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
                             },
                           ),
                         ),
-          SizedBox(
+          const SizedBox(
             height: 5,
           ),
           Align(
@@ -417,17 +417,17 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
           SizedBox(
             height: 130,
             child: isLoadingProductOther
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
                 : otherToneProductModel.items == null
-                    ? Center(
+                    ? const Center(
                         child: Text('No Product!'),
                       )
                     : otherToneProductModel.items!.isEmpty
-                        ? Center(
+                        ? const Center(
                             child: Text('No Product!'),
                           )
                         : Container(
@@ -524,7 +524,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
                 if ((hexColorTone[(e.label ?? '-').toLowerCase()] ??
                         '#FFFFFF') ==
                     '#FFFFFF') {
-                  return SizedBox();
+                  return const SizedBox();
                 }
                 return _MatchedToneItemWidget(
                   title: e.label ?? '',
@@ -607,13 +607,13 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
           SizedBox(
             height: 130,
             child: isLoadingProductt
-                ? Center(
+                ? const Center(
                     child: CircularProgressIndicator(
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
                 : skinToneProductModel.items!.isEmpty
-                    ? Center(
+                    ? const Center(
                         child: Text('No Product!'),
                       )
                     : Container(
