@@ -547,9 +547,15 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -568,8 +574,8 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -578,6 +584,7 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
       ),
     );
   }
+
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
@@ -646,7 +653,6 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -655,8 +661,7 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Constant.xSizedBox8,
@@ -683,8 +688,7 @@ class _HeadSunglassesViewState extends State<HeadSunglassesView> {
             // Constant.xSizedBox8,
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget cameraPreview(double scale) {

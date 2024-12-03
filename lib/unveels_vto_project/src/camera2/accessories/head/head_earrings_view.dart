@@ -414,9 +414,15 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -435,8 +441,8 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -445,6 +451,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
       ),
     );
   }
+
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
@@ -513,7 +520,6 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -522,8 +528,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
+      child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Constant.xSizedBox8,
@@ -549,8 +554,7 @@ class _HeadEarringsViewState extends State<HeadEarringsView> {
             // Constant.xSizedBox8,
           ],
         ),
-      ),
-    );
+      );
   }
 
   Widget cameraPreview(double scale) {

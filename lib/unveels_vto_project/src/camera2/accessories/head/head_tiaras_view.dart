@@ -52,15 +52,19 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
     });
     print("Fetching data");
     try {
-      List<String>? productTypes = getProductTypesByLabels(
-          "head_accessories_product_type", ["Tiaras"]);
+      List<String>? productTypes =
+          getProductTypesByLabels("head_accessories_product_type", ["Tiaras"]);
       print(productTypes);
 
       var dataResponse = await productRepository.fetchProducts(
           // texture: textures!.isEmpty ? null : textures.join(","),
           // shape: getShapeByLabel(earringsList[shapesSelected!]),
-          occasion: !occasionOn ? null : getOccasionByLabel(occasionList[occasionSelected!]),
-          material: !materialOn ? null : getMaterialByLabel(materialList[materialSelected!]),
+          occasion: !occasionOn
+              ? null
+              : getOccasionByLabel(occasionList[occasionSelected!]),
+          material: !materialOn
+              ? null
+              : getMaterialByLabel(materialList[materialSelected!]),
           productType: "head_accessories_product_type",
           productTypes: productTypes?.join(","));
 
@@ -241,7 +245,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -262,7 +267,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -405,8 +411,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
                       fetchData();
                     },
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: Text(
                         'Occasion',
                         textAlign: TextAlign.center,
@@ -444,8 +450,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
                       fetchData();
                     },
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: Text(
                         'Fabric',
                         textAlign: TextAlign.center,
@@ -494,7 +500,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: occasionSelected == index ? const Color(0xffCA9C43) : null,
+                color:
+                    occasionSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: occasionSelected == index
@@ -532,7 +539,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: materialSelected == index ? const Color(0xffCA9C43) : null,
+                color:
+                    materialSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: materialSelected == index
@@ -718,7 +726,6 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -727,34 +734,32 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            colorChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            OccasionOrFabric(),
-            occasionOn ? occasionChoice() : fabricChoice(),
-            Constant.xSizedBox4,
-            separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox8,
-            lipstickChoice(),
-            // Constant.xSizedBox4,
-            // separator(),
-            // typeText(),
-            // Constant.xSizedBox8,
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          colorChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          OccasionOrFabric(),
+          occasionOn ? occasionChoice() : fabricChoice(),
+          Constant.xSizedBox4,
+          separator(),
+          const Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "View All",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              )),
+          Constant.xSizedBox8,
+          lipstickChoice(),
+          // Constant.xSizedBox4,
+          // separator(),
+          // typeText(),
+          // Constant.xSizedBox8,
+        ],
       ),
     );
   }
@@ -803,7 +808,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -891,7 +897,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

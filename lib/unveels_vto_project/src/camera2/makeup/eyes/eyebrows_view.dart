@@ -39,7 +39,6 @@ class _EyebrowsViewState extends State<EyebrowsView> {
   int? colorSelected = 0;
   int? typeSelected = 0;
 
-
   final Dio dio = Dio();
   List<ProductData>? products;
   bool _isLoading = false;
@@ -64,8 +63,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
       // // ]);
       // print(productTypes);
 
-      var dataResponse = await productRepository.fetchProducts(
-          browMakeup: '');
+      var dataResponse = await productRepository.fetchProducts(browMakeup: '');
       setState(() {
         products = dataResponse;
       });
@@ -221,9 +219,15 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     }
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -242,8 +246,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -252,6 +256,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
       ),
     );
   }
+
   Widget pictureTaken() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -261,7 +266,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -282,7 +288,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -383,7 +390,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 fetchData();
               },
               child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -473,7 +481,6 @@ class _EyebrowsViewState extends State<EyebrowsView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -482,26 +489,24 @@ class _EyebrowsViewState extends State<EyebrowsView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            colorChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            Constant.xSizedBox4,
-            typeEyeBrowsChip(),
-            Constant.xSizedBox4,
-            separator(),
-            slider(),
-            Constant.xSizedBox4,
-            separator(),
-            lipstickChoice(),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          colorChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          Constant.xSizedBox4,
+          typeEyeBrowsChip(),
+          Constant.xSizedBox4,
+          separator(),
+          slider(),
+          Constant.xSizedBox4,
+          separator(),
+          lipstickChoice(),
+        ],
       ),
     );
   }
@@ -550,7 +555,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -638,7 +644,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

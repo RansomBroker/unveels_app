@@ -183,8 +183,8 @@ class _VtoProductItemState extends State<VtoProductItem> {
                             child: Center(
                                 child: _isAddingToCart
                                     ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
+                                        width: 15,
+                                        height: 15,
                                         child: CircularProgressIndicator(
                                             color: Colors.white))
                                     : const Text(

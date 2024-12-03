@@ -78,7 +78,6 @@ class _ContourViewState extends State<ContourView> {
     }
   }
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -229,7 +228,8 @@ class _ContourViewState extends State<ContourView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -250,7 +250,8 @@ class _ContourViewState extends State<ContourView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -365,7 +366,8 @@ class _ContourViewState extends State<ContourView> {
                     height: 35,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.black26),
-                    child: const Icon(Icons.autorenew_rounded, color: Colors.white),
+                    child: const Icon(Icons.autorenew_rounded,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -442,7 +444,8 @@ class _ContourViewState extends State<ContourView> {
                   fetchData();
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -510,9 +513,15 @@ class _ContourViewState extends State<ContourView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -531,8 +540,8 @@ class _ContourViewState extends State<ContourView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -541,6 +550,7 @@ class _ContourViewState extends State<ContourView> {
       ),
     );
   }
+
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
@@ -609,7 +619,6 @@ class _ContourViewState extends State<ContourView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -618,62 +627,61 @@ class _ContourViewState extends State<ContourView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Constant.xSizedBox8,
-            // colorChip(),
-            colorChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            Row(
-              children: [
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        oneOrDual = true;
-                      });
-                      fetchData();
-                    },
-                    child: Text(
-                      "One",
-                      style: oneOrDual == true
-                          ? Constant.whiteBold16.copyWith(fontSize: 12)
-                          : Constant.whiteRegular12,
-                    )),
-                const SizedBox(
-                  width: 10,
-                ),
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        oneOrDual = false;
-                      });
-                      fetchData();
-                    },
-                    child: Text(
-                      "Two",
-                      style: oneOrDual == false
-                          ? Constant.whiteBold16.copyWith(fontSize: 12)
-                          : Constant.whiteRegular12,
-                    )),
-              ],
-            ),
-            separator(),
-            bronzerChoice(),
-            Constant.xSizedBox4,
-            separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox4,
-            lipstickChoice(),
-            // Constant.xSizedBox8,
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Constant.xSizedBox8,
+          // colorChip(),
+          colorChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          Row(
+            children: [
+              InkWell(
+                  onTap: () {
+                    setState(() {
+                      oneOrDual = true;
+                    });
+                    fetchData();
+                  },
+                  child: Text(
+                    "One",
+                    style: oneOrDual == true
+                        ? Constant.whiteBold16.copyWith(fontSize: 12)
+                        : Constant.whiteRegular12,
+                  )),
+              const SizedBox(
+                width: 10,
+              ),
+              InkWell(
+                  onTap: () {
+                    setState(() {
+                      oneOrDual = false;
+                    });
+                    fetchData();
+                  },
+                  child: Text(
+                    "Two",
+                    style: oneOrDual == false
+                        ? Constant.whiteBold16.copyWith(fontSize: 12)
+                        : Constant.whiteRegular12,
+                  )),
+            ],
+          ),
+          separator(),
+          bronzerChoice(),
+          Constant.xSizedBox4,
+          separator(),
+          const Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "View All",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              )),
+          Constant.xSizedBox4,
+          lipstickChoice(),
+          // Constant.xSizedBox8,
+        ],
       ),
     );
   }
@@ -722,7 +730,8 @@ class _ContourViewState extends State<ContourView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -810,7 +819,8 @@ class _ContourViewState extends State<ContourView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
@@ -864,7 +874,8 @@ class _ContourViewState extends State<ContourView> {
                                         () async {}, Assets.iconsIcChoose),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const HighlighterView());
+                                      CusNav.nPush(
+                                          context, const HighlighterView());
                                     }, Assets.iconsIcShare),
                                   ],
                                 ),

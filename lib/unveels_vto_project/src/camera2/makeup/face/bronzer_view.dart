@@ -501,9 +501,15 @@ class _BronzerViewState extends State<BronzerView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -522,8 +528,8 @@ class _BronzerViewState extends State<BronzerView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -532,6 +538,7 @@ class _BronzerViewState extends State<BronzerView> {
       ),
     );
   }
+
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }

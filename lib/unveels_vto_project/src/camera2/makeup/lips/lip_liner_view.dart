@@ -529,9 +529,15 @@ class _LipLinerViewState extends State<LipLinerView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -550,8 +556,8 @@ class _LipLinerViewState extends State<LipLinerView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -560,13 +566,14 @@ class _LipLinerViewState extends State<LipLinerView> {
       ),
     );
   }
+
+
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -575,34 +582,32 @@ class _LipLinerViewState extends State<LipLinerView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            colorChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            itemChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox8,
-            lipstickChoice(),
-            // typeChip(),
-            // Constant.xSizedBox4,
-            // separator(),
-            // typeText(),
-            // Constant.xSizedBox8,
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          colorChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          itemChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          const Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "View All",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              )),
+          Constant.xSizedBox8,
+          lipstickChoice(),
+          // typeChip(),
+          // Constant.xSizedBox4,
+          // separator(),
+          // typeText(),
+          // Constant.xSizedBox8,
+        ],
       ),
     );
   }

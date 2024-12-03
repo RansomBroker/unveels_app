@@ -467,9 +467,15 @@ class _WatchesViewState extends State<WatchesView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -488,8 +494,8 @@ class _WatchesViewState extends State<WatchesView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -498,6 +504,7 @@ class _WatchesViewState extends State<WatchesView> {
       ),
     );
   }
+
   Widget colorChip() {
     return SizedBox(
       height: 30,
@@ -670,7 +677,6 @@ class _WatchesViewState extends State<WatchesView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -679,29 +685,27 @@ class _WatchesViewState extends State<WatchesView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            colorChoice(),
-            Constant.xSizedBox4,
-            separator(),
-            shapesOrdMaterialChoice(),
-            Constant.xSizedBox4,
-            shapesOrdMaterial == false ? shapesChoice() : materialChoice(),
-            Constant.xSizedBox8,
-            lipstickChoice(),
-            Constant.xSizedBox8,
-            // typeChip(),
-            // Constant.xSizedBox4,
-            // separator(),
-            // typeText(),
-            // Constant.xSizedBox8,
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          colorChoice(),
+          Constant.xSizedBox4,
+          separator(),
+          shapesOrdMaterialChoice(),
+          Constant.xSizedBox4,
+          shapesOrdMaterial == false ? shapesChoice() : materialChoice(),
+          Constant.xSizedBox8,
+          lipstickChoice(),
+          Constant.xSizedBox8,
+          // typeChip(),
+          // Constant.xSizedBox4,
+          // separator(),
+          // typeText(),
+          // Constant.xSizedBox8,
+        ],
       ),
     );
   }

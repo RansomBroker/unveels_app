@@ -191,7 +191,8 @@ class _HairViewState extends State<HairView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -212,7 +213,8 @@ class _HairViewState extends State<HairView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -302,8 +304,8 @@ class _HairViewState extends State<HairView> {
                           width: 30,
                         ),
                         Container(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
                           color: const Color(0xFFC89A44),
                           child: const Center(
                               child: Text(
@@ -408,7 +410,8 @@ class _HairViewState extends State<HairView> {
                     height: 35,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.black26),
-                    child: const Icon(Icons.autorenew_rounded, color: Colors.white),
+                    child: const Icon(Icons.autorenew_rounded,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -543,7 +546,6 @@ class _HairViewState extends State<HairView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -552,26 +554,24 @@ class _HairViewState extends State<HairView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            hairChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            Constant.xSizedBox4,
-            lipstickChoice(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          hairChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          Constant.xSizedBox4,
+          lipstickChoice(),
 
-            // typeChip(),
-            // Constant.xSizedBox4,
-            // separator(),
-            // typeText(),
-            // Constant.xSizedBox8,
-          ],
-        ),
+          // typeChip(),
+          // Constant.xSizedBox4,
+          // separator(),
+          // typeText(),
+          // Constant.xSizedBox8,
+        ],
       ),
     );
   }
@@ -620,7 +620,8 @@ class _HairViewState extends State<HairView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -708,7 +709,8 @@ class _HairViewState extends State<HairView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

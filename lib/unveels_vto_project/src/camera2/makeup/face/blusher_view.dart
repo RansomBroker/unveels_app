@@ -226,7 +226,8 @@ class _BlusherViewState extends State<BlusherView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -247,7 +248,8 @@ class _BlusherViewState extends State<BlusherView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -362,7 +364,8 @@ class _BlusherViewState extends State<BlusherView> {
                     height: 35,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.black26),
-                    child: const Icon(Icons.autorenew_rounded, color: Colors.white),
+                    child: const Icon(Icons.autorenew_rounded,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -447,7 +450,8 @@ class _BlusherViewState extends State<BlusherView> {
                   fetchData();
                 },
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -514,9 +518,15 @@ class _BlusherViewState extends State<BlusherView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 200,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 150, height: 80),
+            ],
+          ));
     }
     return Align(
       alignment: Alignment.centerLeft,
@@ -535,8 +545,8 @@ class _BlusherViewState extends State<BlusherView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -545,13 +555,13 @@ class _BlusherViewState extends State<BlusherView> {
       ),
     );
   }
+
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget sheet() {
     return Container(
-      height: 300,
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: const BoxDecoration(
         color: Colors.black54,
@@ -560,30 +570,29 @@ class _BlusherViewState extends State<BlusherView> {
           topRight: Radius.circular(16),
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Constant.xSizedBox8,
-            // colorChip(),
-            colorChoice(),
-            Constant.xSizedBox8,
-            separator(),
-            typeChip(),
-            separator(),
-            highlighterChoice(),
-            Constant.xSizedBox4,
-            separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox4,
-            lipstickChoice(),
-            // Constant.xSizedBox8,
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Constant.xSizedBox8,
+          // colorChip(),
+          colorChoice(),
+          Constant.xSizedBox8,
+          separator(),
+          typeChip(),
+          separator(),
+          highlighterChoice(),
+          Constant.xSizedBox4,
+          separator(),
+          const Align(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "View All",
+                style: TextStyle(color: Colors.white, fontSize: 12),
+              )),
+          Constant.xSizedBox4,
+          lipstickChoice(),
+          // Constant.xSizedBox8,
+        ],
       ),
     );
   }
@@ -632,7 +641,8 @@ class _BlusherViewState extends State<BlusherView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded,
+                color: Colors.white),
           ),
         ),
         actions: [
@@ -720,7 +730,8 @@ class _BlusherViewState extends State<BlusherView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
+                                      CusNav.nPush(
+                                          context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
