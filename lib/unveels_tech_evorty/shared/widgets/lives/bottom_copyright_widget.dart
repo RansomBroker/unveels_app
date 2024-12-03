@@ -25,25 +25,9 @@ class BottomCopyrightWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             child,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "Powered by",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 8,
-                  ),
-                ),
-                const SizedBox(
-                  width: 2,
-                ),
-                SvgPicture.asset(
-                  IconPath.unveelsLogo,
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
+            const SizedBox(
+              height: 10,
+            )
           ],
         ),
       ),

@@ -268,7 +268,8 @@ class _STFLivePageState extends State<STFLivePage> {
                                 const SizedBox(height: 8),
                                 InkWell(
                                   onTap: () {
-                                    Navigator.pushReplacementNamed(context, AppRoutes.skinToneFinder);
+                                    Navigator.pushReplacementNamed(
+                                        context, AppRoutes.skinToneFinder);
                                   },
                                   child: Image.asset(
                                       'assets/icons/ic-reset.png',
