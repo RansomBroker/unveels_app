@@ -17,7 +17,7 @@ class ApiConstant {
   ///(.com Domain)
 
   ///(.in Domain)
-  static const String webUrl = 'https://magento-1231949-4398885.cloudwaysapps.com';
+  static const String webUrl = 'http://ec2-13-53-99-251.eu-north-1.compute.amazonaws.com';
   static const String mediaUrl = '$webUrl/media/';
   static const String apiKey = 'mobikuluser';
   static const String apiPassword = 'Gxd5]UP;^?';
