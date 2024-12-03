@@ -100,7 +100,7 @@ class _SeeImprovementResultsWidgetState
                       backgroundColor: isSelected ? null : Colors.transparent,
                       borderColor: Colors.white,
                       height: 20,
-                      padding: const EdgeInsets.all(0),
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
                       borderRadius: BorderRadius.circular(99),
                       onTap: () {
                         setState(() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:test_new/logic/get_product_utils/get_brand_name.dart';
 import 'package:test_new/unvells/app_widgets/app_alert_message.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:test_new/unvells/constants/app_routes.dart';
@@ -22,10 +23,12 @@ import '../../../skin_tone_finder/skin_tone_product_model.dart';
 import '../../look_product_model.dart';
 
 class PFProductItemWidget extends StatefulWidget {
-  const PFProductItemWidget({super.key, this.productData, this.lookData});
+  const PFProductItemWidget(
+      {super.key, this.productData, this.lookData, this.showTryOn = true});
 
   final SkinToneProductData? productData;
   final LookProfiles? lookData;
+  final bool? showTryOn;
 
   @override
   State<PFProductItemWidget> createState() => _PFProductItemWidgetState();
@@ -35,6 +38,23 @@ class _PFProductItemWidgetState extends State<PFProductItemWidget> {
   ItemCardBloc? itemCardBloc;
   bool isLoading = false;
   bool _isAddingToCart = false;
+
+  String get brandName {
+    String brand = "";
+    try {
+      brand = getBrandNameByValue(widget.productData?.customAttributes
+                  .firstWhere((e) => e.attributeCode == "brand")
+                  .value ??
+              "") ??
+          "";
+    } catch (e) {
+      print(e);
+      brand = "";
+    }
+
+    return brand;
+  }
+
   @override
   Widget build(BuildContext context) {
     itemCardBloc = context.read<ItemCardBloc>();
@@ -205,7 +225,7 @@ class _PFProductItemWidgetState extends State<PFProductItemWidget> {
                           ),
                         ),
                         Text(
-                          "Brand name",
+                          brandName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -272,20 +292,25 @@ class _PFProductItemWidgetState extends State<PFProductItemWidget> {
                   const SizedBox(
                     width: 5,
                   ),
-                  const Expanded(
-                    child: ButtonWidget(
-                      text: "SEE\nIMPROVEMENT",
-                      backgroundColor: Colors.white,
-                      height: 27,
-                      style: TextStyle(
-                        fontSize: 8,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black,
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        vertical: 0,
-                      ),
-                    ),
+                  Expanded(
+                    child: widget.showTryOn == true
+                        ? ButtonWidget(
+                            onTap: () {
+                              Navigator.pushNamed(context, AppRoutes.tryOn);
+                            },
+                            text: "TRY ON",
+                            backgroundColor: Colors.white,
+                            height: 27,
+                            style: const TextStyle(
+                              fontSize: 8,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 0,
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                 ],
               ),

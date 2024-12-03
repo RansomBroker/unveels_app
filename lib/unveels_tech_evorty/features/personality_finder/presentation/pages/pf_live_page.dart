@@ -174,12 +174,15 @@ class _PFLivePageState extends State<PFLivePage> {
         return BottomCopyrightWidget(
           child: Column(
             children: [
-              ButtonWidget(
-                text: 'PERSONALITY FINDER',
-                width: context.width / 2,
-                backgroundColor: Colors.black,
-                onTap: _onPersonalityFinder,
+              Center(
+                child: ButtonWidget(
+                  text: 'PERSONALITY FINDER',
+                  width: context.width / 2,
+                  backgroundColor: Colors.black,
+                  onTap: _onPersonalityFinder,
+                ),
               ),
+              const SizedBox(height: 30)
             ],
           ),
         );

@@ -42,6 +42,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
             title: "Perfumes Recommendations",
             productList: parfumeData,
             isLoading: isLoadingParfume,
+            showTryon: false,
           ),
           const SizedBox(
             height: 30,
@@ -58,6 +59,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
                     .outputLabel ??
                 '-',
             isLoading: isLoadLook,
+            showTryon: true,
           ),
           const SizedBox(
             height: 30,
@@ -67,6 +69,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
             description: "The best lip color for you are orange shades",
             productList: lipData,
             isLoading: isLoadingLip,
+            showTryon: true,
           ),
           const SizedBox(
             height: 30,
@@ -75,6 +78,7 @@ class PfRecommendationsAnalysisWidget extends StatelessWidget {
             title: "Accessories Recommendations",
             productList: accData,
             isLoading: isLoadingAcc,
+            showTryon: true,
           ),
         ],
       ),
@@ -90,13 +94,15 @@ class _ProductItemWidget extends StatelessWidget {
   final LookPacketModel? lookModel;
   final bool isLoading;
   final String? profile;
+  final bool showTryon;
   const _ProductItemWidget(
       {required this.title,
       this.description,
       this.profile,
       this.lookModel,
       required this.productList,
-      required this.isLoading});
+      required this.isLoading,
+      required this.showTryon});
 
   @override
   Widget build(BuildContext context) {
@@ -195,6 +201,7 @@ class _ProductItemWidget extends StatelessWidget {
                                   ),
                                   child: PFProductItemWidget(
                                     productData: productList.items![index],
+                                    showTryOn: showTryon,
                                   ),
                                 );
                               },

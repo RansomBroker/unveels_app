@@ -108,6 +108,9 @@ class SAProductItemWidget extends StatelessWidget {
                 ),
                 Expanded(
                   child: ButtonWidget(
+                    onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.seeImprovement);
+                    },
                     text: "SEE\nIMPROVEMENT",
                     backgroundColor: Colors.white,
                     height: 20,
