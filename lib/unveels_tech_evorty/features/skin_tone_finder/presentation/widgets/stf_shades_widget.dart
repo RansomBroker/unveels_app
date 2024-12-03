@@ -782,7 +782,7 @@ class _MatchedToneItemWidget extends StatelessWidget {
           title,
           textAlign: TextAlign.center,
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 12,
             color: Colors.white,
           ),
         ),

@@ -129,8 +129,10 @@ class _VaTextConnectionState extends State<VaTextConnection> {
               margin: message.isUser
                   ? const EdgeInsets.only(left: 40)
                   : const EdgeInsets.only(right: 40),
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
+              width: message.productInfo != null ? 120 : double.infinity,
+              padding: message.productInfo != null
+                  ? const EdgeInsets.all(8)
+                  : const EdgeInsets.all(12),
               clipBehavior: Clip.antiAlias,
               decoration: message.isUser
                   ? const ShapeDecoration(

@@ -22,20 +22,20 @@ class SAProductItemWidget extends StatelessWidget {
             getProductDataAttributeMap(product.name, product.id.toString()),
       ),
       child: SizedBox(
-        height: 86,
-        width: 86,
+        height: 100,
+        width: 100,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
               color: Colors.white,
-              width: 86,
-              height: 86 * 0.65,
+              width: 100,
+              height: 100 * 0.65,
               child: Image.network(
                 product.imageUrl,
-                width: 86,
-                height: 86 * 0.65,
+                width: 100,
+                height: 100 * 0.65,
                 fit: BoxFit.contain,
               ),
             ),

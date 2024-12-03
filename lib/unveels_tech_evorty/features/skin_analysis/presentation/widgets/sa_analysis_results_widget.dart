@@ -128,7 +128,7 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
                       backgroundColor: isSelected ? null : Colors.transparent,
                       borderColor: Colors.white,
                       height: 20,
-                      padding: const EdgeInsets.all(0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       borderRadius: BorderRadius.circular(99),
                       onTap: () {
                         if (widget.onCategoryChanged != null) {
