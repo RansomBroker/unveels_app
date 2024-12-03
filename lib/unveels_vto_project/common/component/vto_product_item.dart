@@ -28,6 +28,7 @@ class VtoProductItem extends StatefulWidget {
 class _VtoProductItemState extends State<VtoProductItem> {
   ItemCardBloc? itemCardBloc;
   bool isLoading = false;
+  bool _isAddingToCart = false;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +39,7 @@ class _VtoProductItemState extends State<VtoProductItem> {
           isLoading = true;
         } else {
           isLoading = false;
+          _isAddingToCart = false;
 
           if (currentState is ItemCardErrorState) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -170,17 +172,26 @@ class _VtoProductItemState extends State<VtoProductItem> {
                                 widget.product.id.toString(),
                                 1,
                                 mProductParamsJSON));
+                            setState(() {
+                              _isAddingToCart = true;
+                            });
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 5),
                             color: const Color(0xFFC89A44),
-                            child: const Center(
-                                child: Text(
-                              "Add to cart",
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: 10),
-                            )),
+                            child: Center(
+                                child: _isAddingToCart
+                                    ? const SizedBox(
+                                        width: 18,
+                                        height: 18,
+                                        child: CircularProgressIndicator(
+                                            color: Colors.white))
+                                    : const Text(
+                                        "Add to cart",
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 10),
+                                      )),
                           ),
                         )
                       ],
@@ -189,22 +200,6 @@ class _VtoProductItemState extends State<VtoProductItem> {
                 ),
               ),
             ),
-            if (isLoading)
-              Dialog(
-                backgroundColor: Colors.transparent,
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: const CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  ),
-                ),
-              ),
           ],
         );
       },
