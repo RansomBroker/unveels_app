@@ -71,11 +71,11 @@ class _SALivePageState extends State<SALivePage> {
         },
         onGetLabel: (label) {
           if (label != null) {
-            String category = SkinAnalysisModel.categories[SkinAnalysisModel.categoryLabels.indexOf(label)];
+            String category = SkinAnalysisModel
+                .categories[SkinAnalysisModel.categoryLabels.indexOf(label)];
             setState(() {
               _selectedCategory = category;
             });
-            _onAnalysisResults();
           }
         },
       ),
@@ -97,84 +97,27 @@ class _SALivePageState extends State<SALivePage> {
           );
         }
 
-        if (_isShowAnalysisResults) {
-          return const BottomCopyrightWidget(
-            child: SizedBox.shrink(),
-          );
-        }
-
         return BottomCopyrightWidget(
-          child: Column(
-            children: [
-              ButtonWidget(
-                text: 'ANALYSIS RESULT',
-                width: context.width / 2,
-                backgroundColor: Colors.black,
-                onTap: _onAnalysisResults,
-              ),
-            ],
+          child: SAAnalysisResultsWidget(
+            analysisResult: _analysisResult,
+            selectedCategory: _selectedCategory,
+            onCategoryChanged: (category) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              });
+            },
+            onViewAll: () {
+              // close this dialog
+              Navigator.pop(context);
+              _onViewAllProducts();
+            },
           ),
         );
       case LiveStep.makeup:
         return const SizedBox.shrink();
     }
-  }
-
-  Future<void> _onAnalysisResults() async {
-    // show analysis results
-    setState(() {
-      _isShowAnalysisResults = true;
-    });
-
-    // show bottom sheet
-    await showModalBottomSheet<bool?>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      barrierColor: Colors.transparent,
-      elevation: 0,
-      constraints: BoxConstraints(
-        minHeight: context.height * 0.6,
-        maxHeight: context.height * 0.8,
-      ),
-      isScrollControlled: true,
-      builder: (context) {
-        return Padding(
-          padding: const EdgeInsets.only(
-            bottom: SizeConfig.bottomLiveMargin,
-          ),
-          child: SafeArea(
-            bottom: true,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SAAnalysisResultsWidget(
-                  analysisResult: _analysisResult,
-                  selectedCategory: _selectedCategory,
-                  onCategoryChanged: (category) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      setState(() {
-                        _selectedCategory = category;
-                      });
-                    });
-                  },
-                  onViewAll: () {
-                    // close this dialog
-                    Navigator.pop(context);
-                    _onViewAllProducts();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-
-    // hide analysis results
-    setState(() {
-      _isShowAnalysisResults = false;
-    });
   }
 
   void _onViewAllProducts() {
