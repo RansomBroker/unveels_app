@@ -35,19 +35,17 @@ class _SliderWidgetState extends State<SliderWidget> {
       smoothingStrength = mappedValue;
     });
     widget.onUpdateSmoothingStrength(mappedValue);
-    print(smoothingStrength); // Debugging
   }
 
   @override
   Widget build(BuildContext context) {
     final sliderWidth = MediaQuery.of(context).size.width -
-        32; // Adjust width considering padding
+        96;
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Labels di atas slider
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: labels.map((label) {
@@ -65,9 +63,9 @@ class _SliderWidgetState extends State<SliderWidget> {
           ),
           const SizedBox(height: 10),
           Stack(
+            clipBehavior: Clip.none,
             alignment: Alignment.centerLeft,
             children: [
-              // Background track
               Container(
                 height: 8,
                 width: double.infinity,
@@ -76,7 +74,6 @@ class _SliderWidgetState extends State<SliderWidget> {
                   color: Colors.grey.shade300,
                 ),
               ),
-              // Highlighted track
               Container(
                 height: 8,
                 width: sliderWidth * (value / 100),
@@ -92,10 +89,11 @@ class _SliderWidgetState extends State<SliderWidget> {
                   ),
                 ),
               ),
-              // Invisible Slider
               Slider(
                 activeColor: Colors.transparent,
                 inactiveColor: Colors.transparent,
+                thumbColor: Colors.transparent,
+                secondaryActiveColor: Colors.transparent,
                 value: value,
                 min: 0,
                 max: 100,
@@ -106,10 +104,8 @@ class _SliderWidgetState extends State<SliderWidget> {
                   });
                 },
               ),
-              // Moving "Day" thumb
               Positioned(
-                left: sliderWidth * (value / 100) -
-                    20, // Thumb position adjustment
+                left: sliderWidth * (value / 100) - 20,
                 child: GestureDetector(
                   onHorizontalDragUpdate: (details) {
                     setState(() {

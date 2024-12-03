@@ -84,22 +84,30 @@ class _SILivePageState extends State<SILivePage> {
         return const SizedBox();
 
       case LiveStep.scannedFace:
-        if (_isShowAnalysisResults) {
-          return const BottomCopyrightWidget(
-            child: SizedBox.shrink(),
-          );
-        }
-
         return BottomCopyrightWidget(
-          child: Column(
-            children: [
-              ButtonWidget(
-                text: 'SEE IMPROVEMENT',
-                width: context.width / 2,
-                backgroundColor: Colors.black,
-                onTap: _onAnalysisResults,
-              ),
-            ],
+          child: SafeArea(
+            bottom: true,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SeeImprovementResultsWidget(
+                  onUpdateSmoothingStrength: (double value) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      setState(() {
+                        _sliderValue = value;
+                      });
+                      _webViewController?.evaluateJavascript(
+                        source: """
+                        window.postMessage(JSON.stringify({ smoothingStrength: $value }), "*");
+                        """,
+                      );
+                    });
+                  },
+                  sliderValue: _sliderValue,
+                ),
+              ],
+            ),
           ),
         );
       case LiveStep.makeup:
@@ -162,5 +170,4 @@ class _SILivePageState extends State<SILivePage> {
       _isShowAnalysisResults = false;
     });
   }
-
 }
