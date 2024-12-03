@@ -182,7 +182,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           Expanded(
             child: InkWell(
               onTap: () {},
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'Make Up',
@@ -199,7 +199,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           Expanded(
             child: InkWell(
               onTap: () {},
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'Accessories',
@@ -218,7 +218,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
   }
 
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget itemMakeup(String path, GestureTapCallback? onTap) {
@@ -232,7 +232,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -240,7 +240,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -250,7 +250,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -259,9 +259,9 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return lipsItem(lipsType[index], () {
-              if (index == 0) CusNav.nPush(context, LipColorView());
-              if (index == 1) CusNav.nPush(context, LipLinerView());
-              if (index == 2) CusNav.nPush(context, LipPlumberView());
+              if (index == 0) CusNav.nPush(context, const LipColorView());
+              if (index == 1) CusNav.nPush(context, const LipLinerView());
+              if (index == 2) CusNav.nPush(context, const LipPlumberView());
             });
           },
         ),
@@ -273,7 +273,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -281,7 +281,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -292,7 +292,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
       alignment: Alignment.centerLeft,
       child: Container(
         height: 30,
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -300,12 +300,13 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return eyesItem(eyesType[index], () {
-              if (index == 0) CusNav.nPush(context, EyebrowsView());
-              if (index == 1) CusNav.nPush(context, EyeshadowView());
-              if (index == 2) CusNav.nPush(context, EyelinerView());
-              if (index == 3) CusNav.nPush(context, LensesView());
-              if (index == 4)
+              if (index == 0) CusNav.nPush(context, const EyebrowsView());
+              if (index == 1) CusNav.nPush(context, const EyeshadowView());
+              if (index == 2) CusNav.nPush(context, const EyelinerView());
+              if (index == 3) CusNav.nPush(context, const LensesView());
+              if (index == 4) {
                 CusNav.nPush(context, LashesMascaraView(lashes: false));
+              }
             });
           },
         ),
@@ -317,7 +318,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -325,7 +326,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -335,7 +336,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -344,12 +345,12 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return faceItem(faceType[index], () {
-              if (index == 0) CusNav.nPush(context, FoundationView());
-              if (index == 1) CusNav.nPush(context, ConcealerView());
-              if (index == 2) CusNav.nPush(context, ContourView());
-              if (index == 3) CusNav.nPush(context, BlusherView());
-              if (index == 4) CusNav.nPush(context, BronzerView());
-              if (index == 5) CusNav.nPush(context, HighlighterView());
+              if (index == 0) CusNav.nPush(context, const FoundationView());
+              if (index == 1) CusNav.nPush(context, const ConcealerView());
+              if (index == 2) CusNav.nPush(context, const ContourView());
+              if (index == 3) CusNav.nPush(context, const BlusherView());
+              if (index == 4) CusNav.nPush(context, const BronzerView());
+              if (index == 5) CusNav.nPush(context, const HighlighterView());
             });
           },
         ),
@@ -361,7 +362,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -369,7 +370,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -379,7 +380,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -388,8 +389,8 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return nailsItem(nailsType[index], () {
-              if (index == 0) CusNav.nPush(context, NailPolishView());
-              if (index == 1) CusNav.nPush(context, PresOnNailsView());
+              if (index == 0) CusNav.nPush(context, const NailPolishView());
+              if (index == 1) CusNav.nPush(context, const PresOnNailsView());
             });
           },
         ),
@@ -401,7 +402,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -409,7 +410,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -419,7 +420,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -428,7 +429,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return hairItem(hairType[index], () {
-              if (index == 0) CusNav.nPush(context, HairView());
+              if (index == 0) CusNav.nPush(context, const HairView());
             });
           },
         ),
@@ -439,8 +440,8 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
   Widget sheet() {
     return Container(
       // height: 100,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -562,7 +563,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
         ),
         actions: [
@@ -575,7 +576,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],
@@ -640,8 +641,8 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                margin: EdgeInsets.only(right: 16),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.black12,
@@ -650,7 +651,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, CameraVideoPage());
+                                      CusNav.nPush(context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

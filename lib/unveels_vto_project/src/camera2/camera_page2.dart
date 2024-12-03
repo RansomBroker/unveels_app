@@ -6,13 +6,10 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:test_new/unveels_vto_project//common/component/custom_button.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_dialog.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
-import 'package:test_new/unveels_vto_project//common/component/custom_textfield.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera/camera_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/accessories/hand/bangles_view.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/accessories/hand/bracelets_view.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/accessories/hand/rings_view.dart';
@@ -28,7 +25,6 @@ import 'package:test_new/unveels_vto_project//src/camera2/accessories/neck/choke
 import 'package:test_new/unveels_vto_project//src/camera2/accessories/neck/necklaces_view.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/accessories/neck/pendant_view.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/accessories/neck/scarves_view.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/accessories_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/eyes/eyebrows_view.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/eyes/eyeliner_view.dart';
@@ -157,10 +153,10 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final CameraController? cameraController = controller;
+    final CameraController cameraController = controller;
 
     // App state changed before we got the chance to initialize.
-    if (cameraController == null || !cameraController.value.isInitialized) {
+    if (!cameraController.value.isInitialized) {
       return;
     }
 
@@ -195,23 +191,23 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
     "Ombre",
   ];
   List<Color> choiceColorList = [
-    Color(0xFFFC3698),
-    Color(0xFF3D0B0B),
-    Color(0xFFFD5100),
-    Color(0xFF1400FD),
-    Color(0xFFDEBBA8),
-    Color(0xFFFD0000),
+    const Color(0xFFFC3698),
+    const Color(0xFF3D0B0B),
+    const Color(0xFFFD5100),
+    const Color(0xFF1400FD),
+    const Color(0xFFDEBBA8),
+    const Color(0xFFFD0000),
   ];
   List<Color> colorChoiceList = [
-    Color(0xFF730039),
-    Color(0xFF8C0046),
-    Color(0xFFB10058),
-    Color(0xFFB41F69),
-    Color(0xFFDE1050),
-    Color(0xFFE21B7A),
-    Color(0xFFFC3698),
-    Color(0xFFE761A3),
-    Color(0xFFDF467B),
+    const Color(0xFF730039),
+    const Color(0xFF8C0046),
+    const Color(0xFFB10058),
+    const Color(0xFFB41F69),
+    const Color(0xFFDE1050),
+    const Color(0xFFE21B7A),
+    const Color(0xFFFC3698),
+    const Color(0xFFE761A3),
+    const Color(0xFFDF467B),
   ];
   List<String> highlighterList = [
     Assets.imagesImgHighlighter1,
@@ -270,12 +266,12 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -291,12 +287,12 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color(0xffCA9C43),
+                  color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -325,7 +321,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
         title: Row(
           children: [
             IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.close,
                 color: Colors.white,
                 size: 24,
@@ -368,8 +364,8 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
 
   Widget makeupOrAccessoriesChoice() {
     return Container(
-      padding: EdgeInsets.all(10),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.all(10),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -391,7 +387,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                     },
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       child: Text(
                         'Make Up',
                         textAlign: TextAlign.center,
@@ -400,7 +396,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                             fontSize: 16,
                             shadows: makeUpOn == true
                                 ? [
-                                    BoxShadow(
+                                    const BoxShadow(
                                       offset: Offset(0, 0),
                                       color: Colors.yellow,
                                       spreadRadius: 0,
@@ -429,7 +425,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                     },
                     child: Padding(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       child: Text(
                         'Accessories',
                         textAlign: TextAlign.center,
@@ -438,7 +434,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                             fontSize: 16,
                             shadows: accessoriesOn == true
                                 ? [
-                                    BoxShadow(
+                                    const BoxShadow(
                                       offset: Offset(0, 0),
                                       color: Colors.yellow,
                                       spreadRadius: 0,
@@ -454,8 +450,8 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
             ),
           ) : const SizedBox(),
           widget.showChoices == true ? separator() : const SizedBox(),
-          if (makeUpOn == true) MakeupPage(),
-          if (accessoriesOn == true) AccessoriesPage(),
+          if (makeUpOn == true) const MakeupPage(),
+          if (accessoriesOn == true) const AccessoriesPage(),
           // Center(
           //   child: InkWell(
           //       onTap: () {
@@ -508,7 +504,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                       width: 60,
                       height: 60,
                     ),
-                    Icon(
+                    const Icon(
                       Icons.circle,
                       color: Colors.white,
                       size: 60,
@@ -560,7 +556,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                     height: 35,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.black26),
-                    child: Icon(Icons.autorenew_rounded, color: Colors.white),
+                    child: const Icon(Icons.autorenew_rounded, color: Colors.white),
                   ),
                 ),
               ),
@@ -574,7 +570,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
   Widget colorChip() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -589,7 +585,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                 });
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
@@ -604,7 +600,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                     Constant.xSizedBox4,
                     Text(
                       textColorList[index],
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                   ],
                 ),
@@ -619,7 +615,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
   Widget colorChoice() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -627,16 +623,17 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
           itemCount: colorChoiceList.length,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
-            if (index == 0)
+            if (index == 0) {
               return InkWell(
                 onTap: () async {
                   setState(() {
                     onOffVisible = true;
                   });
                 },
-                child: Icon(Icons.do_not_disturb_alt_sharp,
+                child: const Icon(Icons.do_not_disturb_alt_sharp,
                     color: Colors.white, size: 25),
               );
+            }
             return InkWell(
                 onTap: () async {
                   setState(() {
@@ -645,7 +642,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                   });
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -663,13 +660,13 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
   }
 
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget typeChip() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -684,7 +681,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                 });
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
@@ -696,7 +693,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                   child: Text(
                     typeList[index],
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 10),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ),
               ),
@@ -710,7 +707,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
   Widget typeText() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -733,7 +730,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                       fontSize: 12,
                       shadows: index == modeSelected
                           ? [
-                              BoxShadow(
+                              const BoxShadow(
                                 offset: Offset(0, 0),
                                 color: Colors.white,
                                 spreadRadius: 0,
@@ -753,8 +750,8 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
   Widget sheet() {
     return Container(
       // height: 100,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -835,7 +832,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
         ),
         actions: [
@@ -848,7 +845,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],
@@ -913,8 +910,8 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                margin: EdgeInsets.only(right: 16),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.black12,
@@ -923,7 +920,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, CameraVideoPage());
+                                      CusNav.nPush(context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
@@ -1068,7 +1065,7 @@ class _MakeupPageState extends State<MakeupPage> {
           Expanded(
             child: InkWell(
               onTap: () {},
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'Make Up',
@@ -1085,7 +1082,7 @@ class _MakeupPageState extends State<MakeupPage> {
           Expanded(
             child: InkWell(
               onTap: () {},
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'Accessories',
@@ -1114,7 +1111,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1122,7 +1119,7 @@ class _MakeupPageState extends State<MakeupPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1132,7 +1129,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1141,9 +1138,9 @@ class _MakeupPageState extends State<MakeupPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return lipsItem(lipsType[index], () {
-              if (index == 0) CusNav.nPush(context, LipColorView());
-              if (index == 1) CusNav.nPush(context, LipLinerView());
-              if (index == 2) CusNav.nPush(context, LipPlumberView());
+              if (index == 0) CusNav.nPush(context, const LipColorView());
+              if (index == 1) CusNav.nPush(context, const LipLinerView());
+              if (index == 2) CusNav.nPush(context, const LipPlumberView());
             });
           },
         ),
@@ -1155,7 +1152,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1163,7 +1160,7 @@ class _MakeupPageState extends State<MakeupPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1174,7 +1171,7 @@ class _MakeupPageState extends State<MakeupPage> {
       alignment: Alignment.centerLeft,
       child: Container(
         height: 30,
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -1182,12 +1179,13 @@ class _MakeupPageState extends State<MakeupPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return eyesItem(eyesType[index], () {
-              if (index == 0) CusNav.nPush(context, EyebrowsView());
-              if (index == 1) CusNav.nPush(context, EyeshadowView());
-              if (index == 2) CusNav.nPush(context, EyelinerView());
-              if (index == 3) CusNav.nPush(context, LensesView());
-              if (index == 4)
+              if (index == 0) CusNav.nPush(context, const EyebrowsView());
+              if (index == 1) CusNav.nPush(context, const EyeshadowView());
+              if (index == 2) CusNav.nPush(context, const EyelinerView());
+              if (index == 3) CusNav.nPush(context, const LensesView());
+              if (index == 4) {
                 CusNav.nPush(context, LashesMascaraView(lashes: false));
+              }
             });
           },
         ),
@@ -1199,7 +1197,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1207,7 +1205,7 @@ class _MakeupPageState extends State<MakeupPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1217,7 +1215,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1226,12 +1224,12 @@ class _MakeupPageState extends State<MakeupPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return faceItem(faceType[index], () {
-              if (index == 0) CusNav.nPush(context, FoundationView());
-              if (index == 1) CusNav.nPush(context, ConcealerView());
-              if (index == 2) CusNav.nPush(context, ContourView());
-              if (index == 3) CusNav.nPush(context, BlusherView());
-              if (index == 4) CusNav.nPush(context, BronzerView());
-              if (index == 5) CusNav.nPush(context, HighlighterView());
+              if (index == 0) CusNav.nPush(context, const FoundationView());
+              if (index == 1) CusNav.nPush(context, const ConcealerView());
+              if (index == 2) CusNav.nPush(context, const ContourView());
+              if (index == 3) CusNav.nPush(context, const BlusherView());
+              if (index == 4) CusNav.nPush(context, const BronzerView());
+              if (index == 5) CusNav.nPush(context, const HighlighterView());
             });
           },
         ),
@@ -1243,7 +1241,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1251,7 +1249,7 @@ class _MakeupPageState extends State<MakeupPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1261,7 +1259,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1270,8 +1268,8 @@ class _MakeupPageState extends State<MakeupPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return nailsItem(nailsType[index], () {
-              if (index == 0) CusNav.nPush(context, NailPolishView());
-              if (index == 1) CusNav.nPush(context, PresOnNailsView());
+              if (index == 0) CusNav.nPush(context, const NailPolishView());
+              if (index == 1) CusNav.nPush(context, const PresOnNailsView());
             });
           },
         ),
@@ -1283,7 +1281,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1291,7 +1289,7 @@ class _MakeupPageState extends State<MakeupPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1301,7 +1299,7 @@ class _MakeupPageState extends State<MakeupPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1310,7 +1308,7 @@ class _MakeupPageState extends State<MakeupPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return hairItem(hairType[index], () {
-              if (index == 0) CusNav.nPush(context, HairView());
+              if (index == 0) CusNav.nPush(context, const HairView());
             });
           },
         ),
@@ -1321,7 +1319,7 @@ class _MakeupPageState extends State<MakeupPage> {
   Widget sheet() {
     return Container(
       // height: 100,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: Column(
         children: [
           // Container(
@@ -1464,7 +1462,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           Expanded(
             child: InkWell(
               onTap: () {},
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'Make Up',
@@ -1481,7 +1479,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           Expanded(
             child: InkWell(
               onTap: () {},
-              child: Padding(
+              child: const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Text(
                   'Accessories',
@@ -1510,7 +1508,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1518,7 +1516,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1528,7 +1526,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1537,12 +1535,12 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return headItem(headAccType[index], () {
-              if (index == 0) CusNav.nPush(context, HeadSunglassesView());
-              if (index == 1) CusNav.nPush(context, HeadSunglassesView());
-              if (index == 2) CusNav.nPush(context, HeadEarringsView());
-              if (index == 3) CusNav.nPush(context, HeadHeadbandView());
-              if (index == 4) CusNav.nPush(context, HeadHatsView());
-              if (index == 5) CusNav.nPush(context, HeadTiarasView());
+              if (index == 0) CusNav.nPush(context, const HeadSunglassesView());
+              if (index == 1) CusNav.nPush(context, const HeadSunglassesView());
+              if (index == 2) CusNav.nPush(context, const HeadEarringsView());
+              if (index == 3) CusNav.nPush(context, const HeadHeadbandView());
+              if (index == 4) CusNav.nPush(context, const HeadHatsView());
+              if (index == 5) CusNav.nPush(context, const HeadTiarasView());
             });
           },
         ),
@@ -1554,7 +1552,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1562,7 +1560,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1573,7 +1571,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
       alignment: Alignment.centerLeft,
       child: Container(
         height: 30,
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -1581,10 +1579,10 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return neckItem(neckAccType[index], () {
-              if (index == 0) CusNav.nPush(context, PendantsView());
-              if (index == 1) CusNav.nPush(context, NecklacesView());
-              if (index == 2) CusNav.nPush(context, ChokersView());
-              if (index == 3) CusNav.nPush(context, ScarvesView());
+              if (index == 0) CusNav.nPush(context, const PendantsView());
+              if (index == 1) CusNav.nPush(context, const NecklacesView());
+              if (index == 2) CusNav.nPush(context, const ChokersView());
+              if (index == 3) CusNav.nPush(context, const ScarvesView());
             });
           },
         ),
@@ -1596,7 +1594,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1604,7 +1602,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1614,7 +1612,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1623,10 +1621,10 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return handItem(handAccType[index], () {
-              if (index == 0) CusNav.nPush(context, WatchesView());
-              if (index == 1) CusNav.nPush(context, RingsView());
-              if (index == 2) CusNav.nPush(context, BraceletsView());
-              if (index == 3) CusNav.nPush(context, BanglesView());
+              if (index == 0) CusNav.nPush(context, const WatchesView());
+              if (index == 1) CusNav.nPush(context, const RingsView());
+              if (index == 2) CusNav.nPush(context, const BraceletsView());
+              if (index == 3) CusNav.nPush(context, const BanglesView());
             });
           },
         ),
@@ -1638,7 +1636,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
         alignment: Alignment.center,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14),
@@ -1646,7 +1644,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
         ),
         child: Text(
           type,
-          style: TextStyle(color: Colors.white, fontSize: 10),
+          style: const TextStyle(color: Colors.white, fontSize: 10),
         ),
       ),
     );
@@ -1656,7 +1654,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 0),
+        padding: const EdgeInsets.symmetric(horizontal: 0),
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -1665,8 +1663,8 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
           separatorBuilder: (_, __) => Constant.xSizedBox8,
           itemBuilder: (context, index) {
             return nailsItem(nailsType[index], () {
-              if (index == 0) CusNav.nPush(context, NailPolishAccView());
-              if (index == 1) CusNav.nPush(context, PresOnNailsAccView());
+              if (index == 0) CusNav.nPush(context, const NailPolishAccView());
+              if (index == 1) CusNav.nPush(context, const PresOnNailsAccView());
             });
           },
         ),
@@ -1677,7 +1675,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
   Widget sheet() {
     return Container(
       // height: 100,
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
       child: Column(
         children: [
           // Container(

@@ -428,11 +428,11 @@ class CustomButton {
           ),
         ),
       ),
-      child: Container(
+      child: SizedBox(
         width: 80,
         child: Text(
           tag,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 14,
           ),
           textAlign: TextAlign.center,

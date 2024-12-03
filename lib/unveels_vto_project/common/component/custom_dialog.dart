@@ -73,7 +73,7 @@ class CustomDialog {
               borderRadius: BorderRadius.circular(10),
             ),
             contentPadding: contentPadding,
-            backgroundColor: Color(0xFF845647).withOpacity(0.3),
+            backgroundColor: const Color(0xFF845647).withOpacity(0.3),
             titlePadding: titlePadding,
             title: title,
             content: content,

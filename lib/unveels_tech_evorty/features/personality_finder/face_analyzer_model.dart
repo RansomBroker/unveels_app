@@ -27,7 +27,7 @@ class FaceAnalyzerModel {
       labels: json['labels'] != null ? List<String>.from(json['labels']) : null,
       outputLabel: json['outputLabel'],
       outputScore:
-          json['outputScore'] != null ? json['outputScore'].toDouble() : null,
+          json['outputScore']?.toDouble(),
       outputData: json['outputData'] != null
           ? Map<String, double>.from(json['outputData']
               .map((key, value) => MapEntry(key, value.toDouble())))

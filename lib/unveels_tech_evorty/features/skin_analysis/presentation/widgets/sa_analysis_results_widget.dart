@@ -161,7 +161,7 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
                   color: Colors.white,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 2,
               ),
               ReadMoreText(
@@ -172,11 +172,11 @@ class _SAAnalysisResultsWidgetState extends State<SAAnalysisResultsWidget> {
                 colorClickableText: ColorConfig.primary,
                 trimCollapsedText: 'More',
                 trimExpandedText: 'Less',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontSize: 11,
                 ),
-                moreStyle: TextStyle(
+                moreStyle: const TextStyle(
                   fontSize: 11,
                   color: ColorConfig.primary,
                 ),

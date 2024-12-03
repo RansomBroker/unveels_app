@@ -190,7 +190,7 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
               width: double.infinity,
               height: 50,
               margin: const EdgeInsets.symmetric(horizontal: 18)
-                  .add(EdgeInsets.only(bottom: 32)),
+                  .add(const EdgeInsets.only(bottom: 32)),
               child: ElevatedButton(
                 onPressed: () async {
                   if ((!isFaceDetected && widget.isUseFaceDetection) ||

@@ -6,12 +6,9 @@ import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
-import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera/camera_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup_page.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
@@ -156,7 +153,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   Stream<int> stopWatchStream() {
     StreamController<int>? streamController;
     Timer? timer;
-    Duration timerInterval = Duration(seconds: 1);
+    Duration timerInterval = const Duration(seconds: 1);
     int counter = 0;
 
     void stopTimer() {
@@ -188,13 +185,13 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   }
 
   Future<void> startVideoRecording() async {
-    final CameraController? cameraController = controller;
-    if (controller!.value.isRecordingVideo) {
+    final CameraController cameraController = controller;
+    if (controller.value.isRecordingVideo) {
       // A recording has already started, do nothing.
       return;
     }
     try {
-      await cameraController!.startVideoRecording();
+      await cameraController.startVideoRecording();
       setState(() {
         _isRecordingInProgress = true;
         timerStream = stopWatchStream();
@@ -213,12 +210,12 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   }
 
   Future<XFile?> stopVideoRecording() async {
-    if (!controller!.value.isRecordingVideo) {
+    if (!controller.value.isRecordingVideo) {
       // Recording is already is stopped state
       return null;
     }
     try {
-      XFile file = await controller!.stopVideoRecording();
+      XFile file = await controller.stopVideoRecording();
       setState(() {
         _isRecordingInProgress = false; // At Recording Stop :
 
@@ -256,15 +253,15 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                CusNav.nPushAndRemoveUntil(context, MakeupPage());
+                CusNav.nPushAndRemoveUntil(context, const MakeupPage());
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -282,12 +279,12 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                 share();
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color(0xffCA9C43),
+                  color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -332,7 +329,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                     'VIDEO',
                     style: TextStyle(
                       color: _isVideoCameraSelected
-                          ? Color(0xffCA9C43)
+                          ? const Color(0xffCA9C43)
                           : Colors.white,
                     ),
                   ),
@@ -354,7 +351,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                     'FOTO',
                     style: TextStyle(
                       color: !_isVideoCameraSelected
-                          ? Color(0xffCA9C43)
+                          ? const Color(0xffCA9C43)
                           : Colors.white,
                     ),
                   ),
@@ -419,12 +416,12 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                         ),
                         _isVideoCameraSelected
                             ? _isRecordingInProgress
-                                ? Icon(
+                                ? const Icon(
                                     Icons.stop_rounded,
                                     color: Colors.white,
                                     size: 32,
                                   )
-                                : Icon(
+                                : const Icon(
                                     Icons.circle,
                                     color: Colors.red,
                                     size: 60,
@@ -484,7 +481,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                         decoration: const BoxDecoration(
                             shape: BoxShape.circle, color: Colors.black26),
                         child:
-                            Icon(Icons.autorenew_rounded, color: Colors.white),
+                            const Icon(Icons.autorenew_rounded, color: Colors.white),
                       ),
                     ),
                   ),
@@ -498,7 +495,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   }
 
   Widget colorChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -507,13 +504,13 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                   color: index == 0 ? Colors.white : Colors.transparent),
             ),
-            child: Row(
+            child: const Row(
               children: [
                 CircleAvatar(radius: 8, backgroundColor: Colors.pink),
                 Constant.xSizedBox4,
@@ -530,7 +527,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   }
 
   Widget colorChoice() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -538,26 +535,27 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
         itemCount: 17,
         separatorBuilder: (_, __) => Constant.xSizedBox12,
         itemBuilder: (context, index) {
-          if (index == 0)
+          if (index == 0) {
             return InkWell(
               onTap: () async {},
-              child: Icon(Icons.do_not_disturb_alt_sharp,
+              child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
             );
+          }
           return InkWell(
               onTap: () async {},
-              child: CircleAvatar(radius: 12, backgroundColor: Colors.pink));
+              child: const CircleAvatar(radius: 12, backgroundColor: Colors.pink));
         },
       ),
     );
   }
 
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget typeChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -566,12 +564,12 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white),
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'Sheer',
                 textAlign: TextAlign.center,
@@ -585,7 +583,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   }
 
   Widget typeText() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -603,7 +601,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                 shadows: index != 0
                     ? null
                     : [
-                        BoxShadow(
+                        const BoxShadow(
                           offset: Offset(0, 0),
                           color: Colors.white,
                           spreadRadius: 0,
@@ -621,8 +619,8 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
   Widget sheet() {
     return Container(
       // height: 100,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -689,14 +687,14 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
         ),
         centerTitle: true,
         title: !_isVideoCameraSelected || !_isRecordingInProgress
             ? null
             : Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                     color: Colors.black54,
                     borderRadius: BorderRadius.circular(14)),
@@ -704,7 +702,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       width: 15,
                       height: 15,
                       child: CircleAvatar(
@@ -715,7 +713,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
                     Constant.xSizedBox8,
                     Text(
                       '$minutesStr:$secondsStr',
-                      style: TextStyle(fontSize: 12),
+                      style: const TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
@@ -730,7 +728,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],

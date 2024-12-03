@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:camera/camera.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -11,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/get_skin_tone.dart';
-import 'package:test_new/logic/get_product_utils/get_textures.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
@@ -20,7 +17,6 @@ import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/face/concealer_view.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/makeup_page.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -152,15 +148,15 @@ class _FoundationViewState extends State<FoundationView> {
   List<Color> skinColorList = skin_tones.map((e) => e.color).toList();
 
   List<Color> colorChoiceList = [
-    Color(0xFF3D2B1F),
-    Color(0xFF5C4033),
-    Color(0xFF694B3A),
-    Color(0xFF8A4513),
-    Color(0xFF7A3F00),
-    Color(0xFF4F300D),
-    Color(0xFF483C32),
-    Color(0xFF342112),
-    Color(0xFF4A2912),
+    const Color(0xFF3D2B1F),
+    const Color(0xFF5C4033),
+    const Color(0xFF694B3A),
+    const Color(0xFF8A4513),
+    const Color(0xFF7A3F00),
+    const Color(0xFF4F300D),
+    const Color(0xFF483C32),
+    const Color(0xFF342112),
+    const Color(0xFF4A2912),
   ];
 
   @override
@@ -218,12 +214,12 @@ class _FoundationViewState extends State<FoundationView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -239,12 +235,12 @@ class _FoundationViewState extends State<FoundationView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color(0xffCA9C43),
+                  color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -302,7 +298,7 @@ class _FoundationViewState extends State<FoundationView> {
                       width: 60,
                       height: 60,
                     ),
-                    Icon(
+                    const Icon(
                       Icons.circle,
                       color: Colors.white,
                       size: 60,
@@ -354,7 +350,7 @@ class _FoundationViewState extends State<FoundationView> {
                     height: 35,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.black26),
-                    child: Icon(Icons.autorenew_rounded, color: Colors.white),
+                    child: const Icon(Icons.autorenew_rounded, color: Colors.white),
                   ),
                 ),
               ),
@@ -368,7 +364,7 @@ class _FoundationViewState extends State<FoundationView> {
   Widget colorChip() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -384,7 +380,7 @@ class _FoundationViewState extends State<FoundationView> {
                 fetchData();
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
@@ -400,7 +396,7 @@ class _FoundationViewState extends State<FoundationView> {
                     Constant.xSizedBox4,
                     Text(
                       skinList[index],
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                   ],
                 ),
@@ -415,7 +411,7 @@ class _FoundationViewState extends State<FoundationView> {
   Widget colorChoice() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -423,7 +419,7 @@ class _FoundationViewState extends State<FoundationView> {
           itemCount: colorChoiceList.length,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
-            if (index == 0)
+            if (index == 0) {
               return InkWell(
                 onTap: () async {
                   setState(() {
@@ -431,9 +427,10 @@ class _FoundationViewState extends State<FoundationView> {
                     onOffVisibel = true;
                   });
                 },
-                child: Icon(Icons.do_not_disturb_alt_sharp,
+                child: const Icon(Icons.do_not_disturb_alt_sharp,
                     color: Colors.white, size: 25),
               );
+            }
             return Row(
               children: [
                 InkWell(
@@ -444,7 +441,7 @@ class _FoundationViewState extends State<FoundationView> {
                       });
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                      padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
@@ -470,7 +467,7 @@ class _FoundationViewState extends State<FoundationView> {
     }
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 200,
         child: ListView.separated(
           shrinkWrap: true,
@@ -496,11 +493,11 @@ class _FoundationViewState extends State<FoundationView> {
     );
   }
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget typeChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -509,12 +506,12 @@ class _FoundationViewState extends State<FoundationView> {
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white),
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'Sheer',
                 textAlign: TextAlign.center,
@@ -528,7 +525,7 @@ class _FoundationViewState extends State<FoundationView> {
   }
 
   Widget typeText() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -546,7 +543,7 @@ class _FoundationViewState extends State<FoundationView> {
                 shadows: index != 0
                     ? null
                     : [
-                        BoxShadow(
+                        const BoxShadow(
                           offset: Offset(0, 0),
                           color: Colors.white,
                           spreadRadius: 0,
@@ -564,8 +561,8 @@ class _FoundationViewState extends State<FoundationView> {
   Widget sheet() {
     return Container(
       // height: 100,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -581,7 +578,7 @@ class _FoundationViewState extends State<FoundationView> {
           Constant.xSizedBox8,
           separator(),
           Constant.xSizedBox4,
-          Align(
+          const Align(
               alignment: Alignment.centerRight,
               child: Text(
                 "View All",
@@ -642,7 +639,7 @@ class _FoundationViewState extends State<FoundationView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
         ),
         actions: [
@@ -655,7 +652,7 @@ class _FoundationViewState extends State<FoundationView> {
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],
@@ -720,8 +717,8 @@ class _FoundationViewState extends State<FoundationView> {
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                margin: EdgeInsets.only(right: 16),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.black12,
@@ -730,7 +727,7 @@ class _FoundationViewState extends State<FoundationView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, CameraVideoPage());
+                                      CusNav.nPush(context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
@@ -784,7 +781,7 @@ class _FoundationViewState extends State<FoundationView> {
                                         () async {}, Assets.iconsIcChoose),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, ConcealerView());
+                                      CusNav.nPush(context, const ConcealerView());
                                     }, Assets.iconsIcShare),
                                   ],
                                 ),

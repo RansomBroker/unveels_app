@@ -17,7 +17,6 @@ import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
-import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -288,7 +287,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget colorChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -331,7 +330,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget colorChoice() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -379,7 +378,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget chipChoice() {
-    return Container(
+    return SizedBox(
       height: 18,
       child: ListView.separated(
         shrinkWrap: true,
@@ -417,7 +416,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget chip2Choice() {
-    return Container(
+    return SizedBox(
       height: 18,
       child: ListView.separated(
         shrinkWrap: true,
@@ -460,7 +459,7 @@ class _LipColorViewState extends State<LipColorView> {
     }
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 200,
         child: ListView.separated(
           shrinkWrap: true,
@@ -491,7 +490,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget typeChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -519,7 +518,7 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   Widget typeText() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,

@@ -26,7 +26,7 @@ class BottomCopyrightWidget extends StatelessWidget {
             const SizedBox(
               height: 30,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // const Text(

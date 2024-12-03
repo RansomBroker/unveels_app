@@ -91,14 +91,10 @@ class BaseController<S extends BaseState> {
 
     String log2 = "Log : "
             "==== PARAMETERS ===="
-            '\r\n' +
-        "URL : $url"
-            '\r\n' +
-        "HEADERS : $headers"
-            '\r\n' +
-        "BODY : $body"
-            '\r\n' +
-        "RESPONSE GET $url : ${response.body}"
+            '\r\n' "URL : $url"
+            '\r\n' "HEADERS : $headers"
+            '\r\n' "BODY : $body"
+            '\r\n' "RESPONSE GET $url : ${response.body}"
             '\r\n' +
         "===================="
             '\r\n';
@@ -191,14 +187,10 @@ class BaseController<S extends BaseState> {
       log("====================");
       String log2 = "Log : "
               "==== PARAMETERS ===="
-              '\r\n' +
-          "URL : $url"
-              '\r\n' +
-          "HEADERS : $headers"
-              '\r\n' +
-          "BODY : $body"
-              '\r\n' +
-          "FILES : $files"
+              '\r\n' "URL : $url"
+              '\r\n' "HEADERS : $headers"
+              '\r\n' "BODY : $body"
+              '\r\n' "FILES : $files"
               '\r\n' +
           "RESPONSE POST $url : ${response.body}"
               '\r\n' +
@@ -281,14 +273,10 @@ class BaseController<S extends BaseState> {
       log("====================");
       String log2 = "Log : "
               "==== PARAMETERS ===="
-              '\r\n' +
-          "URL : $url"
-              '\r\n' +
-          "HEADERS : $headers"
-              '\r\n' +
-          "BODY : $body"
-              '\r\n' +
-          "FILES : $files"
+              '\r\n' "URL : $url"
+              '\r\n' "HEADERS : $headers"
+              '\r\n' "BODY : $body"
+              '\r\n' "FILES : $files"
               '\r\n' +
           "RESPONSE POST $url : ${response.body}"
               '\r\n' +
@@ -379,14 +367,10 @@ class BaseController<S extends BaseState> {
       log("====================");
       String log2 = "Log : "
               "==== PARAMETERS ===="
-              '\r\n' +
-          "URL : $url"
-              '\r\n' +
-          "HEADERS : $headers"
-              '\r\n' +
-          "BODY : $body"
-              '\r\n' +
-          "FILES : $files"
+              '\r\n' "URL : $url"
+              '\r\n' "HEADERS : $headers"
+              '\r\n' "BODY : $body"
+              '\r\n' "FILES : $files"
               '\r\n' +
           "RESPONSE PUT $url : ${response.body}"
               '\r\n' +
@@ -469,14 +453,10 @@ class BaseController<S extends BaseState> {
       log("====================");
       String log2 = "Log : "
               "==== PARAMETERS ===="
-              '\r\n' +
-          "URL : $url"
-              '\r\n' +
-          "HEADERS : $headers"
-              '\r\n' +
-          "BODY : $body"
-              '\r\n' +
-          "FILES : $files"
+              '\r\n' "URL : $url"
+              '\r\n' "HEADERS : $headers"
+              '\r\n' "BODY : $body"
+              '\r\n' "FILES : $files"
               '\r\n' +
           "RESPONSE PUT $url : ${response.body}"
               '\r\n' +
@@ -565,14 +545,10 @@ class BaseController<S extends BaseState> {
 
     String log2 = "Log : "
             "==== PARAMETERS ===="
-            '\r\n' +
-        "URL : $url"
-            '\r\n' +
-        "HEADERS : $headers"
-            '\r\n' +
-        "BODY : $body"
-            '\r\n' +
-        "RESPONSE DELETE $url : ${response.body}"
+            '\r\n' "URL : $url"
+            '\r\n' "HEADERS : $headers"
+            '\r\n' "BODY : $body"
+            '\r\n' "RESPONSE DELETE $url : ${response.body}"
             '\r\n' +
         "===================="
             '\r\n';

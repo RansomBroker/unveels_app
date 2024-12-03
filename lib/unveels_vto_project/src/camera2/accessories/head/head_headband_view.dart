@@ -8,17 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_fabric.dart';
-import 'package:test_new/logic/get_product_utils/get_material.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera/camera_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/makeup_page.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -151,22 +148,22 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
     "Rose Gold",
   ];
   List<Color> lipColorList = [
-    Color(0xFFFFFF00),
+    const Color(0xFFFFFF00),
     Colors.black,
-    Color(0xffC0C0C0),
-    Color(0xffCA9C43),
-    Color(0xffB76E79),
+    const Color(0xffC0C0C0),
+    const Color(0xffCA9C43),
+    const Color(0xffB76E79),
   ];
   List<Color> colorChoiceList = [
-    Color(0xFF740039),
-    Color(0xFF8D0046),
-    Color(0xFFB20058),
-    Color(0xFFB51F69),
-    Color(0xFFDF1050),
-    Color(0xFFE31B7B),
-    Color(0xFFFE3699),
-    Color(0xFFE861A4),
-    Color(0xFFE0467C),
+    const Color(0xFF740039),
+    const Color(0xFF8D0046),
+    const Color(0xFFB20058),
+    const Color(0xFFB51F69),
+    const Color(0xFFDF1050),
+    const Color(0xFFE31B7B),
+    const Color(0xFFFE3699),
+    const Color(0xFFE861A4),
+    const Color(0xFFE0467C),
   ];
   List<String> headbandList = ['Polyester', 'Cotton', 'Leather', 'Denim'];
 
@@ -232,12 +229,12 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -253,12 +250,12 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color(0xffCA9C43),
+                  color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -282,7 +279,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   }
 
   Widget colorChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -298,7 +295,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               fetchData();
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
@@ -313,7 +310,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                   Constant.xSizedBox4,
                   Text(
                     lipList[index],
-                    style: TextStyle(color: Colors.white, fontSize: 10),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
               ),
@@ -325,7 +322,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   }
 
   Widget colorChoice() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -333,7 +330,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
         itemCount: colorChoiceList.length,
         separatorBuilder: (_, __) => Constant.xSizedBox12,
         itemBuilder: (context, index) {
-          if (index == 0)
+          if (index == 0) {
             return InkWell(
               onTap: () async {
                 setState(() {
@@ -342,9 +339,10 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                 });
                 fetchData();
               },
-              child: Icon(Icons.do_not_disturb_alt_sharp,
+              child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
             );
+          }
           return InkWell(
             onTap: () async {
               setState(() {
@@ -354,7 +352,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               fetchData();
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+              padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
@@ -372,7 +370,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   }
 
   Widget headbandChoice() {
-    return Container(
+    return SizedBox(
       height: 18,
       child: ListView.separated(
         shrinkWrap: true,
@@ -389,9 +387,9 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               fetchData();
             },
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: headbandSelected == index ? Color(0xffCA9C43) : null,
+                color: headbandSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: headbandSelected == index
@@ -400,7 +398,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               ),
               child: Text(
                 headbandList[index],
-                style: TextStyle(color: Colors.white, fontSize: 10),
+                style: const TextStyle(color: Colors.white, fontSize: 10),
               ),
             ),
           );
@@ -416,7 +414,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
     }
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 200,
         child: ListView.separated(
           shrinkWrap: true,
@@ -442,11 +440,11 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
     );
   }
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget typeChip() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -455,12 +453,12 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white),
             ),
-            child: Center(
+            child: const Center(
               child: Text(
                 'Sheer',
                 textAlign: TextAlign.center,
@@ -474,7 +472,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   }
 
   Widget typeText() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -492,7 +490,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                 shadows: index != 0
                     ? null
                     : [
-                        BoxShadow(
+                        const BoxShadow(
                           offset: Offset(0, 0),
                           color: Colors.white,
                           spreadRadius: 0,
@@ -510,8 +508,8 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   Widget sheet() {
     return Container(
       height: 300,
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -531,7 +529,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
             headbandChoice(),
             Constant.xSizedBox4,
             separator(),
-            Align(
+            const Align(
                 alignment: Alignment.centerRight,
                 child: Text(
                   "View All",
@@ -593,7 +591,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
         ),
         actions: [
@@ -606,7 +604,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],
@@ -671,8 +669,8 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                margin: EdgeInsets.only(right: 16),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.black12,
@@ -681,7 +679,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, CameraVideoPage());
+                                      CusNav.nPush(context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

@@ -87,7 +87,7 @@ class _STFLivePageState extends State<STFLivePage> {
 
     // If the hex code is only 6 characters (RRGGBB), add the 'FF' prefix for full opacity
     if (hexString.length == 6) {
-      hexString = 'FF' + hexString;
+      hexString = 'FF$hexString';
     }
 
     // Parse the hex string to an integer and return the color
@@ -258,7 +258,7 @@ class _STFLivePageState extends State<STFLivePage> {
       elevation: 0,
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             bottom: SizeConfig.bottomLiveMargin,
           ),
           child: SafeArea(

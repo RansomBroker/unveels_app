@@ -8,16 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
-import 'package:test_new/logic/get_product_utils/get_textures.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera/camera_page.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/makeup_page.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -83,10 +80,10 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   }
 
   List<Color> colorMainList = [
-    Color(0xffFE3699),
-    Color(0xffE1E1A3),
-    Color(0xff3D0B0B),
-    Color(0xffFF0000),
+    const Color(0xffFE3699),
+    const Color(0xffE1E1A3),
+    const Color(0xff3D0B0B),
+    const Color(0xffFF0000),
     Colors.white,
   ];
 
@@ -98,15 +95,15 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     'White',
   ];
   List<Color> colorList = [
-    Color(0xff3D2B1F),
-    Color(0xff5C4033),
-    Color(0xff6A4B3A),
-    Color(0xff8B4513),
-    Color(0xff7B3F00),
-    Color(0xff4F300D),
-    Color(0xff483C32),
-    Color(0xff342112),
-    Color(0xff4A2912),
+    const Color(0xff3D2B1F),
+    const Color(0xff5C4033),
+    const Color(0xff6A4B3A),
+    const Color(0xff8B4513),
+    const Color(0xff7B3F00),
+    const Color(0xff4F300D),
+    const Color(0xff483C32),
+    const Color(0xff342112),
+    const Color(0xff4A2912),
   ];
 
   List<String> type1List = [
@@ -251,12 +248,12 @@ class _EyeshadowViewState extends State<EyeshadowView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
+                child: const Text(
                   'Edit',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -272,12 +269,12 @@ class _EyeshadowViewState extends State<EyeshadowView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Color(0xffCA9C43),
+                  color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -303,7 +300,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   Widget colorChip() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -319,7 +316,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 fetchData();
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
@@ -334,7 +331,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                     Constant.xSizedBox4,
                     Text(
                       colorMainListString[index],
-                      style: TextStyle(color: Colors.white, fontSize: 10),
+                      style: const TextStyle(color: Colors.white, fontSize: 10),
                     ),
                   ],
                 ),
@@ -347,7 +344,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   }
 
   Widget colorChoice() {
-    return Container(
+    return SizedBox(
       height: 30,
       child: ListView.separated(
         shrinkWrap: true,
@@ -355,7 +352,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
         itemCount: colorList.length,
         separatorBuilder: (_, __) => Constant.xSizedBox12,
         itemBuilder: (context, index) {
-          if (index == 0)
+          if (index == 0) {
             return InkWell(
               onTap: () async {
                 setState(() {
@@ -363,9 +360,10 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 });
                 fetchData();
               },
-              child: Icon(Icons.do_not_disturb_alt_sharp,
+              child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
             );
+          }
           return InkWell(
               onTap: () async {
                 setState(() {
@@ -375,7 +373,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 fetchData();
               },
               child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -391,13 +389,13 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   }
 
   Widget separator() {
-    return Divider(thickness: 1, color: Colors.white);
+    return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget typeChip() {
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 30,
         child: ListView.separated(
           shrinkWrap: true,
@@ -413,7 +411,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 fetchData();
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
@@ -425,7 +423,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   child: Text(
                     type1List[index],
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 10),
+                    style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ),
               ),
@@ -437,7 +435,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   }
 
   Widget typeComboChip() {
-    return Container(
+    return SizedBox(
       height: 20,
       child: ListView.separated(
         shrinkWrap: true,
@@ -461,7 +459,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                     fontSize: 12,
                     shadows: index == typeComboSelected
                         ? [
-                            BoxShadow(
+                            const BoxShadow(
                               offset: Offset(0, 0),
                               color: Colors.white,
                               spreadRadius: 0,
@@ -478,7 +476,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   }
 
   Widget typeEyeShadowChip() {
-    return Container(
+    return SizedBox(
       height: 40,
       child: ListView.separated(
         shrinkWrap: true,
@@ -515,7 +513,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     }
     return Align(
       alignment: Alignment.centerLeft,
-      child: Container(
+      child: SizedBox(
         height: 200,
         child: ListView.separated(
           shrinkWrap: true,
@@ -541,13 +539,13 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     );
   }
   Widget slider() {
-    return Container(
+    return SizedBox(
       height: 60,
       child: Column(
         children: [
           Slider(
-            thumbColor: Color(0xffCA9C43),
-            activeColor: Color(0xffCA9C43),
+            thumbColor: const Color(0xffCA9C43),
+            activeColor: const Color(0xffCA9C43),
             value: sliderValue,
             max: 10,
             min: 0,
@@ -558,8 +556,8 @@ class _EyeshadowViewState extends State<EyeshadowView> {
               fetchData();
             },
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -578,8 +576,8 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   Widget sheet() {
     return Container(
       height: 300,
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      decoration: const BoxDecoration(
         color: Colors.black54,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(16),
@@ -659,7 +657,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
             // width: 64,
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.black26),
-            child: Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
           ),
         ),
         actions: [
@@ -672,7 +670,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
               height: 100,
               decoration: const BoxDecoration(
                   shape: BoxShape.circle, color: Colors.black26),
-              child: Icon(Icons.close, color: Colors.white),
+              child: const Icon(Icons.close, color: Colors.white),
             ),
           ),
         ],
@@ -737,8 +735,8 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                             Align(
                               alignment: Alignment.bottomRight,
                               child: Container(
-                                margin: EdgeInsets.only(right: 16),
-                                padding: EdgeInsets.symmetric(
+                                margin: const EdgeInsets.only(right: 16),
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 8, vertical: 10),
                                 decoration: BoxDecoration(
                                     color: Colors.black12,
@@ -747,7 +745,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     iconSidebar(() async {
-                                      CusNav.nPush(context, CameraVideoPage());
+                                      CusNav.nPush(context, const CameraVideoPage());
                                     }, Assets.iconsIcCamera),
                                     Constant.xSizedBox12,
                                     iconSidebar(() async {

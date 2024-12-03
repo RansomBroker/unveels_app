@@ -63,7 +63,7 @@ class _SliderWidgetState extends State<SliderWidget> {
               );
             }).toList(),
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Stack(
             alignment: Alignment.centerLeft,
             children: [

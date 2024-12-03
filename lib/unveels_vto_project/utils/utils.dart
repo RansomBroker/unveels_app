@@ -94,12 +94,12 @@ class Utils {
       child: Material.Card(
           shape: const CircleBorder(),
           child: Padding(
+            padding: const EdgeInsets.all(8),
             child: child ??
                 Icon(
                   Icons.chevron_left,
                   color: Constant.primaryColor,
                 ),
-            padding: EdgeInsets.all(8),
           )),
     );
   }
@@ -541,7 +541,7 @@ class Utils {
                         'assets/icons/Paket Umroh_1.png',
                         width: 60,
                       )),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Paket Umroh',
                         style: Constant.primaryTextStyle.copyWith(
@@ -559,7 +559,7 @@ class Utils {
                         'assets/icons/Paket haji_1.png',
                         width: 60,
                       )),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Paket Haji',
                         style: Constant.primaryTextStyle.copyWith(
@@ -779,8 +779,8 @@ class Utils {
       ShapeBorder? shape,
       bool? chainvertical = false}) {
     margin ??= chainvertical!
-          ? Material.EdgeInsets.only(top: 12, left: 12, right: 12)
-          : Material.EdgeInsets.all(12);
+          ? const Material.EdgeInsets.only(top: 12, left: 12, right: 12)
+          : const Material.EdgeInsets.all(12);
     shape ??= Material.RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(border));
     return Material.Card(

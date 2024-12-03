@@ -118,7 +118,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
 
     // If the hex code is only 6 characters (RRGGBB), add the 'FF' prefix for full opacity
     if (hexString.length == 6) {
-      hexString = 'FF' + hexString;
+      hexString = 'FF$hexString';
     }
 
     // Parse the hex string to an integer and return the color
@@ -338,14 +338,14 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
                                   child: Container(
                                       height: selectedHexa == "" ? 35 : 25,
                                       width: selectedHexa == "" ? 35 : 25,
-                                      child: Icon(Icons.not_interested_rounded,
-                                          color: Colors.white,
-                                          size: selectedHexa == "" ? 35 : 25),
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
                                           border: Border.all(
                                               color: Colors.transparent),
-                                          color: Colors.transparent)),
+                                          color: Colors.transparent),
+                                      child: Icon(Icons.not_interested_rounded,
+                                          color: Colors.white,
+                                          size: selectedHexa == "" ? 35 : 25)),
                                 );
                               }
                               return InkWell(

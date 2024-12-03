@@ -5,7 +5,7 @@ class LegendItemWidget extends StatefulWidget {
   final int value;
   final String label;
 
-  const LegendItemWidget({
+  const LegendItemWidget({super.key, 
     required this.color,
     required this.value,
     required this.label,
