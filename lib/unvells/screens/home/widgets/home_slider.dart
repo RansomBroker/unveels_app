@@ -126,7 +126,16 @@ class _HomeSlidersState extends State<HomeSliders> {
   }
 
   void handleBannerClicks(Banners banner, BuildContext context) {
+    // TODO CHANGE THIS CODE IF SKIN ANALYSIS TYPE READY
     if (banner.type == "category") {
+      Navigator.pushNamed(context, AppRoutes.skinAnalysis,
+          arguments: getCatalogMap(
+            banner.id.toString() ?? "",
+            banner.name ?? "",
+            banner.type,
+            false,
+          ));
+    } else if (banner.type == "category") {
       Navigator.pushNamed(context, AppRoutes.catalog,
           arguments: getCatalogMap(
             banner.id.toString() ?? "",

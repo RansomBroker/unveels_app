@@ -296,7 +296,8 @@ class _PFProductItemWidgetState extends State<PFProductItemWidget> {
                     child: widget.showTryOn == true
                         ? ButtonWidget(
                             onTap: () {
-                              Navigator.pushNamed(context, AppRoutes.tryOn);
+                              Navigator.pushNamed(
+                                  context, AppRoutes.lookBookList);
                             },
                             text: "TRY ON",
                             backgroundColor: Colors.white,
