@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
@@ -14,8 +13,9 @@ import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -27,7 +27,7 @@ class LipLinerView extends StatefulWidget {
 }
 
 class _LipLinerViewState extends State<LipLinerView> {
-  late CameraController controller;
+  InAppWebViewController? _webViewController;
   Completer<String?> cameraSetupCompleter = Completer();
   Completer? isFlippingCamera;
   late List<Permission> permissions;
@@ -75,67 +75,8 @@ class _LipLinerViewState extends State<LipLinerView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    if (Platform.isAndroid) {
-      DeviceInfoPlugin().androidInfo.then((value) {
-        if (value.version.sdkInt >= 32) {
-          permissions = [
-            Permission.camera,
-            Permission.microphone,
-          ];
-        } else {
-          permissions = [
-            Permission.camera,
-            Permission.microphone,
-            // Permission.storage
-          ];
-        }
-      }).then((value) {
-        // _initCamera();
-        checkPermissionStatuses().then((allclear) {
-          if (allclear) {
-            _initCamera();
-          } else {
-            permissions.request().then((value) {
-              checkPermissionStatuses().then((allclear) {
-                if (allclear) {
-                  _initCamera();
-                } else {
-                  Utils.showToast(
-                      'Mohon izinkan untuk mengakses Kamera dan Mikrofon');
-                  Navigator.of(context).pop();
-                }
-              });
-            });
-          }
-        });
-      });
-    } else {
-      _initCamera();
-      // permissions = [
-      //   Permission.camera,
-      //   Permission.microphone,
-      //   // Permission.storage
-      // ];
-      // checkPermissionStatuses().then((allclear) {
-      //   if (allclear) {
-      //     _initCamera();
-      //   } else {
-      //     permissions.request().then((value) {
-      //       checkPermissionStatuses().then((allclear) {
-      //         if (allclear) {
-      //           _initCamera();
-      //         } else {
-      //           Utils.showToast(
-      //               'Mohon izinkan untuk mengakses Kamera dan Mikrofon');
-      //           Navigator.of(context).pop();
-      //         }
-      //       });
-      //     });
-      //   }
-      // });
-    }
+
     fetchData();
   }
 
@@ -179,14 +120,6 @@ class _LipLinerViewState extends State<LipLinerView> {
 
   List<String> chipList = ['Gloss', 'Matte', 'Shimmer'];
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (cameraSetupCompleter.isCompleted) {
-      controller.dispose();
-    }
-  }
-
   Future<bool> checkPermissionStatuses() async {
     for (var permission in permissions) {
       if (await permission.status != PermissionStatus.granted) {
@@ -194,35 +127,6 @@ class _LipLinerViewState extends State<LipLinerView> {
       }
     }
     return true;
-  }
-
-  Future<void> _initCamera({CameraDescription? camera}) async {
-    Future<void> selectCamera(CameraDescription camera) async {
-      controller = CameraController(camera, ResolutionPreset.high,
-          imageFormatGroup: ImageFormatGroup.jpeg);
-      await controller.initialize();
-      cameraSetupCompleter.complete();
-    }
-
-    if (camera != null) {
-      selectCamera(camera);
-    } else {
-      await availableCameras().then((value) async {
-        isFlipCameraSupported = value.indexWhere((element) =>
-                element.lensDirection == CameraLensDirection.front) !=
-            -1;
-
-        for (var camera in value) {
-          if (camera.lensDirection == CameraLensDirection.back) {
-            await selectCamera(camera);
-            return;
-          }
-        }
-
-        cameraSetupCompleter
-            .complete("Tidak dapat menemukan kamera yang cocok.");
-      });
-    }
   }
 
   Widget pictureTaken() {
@@ -234,7 +138,8 @@ class _LipLinerViewState extends State<LipLinerView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -255,7 +160,8 @@ class _LipLinerViewState extends State<LipLinerView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -296,16 +202,7 @@ class _LipLinerViewState extends State<LipLinerView> {
               alignment: Alignment.centerRight,
               child: InkWell(
                 onTap: () {
-                  controller.takePicture().then((imageFile) async {
-                    // File tmp = await compressImage(
-                    //     File(imageFile.path));
-                    file = File(imageFile.path);
-                    // if (controller
-                    //     .value.isPreviewPaused)
-                    //   await controller.resumePreview();
-                    // else
-                    await controller.pausePreview();
-                  });
+
                 },
                 child: Stack(
                   alignment: Alignment.center,
@@ -335,42 +232,15 @@ class _LipLinerViewState extends State<LipLinerView> {
               child: Visibility(
                 visible: isFlipCameraSupported,
                 child: InkWell(
-                  onTap: () async {
-                    ///[Flip Camera]
-                    if (isFlippingCamera == null ||
-                        isFlippingCamera!.isCompleted) {
-                      isFlippingCamera = Completer();
-                      isFlippingCamera!.complete(
-                          await availableCameras().then((value) async {
-                        for (var camera in value) {
-                          if (camera.lensDirection ==
-                              (controller.description.lensDirection ==
-                                      CameraLensDirection.front
-                                  ? CameraLensDirection.back
-                                  : CameraLensDirection.front)) {
-                            await controller.dispose();
-                            cameraSetupCompleter = Completer();
-
-                            await _initCamera(camera: camera);
-                            setState(() {});
-                            break;
-                          }
-                        }
-
-                        await Future.delayed(
-                            const Duration(seconds: 1, milliseconds: 500));
-                      }));
-                    } else {
-                      print('Not completed!');
-                    }
-                  },
+                  onTap: () async {},
                   child: Container(
                     margin: const EdgeInsets.only(right: 16),
                     width: 35,
                     height: 35,
                     decoration: const BoxDecoration(
                         shape: BoxShape.circle, color: Colors.black26),
-                    child: const Icon(Icons.autorenew_rounded, color: Colors.white),
+                    child: const Icon(Icons.autorenew_rounded,
+                        color: Colors.white),
                   ),
                 ),
               ),
@@ -492,7 +362,8 @@ class _LipLinerViewState extends State<LipLinerView> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
-                color: typeColorSelected == index ? const Color(0xffCA9C43) : null,
+                color:
+                    typeColorSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: typeColorSelected == index
@@ -532,17 +403,17 @@ class _LipLinerViewState extends State<LipLinerView> {
   Widget lipstickChoice() {
     if (_isLoading) {
       return SizedBox(
-          height: 200,
+          height: 150,
           child: Column(
             children: [
-              Container(color: Colors.white, width: 150, height: 80),
+              Container(color: Colors.white, width: 100, height: 68),
             ],
           ));
     }
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
-        height: 200,
+        height: 150,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -567,19 +438,21 @@ class _LipLinerViewState extends State<LipLinerView> {
     );
   }
 
-
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
       decoration: const BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black,
+          ],
         ),
       ),
       child: Column(
@@ -594,33 +467,34 @@ class _LipLinerViewState extends State<LipLinerView> {
           itemChoice(),
           Constant.xSizedBox8,
           separator(),
-          const Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "View All",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              )),
-          Constant.xSizedBox8,
+
           lipstickChoice(),
           // typeChip(),
           // Constant.xSizedBox4,
           // separator(),
           // typeText(),
           // Constant.xSizedBox8,
+          BottomCopyright()
         ],
       ),
     );
   }
 
-  Widget cameraPreview(double scale) {
-    return Transform.scale(
-      scale: scale,
-      alignment: Alignment.center,
-      child: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: CameraPreview(controller),
-      ),
+  Widget cameraPreview() {
+    return InAppWebView(
+      initialUrlRequest: URLRequest(
+          url: WebUri('${ApiConstant.techWebUrl}/virtual-try-on-web')),
+      onWebViewCreated: (controller) async {
+        _webViewController = controller;
+      },
+      onPermissionRequest: (controller, permissionRequest) async {
+        return PermissionResponse(
+            resources: permissionRequest.resources,
+            action: PermissionResponseAction.GRANT);
+      },
+      shouldOverrideUrlLoading: (controller, navigationAction) async {
+        return NavigationActionPolicy.ALLOW;
+      },
     );
   }
 
@@ -629,8 +503,8 @@ class _LipLinerViewState extends State<LipLinerView> {
       onTap: onTap,
       child: Image.asset(
         path,
-        width: 24,
-        height: 24,
+        width: 18,
+        height: 18,
         color: Colors.white,
       ),
     );
@@ -645,31 +519,36 @@ class _LipLinerViewState extends State<LipLinerView> {
         // toolbarHeight: 0,
         leadingWidth: 84,
         titleSpacing: 0,
+
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
-            CusNav.nPushReplace(context, OcrCameraPage2(makeUpOn: true));
+            // CusNav.nPushReplace(context, OcrCameraPage2(makeUpOn: true));
           },
-          child: Container(
-            margin: const EdgeInsets.only(top: 8),
-            // padding: EdgeInsets.all(8),
-            // width: 64,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          child: Center(
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.black26),
+              child: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white, size: 18),
+            ),
           ),
         ),
         actions: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              margin: const EdgeInsets.only(top: 8),
-              // padding: EdgeInsets.only(right: 16, left: 16),
-              width: 100,
-              height: 100,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black26),
-              child: const Icon(Icons.close, color: Colors.white),
+          Container(
+            margin: const EdgeInsets.all(16),
+            child: InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Center(
+                  child: Container(
+                width: 32,
+                height: 32,
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.black26),
+                child: const Icon(Icons.close, color: Colors.white, size: 18),
+              )),
             ),
           ),
         ],
@@ -680,144 +559,58 @@ class _LipLinerViewState extends State<LipLinerView> {
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       ),
       extendBodyBehindAppBar: true,
-      body: FutureBuilder<String?>(
-        future: cameraSetupCompleter.future,
-        builder: (context, snapshot) {
-          final isLoading = snapshot.connectionState != ConnectionState.done;
-
-          if (isLoading) {
-            return const Center(child: CircularProgressIndicator.adaptive());
-          } else if (snapshot.data != null) {
-            return Center(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
+        children: [
+          cameraPreview(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                const Text('Setup Camera Failed'),
-                Text(
-                  snapshot.data!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        iconSidebar(() async {
+                          CusNav.nPush(context, const CameraVideoPage());
+                        }, Assets.iconsIcCamera),
+                        Constant.xSizedBox12,
+                        iconSidebar(() async {}, Assets.iconsIcFlipCamera),
+                        Constant.xSizedBox12,
+                        iconSidebar(() async {}, Assets.iconsIcScale),
+                        Constant.xSizedBox12,
+                        iconSidebar(() async {
+                          setState(() {
+                            makeupOrAccessories = true;
+                          });
+                          fetchData();
+                        }, Assets.iconsIcCompareOff),
+                        Constant.xSizedBox12,
+                        iconSidebar(() async {}, Assets.iconsIcResetOff),
+                        Constant.xSizedBox12,
+                        iconSidebar(() async {}, Assets.iconsIcChoose),
+                        Constant.xSizedBox12,
+                        iconSidebar(() async {}, Assets.iconsIcShare),
+                      ],
+                    ),
                   ),
-                )
+                ),
+                Constant.xSizedBox16,
+                sheet(),
+                // file != null ? pictureTaken() : noPictureTaken(),
+                // pictureTaken(),
               ],
-            ));
-          } else {
-            return LayoutBuilder(
-              builder: (p0, p1) {
-                final width = p1.maxWidth;
-                final height = p1.maxHeight;
-
-                late double scale;
-
-                if (MediaQuery.of(context).orientation ==
-                    Orientation.portrait) {
-                  final screenRatio = width / height;
-                  final cameraRatio = controller.value.aspectRatio;
-                  scale = 1 / (cameraRatio * screenRatio);
-                } else {
-                  final screenRatio = (height) / width;
-                  final cameraRatio = controller.value.aspectRatio;
-                  scale = 1 / (cameraRatio * screenRatio);
-                }
-
-                return Stack(
-                  children: [
-                    cameraPreview(scale),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        // margin: xHEdgeInsets12
-                        //     .add(const EdgeInsets.only(bottom: 12)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                margin: const EdgeInsets.only(right: 16),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.black12,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
-                                    }, Assets.iconsIcCamera),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(() async {
-                                      ///[Flip Camera]
-                                      if (isFlippingCamera == null ||
-                                          isFlippingCamera!.isCompleted) {
-                                        isFlippingCamera = Completer();
-                                        isFlippingCamera!.complete(
-                                            await availableCameras()
-                                                .then((value) async {
-                                          for (var camera in value) {
-                                            if (camera.lensDirection ==
-                                                (controller.description
-                                                            .lensDirection ==
-                                                        CameraLensDirection
-                                                            .front
-                                                    ? CameraLensDirection.back
-                                                    : CameraLensDirection
-                                                        .front)) {
-                                              await controller.dispose();
-                                              cameraSetupCompleter =
-                                                  Completer();
-
-                                              await _initCamera(camera: camera);
-                                              setState(() {});
-                                              break;
-                                            }
-                                          }
-
-                                          await Future.delayed(const Duration(
-                                              seconds: 1, milliseconds: 500));
-                                        }));
-                                      } else {
-                                        print('Not completed!');
-                                      }
-                                    }, Assets.iconsIcFlipCamera),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcScale),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(() async {
-                                      setState(() {
-                                        makeupOrAccessories = true;
-                                      });
-                                      fetchData();
-                                    }, Assets.iconsIcCompareOff),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcResetOff),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcChoose),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcShare),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Constant.xSizedBox16,
-                            sheet(),
-                            // file != null ? pictureTaken() : noPictureTaken(),
-                            // pictureTaken(),
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                );
-              },
-            );
-          }
-        },
+            ),
+          )
+        ],
       ),
     );
   }

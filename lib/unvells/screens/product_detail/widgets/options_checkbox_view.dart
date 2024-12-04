@@ -42,7 +42,7 @@ class _OptionsCheckBoxViewState extends State<OptionsCheckBoxView> {
   }
   @override
   void initState() {
-    // TODO: implement initState
+
     // WidgetsBinding.instance?.addPostFrameCallback((_) {
     //   widget.selectedOption([widget.variants?[0].optionTypeId as String,0]);
     // });
