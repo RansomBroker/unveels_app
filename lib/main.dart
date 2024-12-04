@@ -24,6 +24,8 @@ import 'package:provider/provider.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/constants/app_string_constant.dart';
 import 'package:test_new/unvells/helper/app_storage_pref.dart';
+import 'package:test_new/unvells/screens/search/simple_search/bloc/search_repository.dart';
+import 'package:test_new/voice_command/services/voice_command_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 import 'unveels_tech_evorty/core/observers/bloc_observer_info.dart';
 import 'unvells/configuration/unvells_theme.dart';
@@ -88,7 +90,8 @@ void main() async {
   // await Upgrader.clearSavedSettings(); ///Debug use only
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await init();
-  runApp(const MyApp());
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -157,31 +160,66 @@ class _UnvellsAppState extends State<UnvellsApp> {
                     repository: ItemCardRepositoryImp(),
                   ),
                 ),
+                BlocProvider<VoiceCommandCubit>(
+                  create: (context) => VoiceCommandCubit(
+                    repository: SearchRepositoryImp(),
+                  ),
+                ),
               ],
-              child: MaterialApp(
-                  theme: AppTheme.lightTheme,
-                  // darkTheme: AppTheme.darkTheme,
-                  onGenerateRoute: AppRoutes.generateRoute,
-                  supportedLocales:
-                      AppConstant.supportedLanguages.map((e) => Locale(e)),
-                  locale: _locale,
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate, //
+              child: Scaffold(
+                body: Stack(
+                  children: [
+                    MaterialApp(
+                        theme: AppTheme.lightTheme,
+                        // darkTheme: AppTheme.darkTheme,
+                        onGenerateRoute: AppRoutes.generateRoute,
+                        supportedLocales: AppConstant.supportedLanguages
+                            .map((e) => Locale(e)),
+                        locale: _locale,
+                        localizationsDelegates: const [
+                          AppLocalizations.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate, //
+                        ],
+                        initialRoute: AppRoutes.splash,
+                        home: const BottomTabBarWidget(),
+                        debugShowCheckedModeBanner: false,
+                        navigatorKey: navigatorKey,
+                        localeResolutionCallback: (locale, supportedLocales) {
+                          if (supportedLocales.contains(_locale)) {
+                            return _locale;
+                          } else {
+                            return supportedLocales.first;
+                          }
+                        }),
+                   BlocBuilder<VoiceCommandCubit, VoiceCommandState>(
+                     builder: (context, state){
+
+                       if (state is VoiceCommandListening) {
+                         return Positioned(
+                           top: 0,
+                           left: 0,
+                           right: 0,
+                           child: SizedBox(
+                             width: MediaQuery
+                                 .of(context)
+                                 .size
+                                 .width,
+                             height: 4,
+                             child: LinearProgressIndicator(
+                               valueColor: AlwaysStoppedAnimation<Color>(Colors.deepOrange),
+                             ),
+                           ),
+                         );
+                       }else {
+                         return SizedBox();
+                       }
+                     },
+                   ),
                   ],
-                  initialRoute: AppRoutes.splash,
-                  home: const BottomTabBarWidget(),
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: navigatorKey,
-                  localeResolutionCallback: (locale, supportedLocales) {
-                    if (supportedLocales.contains(_locale)) {
-                      return _locale;
-                    } else {
-                      return supportedLocales.first;
-                    }
-                  }),
+                ),
+              ),
             );
           })),
     );
