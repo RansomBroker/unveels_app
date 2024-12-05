@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/constants/app_string_constant.dart';
 import 'package:test_new/unvells/helper/app_storage_pref.dart';
+import 'package:test_new/unvells/screens/product_detail/bloc/product_detail_screen_repository.dart';
 import 'package:test_new/unvells/screens/search/simple_search/bloc/search_repository.dart';
 import 'package:test_new/voice_command/services/voice_command_cubit.dart';
 import 'package:upgrader/upgrader.dart';
@@ -37,6 +38,7 @@ import 'unvells/helper/push_notifications_manager.dart';
 import 'unvells/screens/home/widgets/item_card_bloc/item_card_bloc.dart';
 import 'unvells/screens/home/widgets/item_card_bloc/item_card_repository.dart';
 import 'unveels_tech_evorty/service_locator.dart' as di;
+import 'voice_command/screen/voice_command_screen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -120,7 +122,7 @@ class UnvellsApp extends StatefulWidget {
   //for change locale run time
   static void setLocale(BuildContext context, Locale newLocale) {
     _UnvellsAppState? state =
-        context.findAncestorStateOfType<_UnvellsAppState>();
+    context.findAncestorStateOfType<_UnvellsAppState>();
     state!.refresh(newLocale);
   }
 
@@ -153,23 +155,25 @@ class _UnvellsAppState extends State<UnvellsApp> {
           create: (_) => CheckTheme(),
           child: Consumer<CheckTheme>(
               builder: (context, CheckTheme themeNotifier, child) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider<ItemCardBloc>(
-                  create: (context) => ItemCardBloc(
-                    repository: ItemCardRepositoryImp(),
-                  ),
-                ),
-                BlocProvider<VoiceCommandCubit>(
-                  create: (context) => VoiceCommandCubit(
-                    repository: SearchRepositoryImp(),
-                  ),
-                ),
-              ],
-              child: Scaffold(
-                body: Stack(
-                  children: [
-                    MaterialApp(
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider<ItemCardBloc>(
+                      create: (context) =>
+                          ItemCardBloc(
+                            repository: ItemCardRepositoryImp(),
+                          ),
+                    ),
+                    BlocProvider<VoiceCommandCubit>(
+                      create: (context) =>
+                          VoiceCommandCubit(
+                            searchRepository: SearchRepositoryImp(),
+                            productDetailRepository: ProductDetailScreenRepositoryImp()
+                          ),
+                    ),
+                  ],
+                  child: VoiceCommandScreen(
+
+                    child: MaterialApp(
                         theme: AppTheme.lightTheme,
                         // darkTheme: AppTheme.darkTheme,
                         onGenerateRoute: AppRoutes.generateRoute,
@@ -193,35 +197,9 @@ class _UnvellsAppState extends State<UnvellsApp> {
                             return supportedLocales.first;
                           }
                         }),
-                   BlocBuilder<VoiceCommandCubit, VoiceCommandState>(
-                     builder: (context, state){
-
-                       if (state is VoiceCommandListening) {
-                         return Positioned(
-                           top: 0,
-                           left: 0,
-                           right: 0,
-                           child: SizedBox(
-                             width: MediaQuery
-                                 .of(context)
-                                 .size
-                                 .width,
-                             height: 4,
-                             child: LinearProgressIndicator(
-                               valueColor: AlwaysStoppedAnimation<Color>(Colors.deepOrange),
-                             ),
-                           ),
-                         );
-                       }else {
-                         return SizedBox();
-                       }
-                     },
-                   ),
-                  ],
-                ),
-              ),
-            );
-          })),
+                  ),
+                );
+              })),
     );
   }
 
@@ -233,7 +211,8 @@ class _UnvellsAppState extends State<UnvellsApp> {
   }
 
   //refresh locale
-  refresh(Locale newLocale) => setState(() {
+  refresh(Locale newLocale) =>
+      setState(() {
         _locale = newLocale;
       });
 

@@ -6,17 +6,23 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:test_new/main.dart';
 import 'package:test_new/unvells/constants/arguments_map.dart';
+import 'package:test_new/unvells/models/search/search_screen_model.dart';
 import 'package:test_new/unvells/screens/search/simple_search/bloc/search_repository.dart';
 import '../../unvells/constants/app_routes.dart';
+import '../../unvells/screens/product_detail/bloc/product_detail_screen_repository.dart';
 
 part 'voice_command_state.dart';
 
 class VoiceCommandCubit extends Cubit<VoiceCommandState> {
   final SpeechToText _speech = SpeechToText();
-  SearchRepository repository;
+  SearchRepository searchRepository;
+  ProductDetailScreenRepository productDetailRepository;
+
+  Product? product;
 
   VoiceCommandCubit({
-    required this.repository,
+    required this.searchRepository,
+    required this.productDetailRepository,
   }) : super(VoiceCommandInitial()) {
     _initializeSpeech();
   }
@@ -31,69 +37,6 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     } else {
       emit(VoiceCommandError("Speech recognition unavailable"));
     }
-  }
-
-  void _search(String query) {
-    var context = navigatorKey.currentContext!;
-
-    Navigator.pushNamed(
-      context,
-      AppRoutes.catalog,
-      arguments: getCatalogMap(
-        query ?? "",
-        query,
-        BUNDLE_KEY_CATALOG_TYPE_SEARCH,
-        false,
-      ),
-    );
-  }
-
-  void _openProduct(String query) async {
-    var context = navigatorKey.currentContext!;
-
-    var model = await repository?.getSearchSuggestion(query);
-    if (model != null) {
-      log(model.suggestProductArray!.toString(), name: 'search');
-
-      var products = model.suggestProductArray?.products ?? [];
-
-      if (products.isEmpty) {
-        Navigator.pushNamed(
-          context,
-          AppRoutes.catalog,
-          arguments: getCatalogMap(
-            query ?? "",
-            query,
-            BUNDLE_KEY_CATALOG_TYPE_SEARCH,
-            false,
-          ),
-        );
-      }
-      var first = products.first;
-
-      Navigator.of(context).pushNamed(
-        AppRoutes.productPage,
-        arguments: getProductDataAttributeMap(
-          first.productName ?? "",
-          first.productId ?? "",
-        ),
-      );
-    }
-  }
-
-  void _openCategory(String query) {
-    var context = navigatorKey.currentContext!;
-
-    Navigator.pushNamed(
-      context,
-      AppRoutes.catalog,
-      arguments: getCatalogMap(
-        query ?? "",
-        query,
-        BUNDLE_KEY_CATALOG_TYPE_SEARCH,
-        false,
-      ),
-    );
   }
 
   void startListening() async {
@@ -120,16 +63,24 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
             var query = command.replaceAll("open product", "");
 
             _openProduct(query);
+          }else if (command.startsWith("open produk")) {
+            var query = command.replaceAll("open produk", "");
+
+            _openProduct(query);
           } else if (command.startsWith("open category")) {
             var query = command.replaceAll("open category", "");
 
             _openCategory(query);
           } else if (command.startsWith("open kategori")) {
             var query = command.replaceAll("open kategori", "");
-
             _openCategory(query);
+          } else if (command.startsWith("open cart")) {
+            Navigator.pushNamed(context, AppRoutes.cart);
+          } else if (command.startsWith("add to cart")) {
+            _addToCart();
           } else if (command.startsWith("back to home")) {
-            Navigator.pushNamedAndRemoveUntil(context, AppRoutes.home, (route) => false);
+            Navigator.pushNamedAndRemoveUntil(
+                context, AppRoutes.home, (route) => false);
           }
 
           emit(VoiceCommandListening(recognizedText, confidence));
@@ -164,5 +115,115 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     if (error.errorMsg.contains("error") && state is VoiceCommandListening) {
       startListening();
     }
+  }
+
+//   command action
+  void _search(String query) {
+    var context = navigatorKey.currentContext!;
+
+    Navigator.pushNamed(
+      context,
+      AppRoutes.catalog,
+      arguments: getCatalogMap(
+        query ?? "",
+        query,
+        BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+        false,
+      ),
+    );
+  }
+
+  void _openProduct(String query) async {
+    var context = navigatorKey.currentContext!;
+
+    var model = await searchRepository?.getSearchSuggestion(query);
+    if (model != null) {
+      log(model.suggestProductArray!.toString(), name: 'search');
+
+      var products = model.suggestProductArray?.products ?? [];
+
+      if (products.isEmpty) {
+        Navigator.pushNamed(
+          context,
+          AppRoutes.catalog,
+          arguments: getCatalogMap(
+            query ?? "",
+            query,
+            BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+            false,
+          ),
+        );
+      }
+
+      if (products.length > 1) {
+        var index = products.indexWhere((e)=> e.productName!.toLowerCase() == query);
+        if (index>=0) {
+          product = products[index];
+
+          Navigator.of(context).pushNamed(
+            AppRoutes.productPage,
+            arguments: getProductDataAttributeMap(
+              product?.productName ?? "",
+              product?.productId ?? "",
+            ),
+          );
+        } else{
+          Navigator.pushNamed(
+            context,
+            AppRoutes.catalog,
+            arguments: getCatalogMap(
+              query ?? "",
+              query,
+              BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+              false,
+            ),
+          );
+        }
+
+      } else {
+        product = products.first;
+
+        Navigator.of(context).pushNamed(
+          AppRoutes.productPage,
+          arguments: getProductDataAttributeMap(
+            product?.productName ?? "",
+            product?.productId ?? "",
+          ),
+        );
+      }
+    }
+  }
+
+  void _openCategory(String query) {
+    var context = navigatorKey.currentContext!;
+
+    Navigator.pushNamed(
+      context,
+      AppRoutes.catalog,
+      arguments: getCatalogMap(
+        query ?? "",
+        query,
+        BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+        false,
+      ),
+    );
+  }
+
+  void _addToCart() async {
+    var context = navigatorKey.currentContext!;
+
+    try {
+      var model = await productDetailRepository
+          ?.addToCart(product!.productId!, 1, product!.toJson(), []);
+      if (model != null) {
+        if (model.success == true) {
+
+          Navigator.pushNamed(
+              context,
+              AppRoutes.cart);
+
+        } else {}
+      }
+    } catch (error, _) {}
   }
 }
