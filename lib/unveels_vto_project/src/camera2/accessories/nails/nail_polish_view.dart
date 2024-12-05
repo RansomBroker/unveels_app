@@ -37,9 +37,9 @@ class _NailPolishAccViewState extends State<NailPolishAccView> {
   File? file;
   bool makeupOrAccessories = false;
   bool onOffVisible = false;
-  int? typeSelected = 0;
-  int? colorSelected = 0;
-  int? colorTextSelected = 0;
+  int? typeSelected;
+  int? colorSelected;
+  int? colorTextSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -53,8 +53,8 @@ class _NailPolishAccViewState extends State<NailPolishAccView> {
     print("Fetching data");
     try {
       print("Trying to fetch");
-      List<String>? textures = getTextureByLabel([chipList[typeSelected!]]);
-      print(textures);
+      // List<String>? textures = typeSelected == null ? null : getTextureByLabel([chipList[typeSelected!]]);
+
       List<String>? productTypes = getProductTypesByLabels(
           "nail_polish_product_type",
           ["Nail Color", "Gel Color", "Breathable Polishes"]);

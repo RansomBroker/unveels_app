@@ -14,6 +14,7 @@ import 'package:test_new/unveels_vto_project//generated/assets.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -35,10 +36,10 @@ class _LipLinerViewState extends State<LipLinerView> {
   File? file;
   bool makeupOrAccessories = false;
   bool onOffVisibel = false;
-  int? mainColorSelected = 0;
-  int? colorSelected = 0;
-  int? typeColorSelected = 0;
-  int? typeColor2Selected = 0;
+  int? mainColorSelected;
+  int? colorSelected;
+  int? typeColorSelected;
+  int? typeColor2Selected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -61,6 +62,19 @@ class _LipLinerViewState extends State<LipLinerView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          if (mainColorSelected == null) {
+            colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorChoiceList = getSelectableColorList(
+                    products!, vtoColors[mainColorSelected!].value) ??
+                [];
+            products = dataResponse
+                .where((e) => e.color == vtoColors[mainColorSelected!].value)
+                .toList();
+            print(vtoColors[mainColorSelected!].value);
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -93,17 +107,7 @@ class _LipLinerViewState extends State<LipLinerView> {
     const Color(0xFFCA9C43),
     const Color(0xFFB76E79),
   ];
-  List<Color> colorChoiceList = [
-    const Color(0xFF740039),
-    const Color(0xFF8D0046),
-    const Color(0xFFB20058),
-    const Color(0xFFB51F69),
-    const Color(0xFFDF1050),
-    const Color(0xFFE31B7B),
-    const Color(0xFFFE3699),
-    const Color(0xFFE861A4),
-    const Color(0xFFE0467C),
-  ];
+  List<Color> colorChoiceList = [];
 
   List<String> lipLinerPath = [
     Assets.imagesImgLipliner,
@@ -254,15 +258,16 @@ class _LipLinerViewState extends State<LipLinerView> {
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: lipLinerList.length,
+        itemCount: vtoColors.length,
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
+          ColorModel color = vtoColors[index];
           return InkWell(
             onTap: () {
               setState(() {
                 mainColorSelected = index;
+                fetchData();
               });
-              fetchData();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -276,11 +281,23 @@ class _LipLinerViewState extends State<LipLinerView> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                      radius: 8, backgroundColor: lipLinerColorList[index]),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      gradient: color.hex.startsWith('linear-gradient')
+                          ? getLinearGradient(color.hex)
+                          : null,
+                      color: (color.hex == 'none' ||
+                              color.hex.startsWith('linear-gradient'))
+                          ? null
+                          : Color(int.parse('0xFF${color.hex.substring(1)}')),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   Constant.xSizedBox4,
                   Text(
-                    lipLinerList[index],
+                    color.label,
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],

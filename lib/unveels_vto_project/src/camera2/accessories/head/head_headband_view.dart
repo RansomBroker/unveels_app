@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,10 +38,10 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
   bool isFlipCameraSupported = false;
   File? file;
   bool onOffVisibel = false;
-  int? mainColorSelected = 0;
-  int? colorSelected = 0;
-  int? headbandSelected = 0;
-  int? materialSelected = 0;
+  int? mainColorSelected;
+  int? colorSelected;
+  int? headbandSelected;
+  int? materialSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -58,12 +59,25 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
       print(productTypes);
 
       var dataResponse = await productRepository.fetchProducts(
-          fabric: getFabricByLabel(headbandList[headbandSelected!]),
+          fabric: headbandSelected == null ? null : getFabricByLabel(headbandList[headbandSelected!]),
           productType: "head_accessories_product_type",
           productTypes: productTypes?.join(","));
 
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          if (mainColorSelected == null) {
+            colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorChoiceList = getSelectableColorList(
+                    products!, vtoColors[mainColorSelected!].value) ??
+                [];
+            products = dataResponse
+                .where((e) => e.color == vtoColors[mainColorSelected!].value)
+                .toList();
+            print(vtoColors[mainColorSelected!].value);
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -96,17 +110,7 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
     const Color(0xffCA9C43),
     const Color(0xffB76E79),
   ];
-  List<Color> colorChoiceList = [
-    const Color(0xFF740039),
-    const Color(0xFF8D0046),
-    const Color(0xFFB20058),
-    const Color(0xFFB51F69),
-    const Color(0xFFDF1050),
-    const Color(0xFFE31B7B),
-    const Color(0xFFFE3699),
-    const Color(0xFFE861A4),
-    const Color(0xFFE0467C),
-  ];
+  List<Color> colorChoiceList = [];
   List<String> headbandList = ['Polyester', 'Cotton', 'Leather', 'Denim'];
 
   List<String> headbandAssetsList = [
@@ -191,15 +195,16 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: lipList.length,
+        itemCount: vtoColors.length,
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
+          ColorModel color = vtoColors[index];
           return InkWell(
             onTap: () {
               setState(() {
                 mainColorSelected = index;
+                fetchData();
               });
-              fetchData();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -213,10 +218,23 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(radius: 8, backgroundColor: lipColorList[index]),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      gradient: color.hex.startsWith('linear-gradient')
+                          ? getLinearGradient(color.hex)
+                          : null,
+                      color: (color.hex == 'none' ||
+                              color.hex.startsWith('linear-gradient'))
+                          ? null
+                          : Color(int.parse('0xFF${color.hex.substring(1)}')),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   Constant.xSizedBox4,
                   Text(
-                    lipList[index],
+                    color.label,
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
