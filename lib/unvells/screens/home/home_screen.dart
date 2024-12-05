@@ -17,6 +17,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/badge_icon_update.dart';
 import 'package:test_new/unvells/configuration/text_theme.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
@@ -32,6 +33,7 @@ import 'package:test_new/unvells/screens/home/widgets/product_carasoul_widget_ty
 import 'package:test_new/unvells/screens/home/widgets/product_carasoul_widget_type2.dart';
 import 'package:test_new/unvells/screens/home/widgets/product_carasoul_widget_type4.dart';
 import 'package:test_new/unvells/screens/home/widgets/recent_view.dart';
+import 'package:test_new/voice_command/services/voice_command_cubit.dart';
 import '../../app_widgets/app_dialog_helper.dart';
 import '../../app_widgets/app_tool_bar.dart';
 import '../../app_widgets/badge_icon.dart';
@@ -417,7 +419,8 @@ class _HomeScreenState extends State<HomeScreen>
                       children: [
                         FloatingActionButton(
                           onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.vaOnboarding);
+                            Navigator.pushNamed(
+                                context, AppRoutes.vaOnboarding);
                           },
                           backgroundColor: Colors.transparent,
                           child: const FluxImage(
@@ -428,7 +431,11 @@ class _HomeScreenState extends State<HomeScreen>
                           height: 6,
                         ),
                         FloatingActionButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final speechService = context.read<VoiceCommandCubit>();
+
+                            speechService.toggleListening();
+                          },
                           backgroundColor: Colors.transparent,
                           child: const FluxImage(
                             imageUrl: 'assets/icons/ai1.png',

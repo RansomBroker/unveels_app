@@ -24,6 +24,9 @@ import 'package:provider/provider.dart';
 import 'package:test_new/unvells/app_widgets/Tabbar/bottom_tabbar.dart';
 import 'package:test_new/unvells/constants/app_string_constant.dart';
 import 'package:test_new/unvells/helper/app_storage_pref.dart';
+import 'package:test_new/unvells/screens/product_detail/bloc/product_detail_screen_repository.dart';
+import 'package:test_new/unvells/screens/search/simple_search/bloc/search_repository.dart';
+import 'package:test_new/voice_command/services/voice_command_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 import 'unveels_tech_evorty/core/observers/bloc_observer_info.dart';
 import 'unvells/configuration/unvells_theme.dart';
@@ -35,6 +38,7 @@ import 'unvells/helper/push_notifications_manager.dart';
 import 'unvells/screens/home/widgets/item_card_bloc/item_card_bloc.dart';
 import 'unvells/screens/home/widgets/item_card_bloc/item_card_repository.dart';
 import 'unveels_tech_evorty/service_locator.dart' as di;
+import 'voice_command/screen/voice_command_screen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -88,7 +92,8 @@ void main() async {
   // await Upgrader.clearSavedSettings(); ///Debug use only
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await init();
-  runApp(const MyApp());
+
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -117,7 +122,7 @@ class UnvellsApp extends StatefulWidget {
   //for change locale run time
   static void setLocale(BuildContext context, Locale newLocale) {
     _UnvellsAppState? state =
-        context.findAncestorStateOfType<_UnvellsAppState>();
+    context.findAncestorStateOfType<_UnvellsAppState>();
     state!.refresh(newLocale);
   }
 
@@ -150,40 +155,51 @@ class _UnvellsAppState extends State<UnvellsApp> {
           create: (_) => CheckTheme(),
           child: Consumer<CheckTheme>(
               builder: (context, CheckTheme themeNotifier, child) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider<ItemCardBloc>(
-                  create: (context) => ItemCardBloc(
-                    repository: ItemCardRepositoryImp(),
-                  ),
-                ),
-              ],
-              child: MaterialApp(
-                  theme: AppTheme.lightTheme,
-                  // darkTheme: AppTheme.darkTheme,
-                  onGenerateRoute: AppRoutes.generateRoute,
-                  supportedLocales:
-                      AppConstant.supportedLanguages.map((e) => Locale(e)),
-                  locale: _locale,
-                  localizationsDelegates: const [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate, //
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider<ItemCardBloc>(
+                      create: (context) =>
+                          ItemCardBloc(
+                            repository: ItemCardRepositoryImp(),
+                          ),
+                    ),
+                    BlocProvider<VoiceCommandCubit>(
+                      create: (context) =>
+                          VoiceCommandCubit(
+                            searchRepository: SearchRepositoryImp(),
+                            productDetailRepository: ProductDetailScreenRepositoryImp()
+                          ),
+                    ),
                   ],
-                  initialRoute: AppRoutes.splash,
-                  home: const BottomTabBarWidget(),
-                  debugShowCheckedModeBanner: false,
-                  navigatorKey: navigatorKey,
-                  localeResolutionCallback: (locale, supportedLocales) {
-                    if (supportedLocales.contains(_locale)) {
-                      return _locale;
-                    } else {
-                      return supportedLocales.first;
-                    }
-                  }),
-            );
-          })),
+                  child: VoiceCommandScreen(
+
+                    child: MaterialApp(
+                        theme: AppTheme.lightTheme,
+                        // darkTheme: AppTheme.darkTheme,
+                        onGenerateRoute: AppRoutes.generateRoute,
+                        supportedLocales: AppConstant.supportedLanguages
+                            .map((e) => Locale(e)),
+                        locale: _locale,
+                        localizationsDelegates: const [
+                          AppLocalizations.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate, //
+                        ],
+                        initialRoute: AppRoutes.splash,
+                        home: const BottomTabBarWidget(),
+                        debugShowCheckedModeBanner: false,
+                        navigatorKey: navigatorKey,
+                        localeResolutionCallback: (locale, supportedLocales) {
+                          if (supportedLocales.contains(_locale)) {
+                            return _locale;
+                          } else {
+                            return supportedLocales.first;
+                          }
+                        }),
+                  ),
+                );
+              })),
     );
   }
 
@@ -195,7 +211,8 @@ class _UnvellsAppState extends State<UnvellsApp> {
   }
 
   //refresh locale
-  refresh(Locale newLocale) => setState(() {
+  refresh(Locale newLocale) =>
+      setState(() {
         _locale = newLocale;
       });
 
