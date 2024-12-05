@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:test_new/main.dart';
@@ -27,7 +28,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     _initializeSpeech();
   }
 
-  void _initializeSpeech() async {
+  Future<void> _initializeSpeech() async {
     bool available = await _speech.initialize(
       onStatus: _statusListener,
       onError: _errorListener,
@@ -41,6 +42,14 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
 
   void startListening() async {
     try {
+      PermissionStatus status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        const SnackBar(content: Text('Microphone permission not granted'));
+        return;
+      }
+
+      await _initializeSpeech();
+
       emit(VoiceCommandListening(state.text, state.confidence));
 
       await _speech.listen(
@@ -49,8 +58,6 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
           final confidence = result.confidence;
 
           if (result.finalResult == false) return;
-
-
 
           log(result.toJson().toString(), name: 'Voice Command');
 
@@ -80,17 +87,14 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
             Navigator.pushNamed(context, AppRoutes.cart);
           } else if (command.startsWith("add to cart")) {
             _addToCart();
-          }
-          else if (command.startsWith("tambahkan keranjang")) {
+          } else if (command.startsWith("tambahkan keranjang")) {
             _addToCart();
-          }else if (command.startsWith("back to home")) {
+          } else if (command.startsWith("back to home")) {
             Navigator.pushNamedAndRemoveUntil(
                 context, AppRoutes.home, (route) => false);
           }
 
           emit(VoiceCommandListening(recognizedText, confidence));
-
-
         },
         listenOptions: SpeechListenOptions(
           listenMode: ListenMode.dictation,
@@ -105,7 +109,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
   }
 
   void toggleListening() {
-    if (state is VoiceCommandListening) {
+    if (_speech.isListening) {
       stopListening();
     } else {
       startListening();
@@ -144,9 +148,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     var context = navigatorKey.currentContext!;
 
     var model = await searchRepository.getSearchSuggestion(query);
-    if ( model.suggestProductArray != null) {
-
-
+    if (model.suggestProductArray != null) {
       var products = model.suggestProductArray?.products ?? [];
 
       log(model.suggestProductArray!.products.toString(), name: 'search');
