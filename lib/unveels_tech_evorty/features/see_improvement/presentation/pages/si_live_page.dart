@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
@@ -65,6 +66,7 @@ class _SILivePageState extends State<SILivePage> {
               value.messageLevel == ConsoleMessageLevel.ERROR) {
             setState(() {
               step = LiveStep.scannedFace;
+              _isShowAnalysisResults = true;
             });
           }
         },
@@ -91,21 +93,37 @@ class _SILivePageState extends State<SILivePage> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                SeeImprovementResultsWidget(
-                  onUpdateSmoothingStrength: (double value) {
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      setState(() {
-                        _sliderValue = value;
-                      });
-                      _webViewController?.evaluateJavascript(
-                        source: """
+                _isShowAnalysisResults
+                    ? SeeImprovementResultsWidget(
+                        onUpdateSmoothingStrength: (double value) {
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            setState(() {
+                              _sliderValue = value;
+                            });
+                            _webViewController?.evaluateJavascript(
+                              source: """
                         window.postMessage(JSON.stringify({ smoothingStrength: $value }), "*");
                         """,
-                      );
+                            );
+                          });
+                        },
+                        sliderValue: _sliderValue,
+                      )
+                    : const SizedBox(),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _isShowAnalysisResults = !_isShowAnalysisResults;
                     });
                   },
-                  sliderValue: _sliderValue,
+                  child: Icon(
+                    _isShowAnalysisResults == false
+                        ? CupertinoIcons.chevron_compact_up
+                        : CupertinoIcons.chevron_compact_down,
+                    color: Colors.white,
+                  ),
                 ),
+                const SizedBox(height: 8)
               ],
             ),
           ),

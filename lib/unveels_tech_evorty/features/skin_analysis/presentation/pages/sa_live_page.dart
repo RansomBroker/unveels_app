@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test_new/unveels_tech_evorty/features/skin_analysis/models/skin_analysis_model.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
@@ -75,6 +76,7 @@ class _SALivePageState extends State<SALivePage> {
                 .categories[SkinAnalysisModel.categoryLabels.indexOf(label)];
             setState(() {
               _selectedCategory = category;
+              _isShowAnalysisResults = true;
             });
           }
         },
@@ -98,19 +100,39 @@ class _SALivePageState extends State<SALivePage> {
         }
 
         return BottomCopyrightWidget(
-          child: SAAnalysisResultsWidget(
-            analysisResult: _analysisResult,
-            selectedCategory: _selectedCategory,
-            onCategoryChanged: (category) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                setState(() {
-                  _selectedCategory = category;
-                });
-              });
-            },
-            onViewAll: () {
-              _onViewAllProducts();
-            },
+          child: Column(
+            children: [
+              _isShowAnalysisResults
+                  ? SAAnalysisResultsWidget(
+                      analysisResult: _analysisResult,
+                      selectedCategory: _selectedCategory,
+                      onCategoryChanged: (category) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          setState(() {
+                            _selectedCategory = category;
+                          });
+                        });
+                      },
+                      onViewAll: () {
+                        _onViewAllProducts();
+                      },
+                    )
+                  : const SizedBox(),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isShowAnalysisResults = !_isShowAnalysisResults;
+                  });
+                },
+                child: Icon(
+                  _isShowAnalysisResults == false
+                      ? CupertinoIcons.chevron_compact_up
+                      : CupertinoIcons.chevron_compact_down,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8)
+            ],
           ),
         );
       case LiveStep.makeup:
