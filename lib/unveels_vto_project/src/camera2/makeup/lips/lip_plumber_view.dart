@@ -13,6 +13,7 @@ import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 
@@ -27,7 +28,7 @@ class LipPlumberView extends StatefulWidget {
 
 class _LipPlumberViewState extends State<LipPlumberView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -328,6 +329,11 @@ class _LipPlumberViewState extends State<LipPlumberView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -392,7 +398,7 @@ class _LipPlumberViewState extends State<LipPlumberView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -406,16 +412,20 @@ class _LipPlumberViewState extends State<LipPlumberView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChoice(),
-          separator(),
-
-          lipstickChoice(),
-          // typeChip(),
-          // Constant.xSizedBox4,
-          // separator(),
-          // typeText(),
-          // Constant.xSizedBox8,
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChoice(),
+            separator(),
+            lipstickChoice(),
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );

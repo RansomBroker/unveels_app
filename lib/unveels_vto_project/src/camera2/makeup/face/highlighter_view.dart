@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,8 @@ class HighlighterView extends StatefulWidget {
 
 class _HighlighterViewState extends State<HighlighterView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();  Completer? isFlippingCamera;
+  bool _showContent = true;
+  Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
   bool isFlipCameraSupported = false;
@@ -77,7 +79,6 @@ class _HighlighterViewState extends State<HighlighterView> {
 
   @override
   void initState() {
-
     super.initState();
 
     fetchData();
@@ -193,9 +194,7 @@ class _HighlighterViewState extends State<HighlighterView> {
             child: Align(
               alignment: Alignment.centerRight,
               child: InkWell(
-                onTap: () {
-
-                },
+                onTap: () {},
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -224,9 +223,7 @@ class _HighlighterViewState extends State<HighlighterView> {
               child: Visibility(
                 visible: isFlipCameraSupported,
                 child: InkWell(
-                  onTap: () async {
-
-                  },
+                  onTap: () async {},
                   child: Container(
                     margin: const EdgeInsets.only(right: 16),
                     width: 35,
@@ -397,6 +394,11 @@ class _HighlighterViewState extends State<HighlighterView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -431,7 +433,7 @@ class _HighlighterViewState extends State<HighlighterView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -444,25 +446,35 @@ class _HighlighterViewState extends State<HighlighterView> {
       ),
       child: Column(
         children: [
-          // Constant.xSizedBox8,
-          // colorChip(),
-          colorChoice(),
-          Constant.xSizedBox8,
-          separator(),
-          typeChip(),
-          separator(),
-          highlighterChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          const Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "View All",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              )),
-          Constant.xSizedBox4,
-          lipstickChoice(),
-          // Constant.xSizedBox8,
+          if (_showContent) ...[
+            // Constant.xSizedBox8,
+            // colorChip(),
+            colorChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            typeChip(),
+            separator(),
+            highlighterChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            const Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "View All",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                )),
+            Constant.xSizedBox4,
+            lipstickChoice(),
+            // Constant.xSizedBox8,
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );

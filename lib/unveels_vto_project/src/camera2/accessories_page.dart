@@ -41,7 +41,7 @@ class AccessoriesPage extends StatefulWidget {
 
 class _AccessoriesPageState extends State<AccessoriesPage> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -365,7 +365,7 @@ class _AccessoriesPageState extends State<AccessoriesPage> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

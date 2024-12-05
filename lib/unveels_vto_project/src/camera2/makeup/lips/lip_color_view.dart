@@ -370,17 +370,22 @@ class _LipColorViewState extends State<LipColorView> {
   Widget lipstickChoice() {
     if (_isLoading) {
       return SizedBox(
-          height: 135,
+          height: 130,
           child: Column(
             children: [
               Container(color: Colors.white, width: 100, height: 68),
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
-        height: 135,
+        height: 130,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -473,7 +478,7 @@ class _LipColorViewState extends State<LipColorView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,

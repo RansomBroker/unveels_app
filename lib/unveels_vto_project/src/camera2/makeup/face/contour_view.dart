@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ class ContourView extends StatefulWidget {
 
 class _ContourViewState extends State<ContourView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -388,6 +389,11 @@ class _ContourViewState extends State<ContourView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -484,7 +490,7 @@ class _ContourViewState extends State<ContourView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -498,57 +504,67 @@ class _ContourViewState extends State<ContourView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Constant.xSizedBox8,
-          // colorChip(),
-          colorChoice(),
-          Constant.xSizedBox8,
-          separator(),
-          Row(
-            children: [
-              InkWell(
-                  onTap: () {
-                    setState(() {
-                      oneOrDual = true;
-                    });
-                    fetchData();
-                  },
-                  child: Text(
-                    "One",
-                    style: oneOrDual == true
-                        ? Constant.whiteBold16.copyWith(fontSize: 12)
-                        : Constant.whiteRegular12,
-                  )),
-              const SizedBox(
-                width: 10,
-              ),
-              InkWell(
-                  onTap: () {
-                    setState(() {
-                      oneOrDual = false;
-                    });
-                    fetchData();
-                  },
-                  child: Text(
-                    "Two",
-                    style: oneOrDual == false
-                        ? Constant.whiteBold16.copyWith(fontSize: 12)
-                        : Constant.whiteRegular12,
-                  )),
-            ],
+          if (_showContent) ...[
+            // Constant.xSizedBox8,
+            // colorChip(),
+            colorChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            Row(
+              children: [
+                InkWell(
+                    onTap: () {
+                      setState(() {
+                        oneOrDual = true;
+                      });
+                      fetchData();
+                    },
+                    child: Text(
+                      "One",
+                      style: oneOrDual == true
+                          ? Constant.whiteBold16.copyWith(fontSize: 12)
+                          : Constant.whiteRegular12,
+                    )),
+                const SizedBox(
+                  width: 10,
+                ),
+                InkWell(
+                    onTap: () {
+                      setState(() {
+                        oneOrDual = false;
+                      });
+                      fetchData();
+                    },
+                    child: Text(
+                      "Two",
+                      style: oneOrDual == false
+                          ? Constant.whiteBold16.copyWith(fontSize: 12)
+                          : Constant.whiteRegular12,
+                    )),
+              ],
+            ),
+            separator(),
+            bronzerChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            const Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "View All",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                )),
+            Constant.xSizedBox4,
+            lipstickChoice(),
+            // Constant.xSizedBox8,
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
           ),
-          separator(),
-          bronzerChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          const Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "View All",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              )),
-          Constant.xSizedBox4,
-          lipstickChoice(),
-          // Constant.xSizedBox8,
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,8 @@ class EyelinerView extends StatefulWidget {
 
 class _EyelinerViewState extends State<EyelinerView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();  Completer? isFlippingCamera;
+  bool _showContent = true;
+  Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
   bool isFlipCameraSupported = false;
@@ -128,7 +130,6 @@ class _EyelinerViewState extends State<EyelinerView> {
 
   @override
   void initState() {
-
     super.initState();
 
     fetchData();
@@ -338,6 +339,11 @@ class _EyelinerViewState extends State<EyelinerView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -403,7 +409,7 @@ class _EyelinerViewState extends State<EyelinerView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -417,18 +423,28 @@ class _EyelinerViewState extends State<EyelinerView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox8,
-          separator(),
-          Constant.xSizedBox4,
-          typeEyeLinerChip(),
-          Constant.xSizedBox8,
-          separator(),
-          Constant.xSizedBox4,
-          lipstickChoice(),
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            colorChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            Constant.xSizedBox4,
+            typeEyeLinerChip(),
+            Constant.xSizedBox8,
+            separator(),
+            Constant.xSizedBox4,
+            lipstickChoice(),
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );

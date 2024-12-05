@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ class LashesMascaraView extends StatefulWidget {
 
 class _LashesMascaraViewState extends State<LashesMascaraView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -341,6 +342,11 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -406,7 +412,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -420,79 +426,89 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          separator(),
-          Constant.xSizedBox4,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      lashes = true;
-                    });
-                    fetchData();
-                  },
-                  child: Text(
-                    'Lashes',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      shadows: !lashes
-                          ? null
-                          : [
-                              const BoxShadow(
-                                offset: Offset(0, 0),
-                                color: Colors.white,
-                                spreadRadius: 0,
-                                blurRadius: 10,
-                              ),
-                            ],
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            separator(),
+            Constant.xSizedBox4,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        lashes = true;
+                      });
+                      fetchData();
+                    },
+                    child: Text(
+                      'Lashes',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        shadows: !lashes
+                            ? null
+                            : [
+                                const BoxShadow(
+                                  offset: Offset(0, 0),
+                                  color: Colors.white,
+                                  spreadRadius: 0,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                width: 1,
-                height: 18,
-                color: Colors.white,
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      lashes = false;
-                    });
-                    fetchData();
-                  },
-                  child: Text(
-                    'Mascara',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      shadows: lashes
-                          ? null
-                          : [
-                              const BoxShadow(
-                                offset: Offset(0, 0),
-                                color: Colors.white,
-                                spreadRadius: 0,
-                                blurRadius: 10,
-                              ),
-                            ],
+                Container(
+                  width: 1,
+                  height: 18,
+                  color: Colors.white,
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        lashes = false;
+                      });
+                      fetchData();
+                    },
+                    child: Text(
+                      'Mascara',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        shadows: lashes
+                            ? null
+                            : [
+                                const BoxShadow(
+                                  offset: Offset(0, 0),
+                                  color: Colors.white,
+                                  spreadRadius: 0,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            Constant.xSizedBox16,
+            typeLashesChip(),
+            Constant.xSizedBox32,
+            lipstickChoice(),
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
           ),
-          Constant.xSizedBox16,
-          typeLashesChip(),
-          Constant.xSizedBox32,
-          lipstickChoice(),
         ],
       ),
     );

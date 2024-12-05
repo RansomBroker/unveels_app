@@ -28,7 +28,7 @@ class LipLinerView extends StatefulWidget {
 
 class _LipLinerViewState extends State<LipLinerView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -201,9 +201,7 @@ class _LipLinerViewState extends State<LipLinerView> {
             child: Align(
               alignment: Alignment.centerRight,
               child: InkWell(
-                onTap: () {
-
-                },
+                onTap: () {},
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -444,7 +442,7 @@ class _LipLinerViewState extends State<LipLinerView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -458,23 +456,26 @@ class _LipLinerViewState extends State<LipLinerView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox8,
-          separator(),
-          itemChoice(),
-          Constant.xSizedBox8,
-          separator(),
-
-          lipstickChoice(),
-          // typeChip(),
-          // Constant.xSizedBox4,
-          // separator(),
-          // typeText(),
-          // Constant.xSizedBox8,
-          BottomCopyright()
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            colorChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            itemChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            lipstickChoice(),
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );
@@ -571,8 +572,8 @@ class _LipLinerViewState extends State<LipLinerView> {
                   alignment: Alignment.bottomRight,
                   child: Container(
                     margin: const EdgeInsets.only(right: 16),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 10),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                     decoration: BoxDecoration(
                         color: Colors.black12,
                         borderRadius: BorderRadius.circular(20)),

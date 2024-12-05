@@ -14,6 +14,7 @@ import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 
@@ -28,7 +29,8 @@ class BraceletsView extends StatefulWidget {
 
 class _BraceletsViewState extends State<BraceletsView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();  Completer? isFlippingCamera;
+  bool _showContent = true;
+  Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
   bool isFlipCameraSupported = false;
@@ -80,7 +82,6 @@ class _BraceletsViewState extends State<BraceletsView> {
 
   @override
   void initState() {
-
     super.initState();
 
     fetchData();
@@ -246,9 +247,7 @@ class _BraceletsViewState extends State<BraceletsView> {
             child: Align(
               alignment: Alignment.centerRight,
               child: InkWell(
-                onTap: () {
-
-                },
+                onTap: () {},
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -277,9 +276,7 @@ class _BraceletsViewState extends State<BraceletsView> {
               child: Visibility(
                 visible: isFlipCameraSupported,
                 child: InkWell(
-                  onTap: () async {
-
-                  },
+                  onTap: () async {},
                   child: Container(
                     margin: const EdgeInsets.only(right: 16),
                     width: 35,
@@ -308,6 +305,11 @@ class _BraceletsViewState extends State<BraceletsView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -466,7 +468,7 @@ class _BraceletsViewState extends State<BraceletsView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -480,23 +482,28 @@ class _BraceletsViewState extends State<BraceletsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          chipChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          Constant.xSizedBox8,
-          lipstickChoice(),
-          Constant.xSizedBox8,
-          // typeChip(),
-          // Constant.xSizedBox4,
-          // separator(),
-          // typeText(),
-          // Constant.xSizedBox8,
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            colorChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            chipChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            Constant.xSizedBox8,
+            lipstickChoice(),
+            Constant.xSizedBox8
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );
@@ -544,7 +551,6 @@ class _BraceletsViewState extends State<BraceletsView> {
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
-
           },
           child: Container(
             margin: const EdgeInsets.only(top: 8),

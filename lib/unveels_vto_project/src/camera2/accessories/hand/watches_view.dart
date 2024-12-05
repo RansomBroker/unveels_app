@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -31,7 +32,7 @@ class WatchesView extends StatefulWidget {
 
 class _WatchesViewState extends State<WatchesView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -351,6 +352,11 @@ class _WatchesViewState extends State<WatchesView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -552,7 +558,7 @@ class _WatchesViewState extends State<WatchesView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -566,23 +572,28 @@ class _WatchesViewState extends State<WatchesView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          shapesOrdMaterialChoice(),
-          Constant.xSizedBox4,
-          shapesOrdMaterial == false ? shapesChoice() : materialChoice(),
-          Constant.xSizedBox8,
-          lipstickChoice(),
-          Constant.xSizedBox8,
-          // typeChip(),
-          // Constant.xSizedBox4,
-          // separator(),
-          // typeText(),
-          // Constant.xSizedBox8,
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            colorChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            shapesOrdMaterialChoice(),
+            Constant.xSizedBox4,
+            shapesOrdMaterial == false ? shapesChoice() : materialChoice(),
+            Constant.xSizedBox8,
+            lipstickChoice(),
+            Constant.xSizedBox8
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );
@@ -630,7 +641,6 @@ class _WatchesViewState extends State<WatchesView> {
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
-
           },
           child: Container(
             margin: const EdgeInsets.only(top: 8),

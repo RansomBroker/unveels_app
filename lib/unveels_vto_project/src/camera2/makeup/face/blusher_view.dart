@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -28,7 +29,7 @@ class BlusherView extends StatefulWidget {
 
 class _BlusherViewState extends State<BlusherView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -393,6 +394,11 @@ class _BlusherViewState extends State<BlusherView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -427,7 +433,7 @@ class _BlusherViewState extends State<BlusherView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -441,25 +447,35 @@ class _BlusherViewState extends State<BlusherView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Constant.xSizedBox8,
-          // colorChip(),
-          colorChoice(),
-          Constant.xSizedBox8,
-          separator(),
-          typeChip(),
-          separator(),
-          highlighterChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          const Align(
-              alignment: Alignment.centerRight,
-              child: Text(
-                "View All",
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              )),
-          Constant.xSizedBox4,
-          lipstickChoice(),
-          // Constant.xSizedBox8,
+          if (_showContent) ...[
+            // Constant.xSizedBox8,
+            // colorChip(),
+            colorChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            typeChip(),
+            separator(),
+            highlighterChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            const Align(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  "View All",
+                  style: TextStyle(color: Colors.white, fontSize: 12),
+                )),
+            Constant.xSizedBox4,
+            lipstickChoice(),
+            // Constant.xSizedBox8,
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );

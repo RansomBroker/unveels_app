@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,7 +30,7 @@ class BronzerView extends StatefulWidget {
 
 class _BronzerViewState extends State<BronzerView> {
   InAppWebViewController? _webViewController;
-  Completer<String?> cameraSetupCompleter = Completer();
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -378,6 +379,11 @@ class _BronzerViewState extends State<BronzerView> {
             ],
           ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
@@ -474,7 +480,7 @@ class _BronzerViewState extends State<BronzerView> {
 
   Widget sheet() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -487,20 +493,28 @@ class _BronzerViewState extends State<BronzerView> {
       ),
       child: Column(
         children: [
-          // Constant.xSizedBox8,
-          // colorChip(),
-          Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox8,
-          separator(),
-          Constant.xSizedBox4,
-          bronzerChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          Constant.xSizedBox4,
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChoice(),
+            Constant.xSizedBox8,
+            separator(),
+            Constant.xSizedBox4,
+            bronzerChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            Constant.xSizedBox4,
 
-          lipstickChoice(),
-          // Constant.xSizedBox8,
+            lipstickChoice(),
+            // Constant.xSizedBox8,
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
         ],
       ),
     );
