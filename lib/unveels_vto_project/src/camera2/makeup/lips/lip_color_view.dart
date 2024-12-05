@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +42,7 @@ class _LipColorViewState extends State<LipColorView> {
   int? colorSelected;
   int? typeColorSelected;
   int? typeColor2Selected;
+  List<int>? selectedColors;
 
   final Dio dio = Dio();
   List<ProductData>? productsData;
@@ -106,19 +107,26 @@ class _LipColorViewState extends State<LipColorView> {
   }
 
   void tryOn() {
-    if (colorSelected != null) {
-      _webViewController?.evaluateJavascript(
-        source: """
-        window.postMessage(JSON.stringify({ "showLipColor": true, "lipColor":["${vtoColors[colorSelected!].hex}"], "lipColorMode": "One"}), "*");
-      """,
-      );
-    } else {
-      _webViewController?.evaluateJavascript(
-        source: """
-        window.postMessage(JSON.stringify({ "showLipColor": false}), "*");
-      """,
-      );
-    }
+    final showLipColor = (typeColor2Selected == 0 && colorSelected != null) ||
+        (typeColor2Selected != 0 &&
+            selectedColors != null &&
+            selectedColors!.isNotEmpty);
+
+    final lipColors = typeColor2Selected == 0
+        ? [(vtoColors[colorSelected!].hex)]
+        : selectedColors!.map((index) => vtoColors[index].hex).toList();
+
+    final lipColorMode =
+        typeColor2Selected == 0 ? 'One' : chip2List[typeColor2Selected!];
+
+    _webViewController?.evaluateJavascript(
+      source: """
+    window.postMessage(JSON.stringify({
+      "showLipColor": $showLipColor,
+      ${showLipColor ? '"lipColor": ${jsonEncode(lipColors)}, "lipColorMode": "$lipColorMode",' : ''}
+    }), "*");
+    """,
+    );
   }
 
   List<String> lipList = [
@@ -294,8 +302,27 @@ class _LipColorViewState extends State<LipColorView> {
           return InkWell(
             onTap: () async {
               setState(() {
-                colorSelected = index;
-                onOffVisibel = false;
+                if (typeColor2Selected == 0) {
+                  colorSelected = index;
+                  onOffVisibel = false;
+                } else {
+                  if (selectedColors == null) {
+                    selectedColors = [index];
+                  } else {
+                    if (selectedColors!.contains(index)) {
+                      selectedColors!.remove(index);
+                    } else {
+                      if (selectedColors!.length < 2) {
+                        selectedColors!.add(index);
+                      } else {
+                        selectedColors![1] = index;
+                      }
+                    }
+                  }
+                  colorSelected = selectedColors?.isNotEmpty == true
+                      ? selectedColors!.last
+                      : null;
+                }
                 fetchData();
               });
               tryOn();
@@ -305,9 +332,12 @@ class _LipColorViewState extends State<LipColorView> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                    color: index == colorSelected && onOffVisibel == false
-                        ? Colors.white
-                        : Colors.transparent),
+                  color: (typeColor2Selected == 0
+                          ? (index == colorSelected && onOffVisibel == false)
+                          : (selectedColors?.contains(index) == true))
+                      ? Colors.white
+                      : Colors.transparent,
+                ),
               ),
               child: CircleAvatar(
                   radius: 12, backgroundColor: colorChoiceList[index]),
