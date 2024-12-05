@@ -50,6 +50,8 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
 
           if (result.finalResult == false) return;
 
+
+
           log(result.toJson().toString(), name: 'Voice Command');
 
           // Process command
@@ -57,33 +59,38 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
 
           var context = navigatorKey.currentContext!;
           if (command.startsWith("search")) {
-            var query = command.replaceAll("search", "");
+            var query = command.replaceAll("search", "").trim();
             _search(query);
           } else if (command.startsWith("open product")) {
-            var query = command.replaceAll("open product", "");
+            var query = command.replaceAll("open product", "").trim();
 
-            _openProduct(query);
-          }else if (command.startsWith("open produk")) {
-            var query = command.replaceAll("open produk", "");
+            await _openProduct(query);
+          } else if (command.startsWith("open produk")) {
+            var query = command.replaceAll("open produk", "").trim();
 
-            _openProduct(query);
+            await _openProduct(query);
           } else if (command.startsWith("open category")) {
-            var query = command.replaceAll("open category", "");
+            var query = command.replaceAll("open category", "").trim();
 
             _openCategory(query);
           } else if (command.startsWith("open kategori")) {
-            var query = command.replaceAll("open kategori", "");
+            var query = command.replaceAll("open kategori", "").trim();
             _openCategory(query);
           } else if (command.startsWith("open cart")) {
             Navigator.pushNamed(context, AppRoutes.cart);
           } else if (command.startsWith("add to cart")) {
             _addToCart();
-          } else if (command.startsWith("back to home")) {
+          }
+          else if (command.startsWith("tambahkan keranjang")) {
+            _addToCart();
+          }else if (command.startsWith("back to home")) {
             Navigator.pushNamedAndRemoveUntil(
                 context, AppRoutes.home, (route) => false);
           }
 
           emit(VoiceCommandListening(recognizedText, confidence));
+
+
         },
         listenOptions: SpeechListenOptions(
           listenMode: ListenMode.dictation,
@@ -133,14 +140,16 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     );
   }
 
-  void _openProduct(String query) async {
+  Future<void> _openProduct(String query) async {
     var context = navigatorKey.currentContext!;
 
-    var model = await searchRepository?.getSearchSuggestion(query);
-    if (model != null) {
-      log(model.suggestProductArray!.toString(), name: 'search');
+    var model = await searchRepository.getSearchSuggestion(query);
+    if ( model.suggestProductArray != null) {
+
 
       var products = model.suggestProductArray?.products ?? [];
+
+      log(model.suggestProductArray!.products.toString(), name: 'search');
 
       if (products.isEmpty) {
         Navigator.pushNamed(
@@ -156,9 +165,23 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
       }
 
       if (products.length > 1) {
-        var index = products.indexWhere((e)=> e.productName!.toLowerCase() == query);
-        if (index>=0) {
-          product = products[index];
+        List<String> wordsToCheck = query.split(' ');
+
+        Product? searchMatch;
+        int maxMatch = 0;
+        for (var item in products) {
+          int matchCount = wordsToCheck
+              .where((word) =>
+                  item.productName!.toLowerCase().contains(word.toLowerCase()))
+              .length;
+          if (matchCount > maxMatch) {
+            searchMatch = item;
+            maxMatch = matchCount;
+          }
+        }
+
+        if (searchMatch != null) {
+          product = searchMatch;
 
           Navigator.of(context).pushNamed(
             AppRoutes.productPage,
@@ -167,7 +190,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
               product?.productId ?? "",
             ),
           );
-        } else{
+        } else {
           Navigator.pushNamed(
             context,
             AppRoutes.catalog,
@@ -179,7 +202,6 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
             ),
           );
         }
-
       } else {
         product = products.first;
 
@@ -217,11 +239,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
           ?.addToCart(product!.productId!, 1, product!.toJson(), []);
       if (model != null) {
         if (model.success == true) {
-
-          Navigator.pushNamed(
-              context,
-              AppRoutes.cart);
-
+          Navigator.pushNamed(context, AppRoutes.cart);
         } else {}
       }
     } catch (error, _) {}
