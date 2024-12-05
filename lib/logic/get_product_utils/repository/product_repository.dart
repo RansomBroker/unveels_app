@@ -9,6 +9,8 @@ class ProductData {
   final String name;
   final String brand;
   final double price;
+  final String? color;
+  final String? hexacode;
 
   ProductData({
     required this.id,
@@ -16,13 +18,15 @@ class ProductData {
     required this.name,
     required this.brand,
     required this.price,
+    this.color,
+    this.hexacode,
   });
 }
 
 class ProductRepository {
   final Dio _dio = Dio();
   final String _magnetoBaseUrl = ApiConstant.webUrl;
-  final String _token = "hb2vxjo1ayu0agrkr97eprrl5rccqotc";
+  final String _token = ApiConstant.techToken;
 
   Future<List<ProductData>> fetchProducts({
     String? categoryIds,
@@ -50,7 +54,8 @@ class ProductRepository {
     final filters = [
       if (categoryIds != null)
         {'field': 'category_id', 'value': categoryIds, 'condition_type': 'in'},
-      if (color != null) {'field': 'color', 'value': color},
+      if (color != null)
+        {'field': 'color', 'value': color, 'condition_type': 'eq'},
       if (texture != null)
         {'field': 'texture', 'value': texture, 'condition_type': 'in'},
       if (productTypes != null && productType != null)
@@ -111,13 +116,23 @@ class ProductRepository {
               .firstWhere((e) => e["attribute_code"] == "image")['value'];
           var brandId = customAttribute
               .firstWhere((e) => e["attribute_code"] == "brand")['value'];
-          print(item);
+          String? productColor = customAttribute.firstWhere(
+              (e) => e["attribute_code"] == "color",
+              orElse: () => null)?['value'];
+
+          String? hexacode = customAttribute.firstWhere(
+              (e) => e["attribute_code"] == "hexacode",
+              orElse: () => null)?['value'];
+
           return ProductData(
-              id: item['id'],
-              imageUrl: "$_magnetoBaseUrl/media/catalog/product$imgLink",
-              name: item['name'],
-              brand: getBrandNameByValue(brandId) ?? "",
-              price: item['price'].toDouble());
+            id: item['id'],
+            imageUrl: "$_magnetoBaseUrl/media/catalog/product$imgLink",
+            name: item['name'],
+            brand: getBrandNameByValue(brandId) ?? "",
+            price: item['price'].toDouble(),
+            color: productColor,
+            hexacode: hexacode,
+          );
         }).toList();
       } else {
         print("Gagal: Status code ${response.statusCode}");
