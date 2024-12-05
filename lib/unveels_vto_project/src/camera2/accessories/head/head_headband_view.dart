@@ -519,34 +519,36 @@ class _HeadHeadbandViewState extends State<HeadHeadbandView> {
       extendBody: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        // toolbarHeight: 0,
-        leadingWidth: 84,
         titleSpacing: 0,
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
           },
-          child: Container(
-            margin: const EdgeInsets.only(top: 8),
-            // padding: EdgeInsets.all(8),
-            // width: 64,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded,
-                color: Colors.white),
+          child: Center(
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.black26),
+              child: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white, size: 18),
+            ),
           ),
         ),
         actions: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              margin: const EdgeInsets.only(top: 8),
-              // padding: EdgeInsets.only(right: 16, left: 16),
-              width: 100,
-              height: 100,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black26),
-              child: const Icon(Icons.close, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Center(
+                  child: Container(
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.black26),
+                child: const SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(Icons.close, color: Colors.white, size: 18)),
+              )),
             ),
           ),
         ],

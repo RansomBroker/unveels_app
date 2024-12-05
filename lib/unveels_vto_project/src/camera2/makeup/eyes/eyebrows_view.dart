@@ -470,14 +470,10 @@ class _EyebrowsViewState extends State<EyebrowsView> {
       extendBody: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        // toolbarHeight: 0,
-        leadingWidth: 84,
         titleSpacing: 0,
-
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
-            // CusNav.nPushReplace(context, OcrCameraPage2(makeUpOn: true));
           },
           child: Center(
             child: Container(
@@ -491,17 +487,18 @@ class _EyebrowsViewState extends State<EyebrowsView> {
           ),
         ),
         actions: [
-          Container(
-            margin: const EdgeInsets.all(16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: InkWell(
               onTap: () => Navigator.pop(context),
               child: Center(
                   child: Container(
-                width: 32,
-                height: 32,
                 decoration: const BoxDecoration(
                     shape: BoxShape.circle, color: Colors.black26),
-                child: const Icon(Icons.close, color: Colors.white, size: 18),
+                child: const SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(Icons.close, color: Colors.white, size: 18)),
               )),
             ),
           ),
