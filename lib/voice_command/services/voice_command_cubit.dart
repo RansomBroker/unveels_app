@@ -48,8 +48,6 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
         return;
       }
 
-      await _initializeSpeech();
-
       emit(VoiceCommandListening(state.text, state.confidence));
 
       await _speech.listen(
@@ -57,7 +55,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
           final recognizedText = result.recognizedWords;
           final confidence = result.confidence;
 
-          if (result.finalResult == false) return;
+          if (result.finalResult == true) {
 
           log(result.toJson().toString(), name: 'Voice Command');
 
@@ -93,14 +91,20 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
             Navigator.pushNamedAndRemoveUntil(
                 context, AppRoutes.home, (route) => false);
           }
-
-          emit(VoiceCommandListening(recognizedText, confidence));
+          }
         },
         listenOptions: SpeechListenOptions(
           listenMode: ListenMode.dictation,
+
+
         ),
       );
-    } catch (e) {}
+    } catch (e) {
+      stopListening();
+      log(e.toString());
+    }
+
+    emit(VoiceCommandListening('', 0));
   }
 
   void stopListening() async {
@@ -109,7 +113,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
   }
 
   void toggleListening() {
-    if (_speech.isListening) {
+    if (state is VoiceCommandListening) {
       stopListening();
     } else {
       startListening();
@@ -123,8 +127,11 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
   }
 
   void _errorListener(SpeechRecognitionError error) {
-    if (error.errorMsg.contains("error") && state is VoiceCommandListening) {
-      startListening();
+    // log(error.errorMsg);
+    if (_speech.isListening ||
+        error.errorMsg == 'error_busy' ||
+        error.errorMsg == 'error_speech_timeout') {
+      stopListening();
     }
   }
 
@@ -238,12 +245,19 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
 
     try {
       var model = await productDetailRepository
-          ?.addToCart(product!.productId!, 1, product!.toJson(), []);
+          ?.addToCart(product!.productId!, 1, {}, []);
+
+      log(model!.toJson().toString(), name: '');
       if (model != null) {
         if (model.success == true) {
           Navigator.pushNamed(context, AppRoutes.cart);
-        } else {}
+        } else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text(model.message ?? "")));
+        }
       }
-    } catch (error, _) {}
+    } catch (error, _) {
+      print(error);
+    }
   }
 }
