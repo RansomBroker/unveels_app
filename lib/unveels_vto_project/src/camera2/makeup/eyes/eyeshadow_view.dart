@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -221,6 +224,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   colorTextSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -266,6 +270,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   onOffVisibel = true;
                 });
                 fetchData();
+                tryOn();
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
@@ -278,6 +283,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   onOffVisibel = false;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                   padding:
@@ -474,6 +480,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 sliderValue = v;
               });
               fetchData();
+              tryOn();
             },
           ),
           const Padding(
@@ -675,6 +682,27 @@ class _EyeshadowViewState extends State<EyeshadowView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = colorMainList[colorTextSelected ?? 0];
+    if (onOffVisibel == true && colorSelected != null) {
+      color = colorList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showEyeShadow": true,
+      "eyeShadowColor": [color.toWebHex()],
+      "eyeshadowPattern": "smokey",
+      "eyeshadowMaterial": "matte",
+      // "eyeshadowPattern": eyebrowSelected,
+      // "eyeshadowMaterial": type1List[typeComboSelected ?? 0],
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }
