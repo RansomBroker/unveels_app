@@ -87,3 +87,12 @@ List<Color>? getSelectableColorList(
 String toWebHex(Color color) {
   return '#${color.red.toRadixString(16).padLeft(2, '0')}${color.green.toRadixString(16).padLeft(2, '0')}${color.blue.toRadixString(16).padLeft(2, '0')}';
 }
+
+extension ColorExtension on Color {
+  String toWebHex() {
+    return '#'
+        '${red.toRadixString(16).padLeft(2, '0')}'
+        '${green.toRadixString(16).padLeft(2, '0')}'
+        '${blue.toRadixString(16).padLeft(2, '0')}';
+  }
+}
