@@ -138,7 +138,7 @@ class _LipLinerViewState extends State<LipLinerView> {
   void tryOn() {
     final show = patternSelected != null;
 
-    final color = [(vtoColors[colorSelected!].hex)];
+    final color = colorSelected != null ? [(vtoColors[colorSelected!].hex)] : null;
 
     _webViewController?.evaluateJavascript(
       source: """
