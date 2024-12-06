@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -39,7 +40,7 @@ class _LipLinerViewState extends State<LipLinerView> {
   int? mainColorSelected;
   int? colorSelected;
   int? typeColorSelected;
-  int? typeColor2Selected;
+  int? patternSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -47,6 +48,8 @@ class _LipLinerViewState extends State<LipLinerView> {
   final ProductRepository productRepository = ProductRepository();
 
   Future<void> fetchData() async {
+    tryOn();
+
     setState(() {
       _isLoading = true;
     });
@@ -130,6 +133,21 @@ class _LipLinerViewState extends State<LipLinerView> {
       }
     }
     return true;
+  }
+
+  void tryOn() {
+    final show = patternSelected != null;
+
+    final color = [(vtoColors[colorSelected!].hex)];
+
+    _webViewController?.evaluateJavascript(
+      source: """
+    window.postMessage(JSON.stringify({
+      "showLipliner": $show,
+      ${show ? '"liplinerColor": ${jsonEncode(color)}, "liplinerPattern": $patternSelected,' : ''}
+    }), "*");
+    """,
+    );
   }
 
   Widget pictureTaken() {
@@ -395,8 +413,29 @@ class _LipLinerViewState extends State<LipLinerView> {
     );
   }
 
-  Widget item(String path, GestureTapCallback? onTap) {
-    return InkWell(onTap: onTap, child: Image.asset(path));
+  Widget item(int index) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          if (patternSelected == index) {
+            patternSelected = null;
+          } else {
+            patternSelected = index;
+          }
+        });
+        fetchData();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: patternSelected == index ? Colors.white : Colors.transparent,
+          ),
+        ),
+        child: Image.asset(lipLinerPath[index]),
+      ),
+    );
   }
 
   Widget itemChoice() {
@@ -408,7 +447,7 @@ class _LipLinerViewState extends State<LipLinerView> {
         itemCount: lipLinerPath.length,
         separatorBuilder: (_, __) => Constant.xSizedBox12,
         itemBuilder: (context, index) {
-          return item(lipLinerPath[index], () {});
+          return item(index);
         },
       ),
     );

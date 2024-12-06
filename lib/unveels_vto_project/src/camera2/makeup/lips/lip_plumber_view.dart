@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -11,7 +12,6 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
@@ -76,6 +76,21 @@ class _LipPlumberViewState extends State<LipPlumberView> {
         _isLoading = false;
       });
     }
+  }
+
+  void tryOn() {
+    final showLipplumper = colorSelected != null;
+
+    final lipColors = [(vtoColors[colorSelected!].hex)];
+
+    _webViewController?.evaluateJavascript(
+      source: """
+    window.postMessage(JSON.stringify({
+      "showLipplumper": $showLipplumper,
+      ${showLipplumper ? '"lipplumperColor": ${jsonEncode(lipColors)},' : ''}
+    }), "*");
+    """,
+    );
   }
 
   @override
@@ -293,6 +308,7 @@ class _LipPlumberViewState extends State<LipPlumberView> {
                   onOffVisibel = true;
                 });
                 fetchData();
+                tryOn();
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
@@ -304,6 +320,7 @@ class _LipPlumberViewState extends State<LipPlumberView> {
                 colorSelected = index;
                 onOffVisibel = false;
               });
+              tryOn();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),

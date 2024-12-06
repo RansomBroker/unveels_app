@@ -41,7 +41,7 @@ class _LipColorViewState extends State<LipColorView> {
   int? mainColorSelected;
   int? colorSelected;
   int? typeColorSelected;
-  int? typeColor2Selected;
+  int? typeColor2Selected = 0;
   List<int>? selectedColors;
 
   final Dio dio = Dio();
