@@ -133,7 +133,7 @@ class ProductRepository {
             }
           }
 
-          return extensionAttributes?["configurable_product_links"];
+          return extensionAttributes?["configurable_product_links"] ?? [item["id"]];
         }).toList();
 
         Map<String, String> productToBrand = {};
