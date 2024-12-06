@@ -113,8 +113,10 @@ class _LipColorViewState extends State<LipColorView> {
             selectedColors!.isNotEmpty);
 
     final lipColors = typeColor2Selected == 0
-        ? [(vtoColors[colorSelected!].hex)]
-        : selectedColors!.map((index) => vtoColors[index].hex).toList();
+        ? [toWebHex(colorChoiceList[colorSelected!])]
+        : selectedColors!
+            .map((index) => toWebHex(colorChoiceList[index]))
+            .toList();
 
     final lipColorMode =
         typeColor2Selected == 0 ? 'One' : chip2List[typeColor2Selected!];

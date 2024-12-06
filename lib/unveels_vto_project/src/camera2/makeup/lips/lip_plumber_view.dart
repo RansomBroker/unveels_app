@@ -81,7 +81,7 @@ class _LipPlumberViewState extends State<LipPlumberView> {
   void tryOn() {
     final showLipplumper = colorSelected != null;
 
-    final lipColors = [(vtoColors[colorSelected!].hex)];
+    final lipColors = [toWebHex(colorChoiceList[colorSelected!])];
 
     _webViewController?.evaluateJavascript(
       source: """
@@ -292,50 +292,63 @@ class _LipPlumberViewState extends State<LipPlumberView> {
   }
 
   Widget colorChoice() {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorChoiceList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: SizedBox(
+        height: 30,
+        child: Row(
+          children: [
+            InkWell(
               onTap: () async {
                 setState(() {
-                  colorSelected = 0;
+                  colorSelected = null;
                   onOffVisibel = true;
                 });
-                fetchData();
                 tryOn();
               },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-            onTap: () async {
-              setState(() {
-                colorSelected = index;
-                onOffVisibel = false;
-              });
-              tryOn();
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                    color: index == colorSelected && onOffVisibel == false
-                        ? Colors.white
-                        : Colors.transparent),
+              child: const Icon(
+                Icons.do_not_disturb_alt_sharp,
+                color: Colors.white,
+                size: 25,
               ),
-              child: CircleAvatar(
-                  radius: 12, backgroundColor: colorChoiceList[index]),
             ),
-          );
-        },
+            const SizedBox(width: 12),
+            Expanded(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: colorChoiceList.length,
+                separatorBuilder: (_, __) => Constant.xSizedBox12,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                        onOffVisibel = false;
+                      });
+                      tryOn();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: index == colorSelected && !onOffVisibel
+                              ? Colors.white
+                              : Colors.transparent,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: colorChoiceList[index],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
