@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,11 +15,9 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/face/bronzer_view.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -39,7 +38,7 @@ class _ConcealerViewState extends State<ConcealerView> {
   File? file;
   bool makeupOrAccessories = false;
   bool onOffVisible = false;
-  int? skinSelected = 0;
+  int? skinSelected;
   int? colorSelected = 0;
 
   final Dio dio = Dio();
@@ -53,21 +52,18 @@ class _ConcealerViewState extends State<ConcealerView> {
     });
     print("Fetching data");
     try {
-      // print("Trying to fetch");
-      // List<String>? textures =
-      //     getTextureByLabel([chipList[typeColorSelected!]]);
-      // print(textures);
       List<String>? productTypes =
           getProductTypesByLabels("eye_makeup_product_type", ["Concealers"]);
-      print(productTypes);
-      print(skin_tones[skinSelected!].id);
       var dataResponse = await productRepository.fetchProducts(
           // texture: textures!.isEmpty ? null : textures.join(","),
-          // skinTone: skin_tones[skinSelected!].id,
+          skinTone: skinSelected == null ? null : skin_tones[skinSelected!].id,
           productType: "eye_makeup_product_type",
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -84,6 +80,17 @@ class _ConcealerViewState extends State<ConcealerView> {
     super.initState();
 
     fetchData();
+  }
+
+  void tryOn() {
+    final show = colorSelected != 0;
+
+    _webViewController?.evaluateJavascript(source: """
+    window.postMessage(JSON.stringify({
+      "showConcealer": $show,
+      ${show ? '"concealerColor": "${toWebHex(colorChoiceList[colorSelected!])}",' : ''}
+    }), "*");
+    """);
   }
 
   List<String> skinList = skin_tones.map((e) => e.name).toList();
@@ -282,46 +289,56 @@ class _ConcealerViewState extends State<ConcealerView> {
       alignment: Alignment.centerLeft,
       child: SizedBox(
         height: 30,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: colorChoiceList.length,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return InkWell(
-                onTap: () async {
-                  setState(() {
-                    onOffVisible = true;
-                  });
-                  fetchData();
+        child: Row(
+          children: [
+            InkWell(
+              onTap: () async {
+                setState(() {
+                  colorSelected = null; // Set value menjadi null
+                });
+                tryOn();
+              },
+              child: const Icon(
+                Icons.do_not_disturb_alt_sharp,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: colorChoiceList.length,
+                separatorBuilder: (_, __) => Constant.xSizedBox12,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                      });
+                      tryOn();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: index == colorSelected
+                              ? Colors.white
+                              : Colors.transparent,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: colorChoiceList[index],
+                      ),
+                    ),
+                  );
                 },
-                child: const Icon(Icons.do_not_disturb_alt_sharp,
-                    color: Colors.white, size: 25),
-              );
-            }
-            return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = index;
-                    onOffVisible = false;
-                  });
-                  fetchData();
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisible == false
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorChoiceList[index]),
-                ));
-          },
+              ),
+            ),
+          ],
         ),
       ),
     );
