@@ -14,7 +14,7 @@ class VaTextConnectionRepository {
   final Dio _dio = Dio();
   final String _endpoint = "https://chat-bot.evorty.id/chat";
   final String magnetoBaseUrl = ApiConstant.webUrl;
-  final String token = "hb2vxjo1ayu0agrkr97eprrl5rccqotc";
+  final String token = ApiConstant.techToken;
 
   Future<void> sendMessage(String message) async {
     await Future.delayed(const Duration(seconds: 1));

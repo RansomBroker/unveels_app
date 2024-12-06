@@ -24,7 +24,7 @@ class _OptionsRadioButtonViewState extends State<OptionsRadioButtonView> {
 
   @override
   void initState() {
-    // TODO: implement initState
+
     // WidgetsBinding.instance?.addPostFrameCallback((_) {
     //   widget.selectedOption!(widget.variants?[0].optionId as String);
     // });

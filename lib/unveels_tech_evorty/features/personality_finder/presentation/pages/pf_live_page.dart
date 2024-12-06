@@ -70,7 +70,7 @@ class _PFLivePageState extends State<PFLivePage> {
       Uri fullUrl = Uri.parse(
           '${ApiConstant.webUrl}/en/rest/V1/products/attributes/personality');
       var res = await http.get(fullUrl, headers: {
-        "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
+        "Authorization": "Bearer ${ApiConstant.techToken}"
       });
       log(res.body, name: 'GET SKIN TONE');
       if (res.statusCode == 200) {
@@ -90,7 +90,7 @@ class _PFLivePageState extends State<PFLivePage> {
       Uri fullUrl = Uri.parse(
           '${ApiConstant.webUrl}/en/rest/V1/products/attributes/face_shape');
       var res = await http.get(fullUrl, headers: {
-        "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
+        "Authorization": "Bearer ${ApiConstant.techToken}"
       });
       log(res.body, name: 'GET SKIN TONE');
       if (res.statusCode == 200) {
@@ -174,12 +174,15 @@ class _PFLivePageState extends State<PFLivePage> {
         return BottomCopyrightWidget(
           child: Column(
             children: [
-              ButtonWidget(
-                text: 'PERSONALITY FINDER',
-                width: context.width / 2,
-                backgroundColor: Colors.black,
-                onTap: _onPersonalityFinder,
+              Center(
+                child: ButtonWidget(
+                  text: 'PERSONALITY FINDER',
+                  width: context.width / 2,
+                  backgroundColor: Colors.black,
+                  onTap: _onPersonalityFinder,
+                ),
               ),
+              const SizedBox(height: 30)
             ],
           ),
         );

@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_material.dart';
 import 'package:test_new/logic/get_product_utils/get_occassion.dart';
@@ -28,18 +30,18 @@ class HeadTiarasView extends StatefulWidget {
 }
 
 class _HeadTiarasViewState extends State<HeadTiarasView> {
-  late CameraController controller;
-  Completer<String?> cameraSetupCompleter = Completer();
+  InAppWebViewController? _webViewController;
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
   bool isFlipCameraSupported = false;
   File? file;
   bool onOffVisibel = false;
-  int? mainColorSelected = 0;
-  int? colorSelected = 0;
-  int? occasionSelected = 0;
-  int? materialSelected = 0;
+  int? mainColorSelected;
+  int? colorSelected;
+  int? occasionSelected;
+  int? materialSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -52,20 +54,37 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
     });
     print("Fetching data");
     try {
-      List<String>? productTypes = getProductTypesByLabels(
-          "head_accessories_product_type", ["Tiaras"]);
+      List<String>? productTypes =
+          getProductTypesByLabels("head_accessories_product_type", ["Tiaras"]);
       print(productTypes);
 
       var dataResponse = await productRepository.fetchProducts(
           // texture: textures!.isEmpty ? null : textures.join(","),
           // shape: getShapeByLabel(earringsList[shapesSelected!]),
-          occasion: !occasionOn ? null : getOccasionByLabel(occasionList[occasionSelected!]),
-          material: !materialOn ? null : getMaterialByLabel(materialList[materialSelected!]),
+          occasion: (!occasionOn || occasionSelected == null)
+              ? null
+              : getOccasionByLabel(occasionList[occasionSelected!]),
+          material: (!materialOn || materialSelected == null)
+              ? null
+              : getMaterialByLabel(materialList[materialSelected!]),
           productType: "head_accessories_product_type",
           productTypes: productTypes?.join(","));
 
       setState(() {
         products = dataResponse;
+                if (products != null) {
+          if (mainColorSelected == null) {
+            colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorChoiceList = getSelectableColorList(
+                    products!, vtoColors[mainColorSelected!].value) ??
+                [];
+            products = dataResponse
+                .where((e) => e.color == vtoColors[mainColorSelected!].value)
+                .toList();
+            print(vtoColors[mainColorSelected!].value);
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -79,67 +98,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    if (Platform.isAndroid) {
-      DeviceInfoPlugin().androidInfo.then((value) {
-        if (value.version.sdkInt >= 32) {
-          permissions = [
-            Permission.camera,
-            Permission.microphone,
-          ];
-        } else {
-          permissions = [
-            Permission.camera,
-            Permission.microphone,
-            // Permission.storage
-          ];
-        }
-      }).then((value) {
-        // _initCamera();
-        checkPermissionStatuses().then((allclear) {
-          if (allclear) {
-            _initCamera();
-          } else {
-            permissions.request().then((value) {
-              checkPermissionStatuses().then((allclear) {
-                if (allclear) {
-                  _initCamera();
-                } else {
-                  Utils.showToast(
-                      'Mohon izinkan untuk mengakses Kamera dan Mikrofon');
-                  Navigator.of(context).pop();
-                }
-              });
-            });
-          }
-        });
-      });
-    } else {
-      _initCamera();
-      // permissions = [
-      //   Permission.camera,
-      //   Permission.microphone,
-      //   // Permission.storage
-      // ];
-      // checkPermissionStatuses().then((allclear) {
-      //   if (allclear) {
-      //     _initCamera();
-      //   } else {
-      //     permissions.request().then((value) {
-      //       checkPermissionStatuses().then((allclear) {
-      //         if (allclear) {
-      //           _initCamera();
-      //         } else {
-      //           Utils.showToast(
-      //               'Mohon izinkan untuk mengakses Kamera dan Mikrofon');
-      //           Navigator.of(context).pop();
-      //         }
-      //       });
-      //     });
-      //   }
-      // });
-    }
+
     fetchData();
   }
 
@@ -157,17 +117,7 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
     const Color(0xffCA9C43),
     const Color(0xffB76E79),
   ];
-  List<Color> colorChoiceList = [
-    const Color(0xFF740039),
-    const Color(0xFF8D0046),
-    const Color(0xFFB20058),
-    const Color(0xFFB51F69),
-    const Color(0xFFDF1050),
-    const Color(0xFFE31B7B),
-    const Color(0xFFFE3699),
-    const Color(0xFFE861A4),
-    const Color(0xFFE0467C),
-  ];
+  List<Color> colorChoiceList = [];
   List<String> occasionList = [
     'Bridal',
     'Soiree',
@@ -186,14 +136,6 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
   bool occasionOn = true;
   bool materialOn = false;
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (cameraSetupCompleter.isCompleted) {
-      controller.dispose();
-    }
-  }
-
   Future<bool> checkPermissionStatuses() async {
     for (var permission in permissions) {
       if (await permission.status != PermissionStatus.granted) {
@@ -201,35 +143,6 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
       }
     }
     return true;
-  }
-
-  Future<void> _initCamera({CameraDescription? camera}) async {
-    Future<void> selectCamera(CameraDescription camera) async {
-      controller = CameraController(camera, ResolutionPreset.high,
-          imageFormatGroup: ImageFormatGroup.jpeg);
-      await controller.initialize();
-      cameraSetupCompleter.complete();
-    }
-
-    if (camera != null) {
-      selectCamera(camera);
-    } else {
-      await availableCameras().then((value) async {
-        isFlipCameraSupported = value.indexWhere((element) =>
-                element.lensDirection == CameraLensDirection.front) !=
-            -1;
-
-        for (var camera in value) {
-          if (camera.lensDirection == CameraLensDirection.back) {
-            await selectCamera(camera);
-            return;
-          }
-        }
-
-        cameraSetupCompleter
-            .complete("Tidak dapat menemukan kamera yang cocok.");
-      });
-    }
   }
 
   Widget pictureTaken() {
@@ -241,7 +154,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -262,7 +176,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -296,15 +211,16 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: lipList.length,
+        itemCount: vtoColors.length,
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
+          ColorModel color = vtoColors[index];
           return InkWell(
             onTap: () {
               setState(() {
                 mainColorSelected = index;
+                fetchData();
               });
-              fetchData();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -318,10 +234,23 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(radius: 8, backgroundColor: lipColorList[index]),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      gradient: color.hex.startsWith('linear-gradient')
+                          ? getLinearGradient(color.hex)
+                          : null,
+                      color: (color.hex == 'none' ||
+                              color.hex.startsWith('linear-gradient'))
+                          ? null
+                          : Color(int.parse('0xFF${color.hex.substring(1)}')),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   Constant.xSizedBox4,
                   Text(
-                    lipList[index],
+                    color.label,
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
@@ -405,8 +334,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
                       fetchData();
                     },
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: Text(
                         'Occasion',
                         textAlign: TextAlign.center,
@@ -444,8 +373,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
                       fetchData();
                     },
                     child: Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 4),
                       child: Text(
                         'Fabric',
                         textAlign: TextAlign.center,
@@ -494,7 +423,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: occasionSelected == index ? const Color(0xffCA9C43) : null,
+                color:
+                    occasionSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: occasionSelected == index
@@ -532,7 +462,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: materialSelected == index ? const Color(0xffCA9C43) : null,
+                color:
+                    materialSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                     color: materialSelected == index
@@ -718,19 +649,21 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
 
   Widget sheet() {
     return Container(
-      height: 300,
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black,
+          ],
         ),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_showContent) ...[
             Constant.xSizedBox8,
             colorChip(),
             Constant.xSizedBox8,
@@ -741,33 +674,36 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             occasionOn ? occasionChoice() : fabricChoice(),
             Constant.xSizedBox4,
             separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox8,
-            lipstickChoice(),
-            // Constant.xSizedBox4,
-            // separator(),
-            // typeText(),
-            // Constant.xSizedBox8,
+            lipstickChoice()
           ],
-        ),
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
+          ),
+        ],
       ),
     );
   }
 
-  Widget cameraPreview(double scale) {
-    return Transform.scale(
-      scale: scale,
-      alignment: Alignment.center,
-      child: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: CameraPreview(controller),
-      ),
+  Widget cameraPreview() {
+    return InAppWebView(
+      initialUrlRequest: URLRequest(
+          url: WebUri('${ApiConstant.techWebUrl}/virtual-try-on-web')),
+      onWebViewCreated: (controller) async {
+        _webViewController = controller;
+      },
+      onPermissionRequest: (controller, permissionRequest) async {
+        return PermissionResponse(
+            resources: permissionRequest.resources,
+            action: PermissionResponseAction.GRANT);
+      },
+      shouldOverrideUrlLoading: (controller, navigationAction) async {
+        return NavigationActionPolicy.ALLOW;
+      },
     );
   }
 
@@ -776,8 +712,8 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
       onTap: onTap,
       child: Image.asset(
         path,
-        width: 24,
-        height: 24,
+        width: 18,
+        height: 18,
         color: Colors.white,
       ),
     );
@@ -789,34 +725,36 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
       extendBody: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        // toolbarHeight: 0,
-        leadingWidth: 84,
         titleSpacing: 0,
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
-            CusNav.nPushReplace(context, OcrCameraPage2(accessoriesOn: true));
           },
-          child: Container(
-            margin: const EdgeInsets.only(top: 8),
-            // padding: EdgeInsets.all(8),
-            // width: 64,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          child: Center(
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.black26),
+              child: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white, size: 18),
+            ),
           ),
         ),
         actions: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              margin: const EdgeInsets.only(top: 8),
-              // padding: EdgeInsets.only(right: 16, left: 16),
-              width: 100,
-              height: 100,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black26),
-              child: const Icon(Icons.close, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Center(
+                  child: Container(
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.black26),
+                child: const SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(Icons.close, color: Colors.white, size: 18)),
+              )),
             ),
           ),
         ],
@@ -827,143 +765,61 @@ class _HeadTiarasViewState extends State<HeadTiarasView> {
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       ),
       extendBodyBehindAppBar: true,
-      body: FutureBuilder<String?>(
-        future: cameraSetupCompleter.future,
-        builder: (context, snapshot) {
-          final isLoading = snapshot.connectionState != ConnectionState.done;
-
-          if (isLoading) {
-            return const Center(child: CircularProgressIndicator.adaptive());
-          } else if (snapshot.data != null) {
-            return Center(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text('Setup Camera Failed'),
-                Text(
-                  snapshot.data!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-              ],
-            ));
-          } else {
-            return LayoutBuilder(
-              builder: (p0, p1) {
-                final width = p1.maxWidth;
-                final height = p1.maxHeight;
-
-                late double scale;
-
-                if (MediaQuery.of(context).orientation ==
-                    Orientation.portrait) {
-                  final screenRatio = width / height;
-                  final cameraRatio = controller.value.aspectRatio;
-                  scale = 1 / (cameraRatio * screenRatio);
-                } else {
-                  final screenRatio = (height) / width;
-                  final cameraRatio = controller.value.aspectRatio;
-                  scale = 1 / (cameraRatio * screenRatio);
-                }
-
-                return Stack(
-                  children: [
-                    cameraPreview(scale),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        // margin: xHEdgeInsets12
-                        //     .add(const EdgeInsets.only(bottom: 12)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                margin: const EdgeInsets.only(right: 16),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.black12,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
-                                    }, Assets.iconsIcCamera),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(() async {
-                                      ///[Flip Camera]
-                                      if (isFlippingCamera == null ||
-                                          isFlippingCamera!.isCompleted) {
-                                        isFlippingCamera = Completer();
-                                        isFlippingCamera!.complete(
-                                            await availableCameras()
-                                                .then((value) async {
-                                          for (var camera in value) {
-                                            if (camera.lensDirection ==
-                                                (controller.description
-                                                            .lensDirection ==
-                                                        CameraLensDirection
-                                                            .front
-                                                    ? CameraLensDirection.back
-                                                    : CameraLensDirection
-                                                        .front)) {
-                                              await controller.dispose();
-                                              cameraSetupCompleter =
-                                                  Completer();
-
-                                              await _initCamera(camera: camera);
-                                              setState(() {});
-                                              break;
-                                            }
-                                          }
-
-                                          await Future.delayed(const Duration(
-                                              seconds: 1, milliseconds: 500));
-                                        }));
-                                      } else {
-                                        print('Not completed!');
-                                      }
-                                    }, Assets.iconsIcFlipCamera),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcScale),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(() async {
-                                      setState(() {
-                                        // makeupOrAccessories = true;
-                                      });
-                                    }, Assets.iconsIcCompare),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcReset),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcChoose),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcShare),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Constant.xSizedBox16,
-                            sheet(),
-                            // file != null ? pictureTaken() : noPictureTaken(),
-                            // pictureTaken(),
-                          ],
-                        ),
+      body: Stack(
+        children: [
+          cameraPreview(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              // margin: xHEdgeInsets12
+              //     .add(const EdgeInsets.only(bottom: 12)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          iconSidebar(() async {
+                            CusNav.nPush(context, const CameraVideoPage());
+                          }, Assets.iconsIcCamera),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcFlipCamera),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcScale),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {
+                            setState(() {
+                              // makeupOrAccessories = true;
+                            });
+                          }, Assets.iconsIcCompare),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcReset),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcChoose),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcShare),
+                        ],
                       ),
-                    )
-                  ],
-                );
-              },
-            );
-          }
-        },
+                    ),
+                  ),
+                  Constant.xSizedBox16,
+                  sheet(),
+                  // file != null ? pictureTaken() : noPictureTaken(),
+                  // pictureTaken(),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -30,6 +30,7 @@ class ApiConstant {
   static const String firebaseUrl = "https://unveels-92787-default-rtdb.firebaseio.com"; //for mp app
 
   static const String techWebUrl = 'https://unveels-webview.netlify.app';
+  static const String techToken = 'hb2vxjo1ayu0agrkr97eprrl5rccqotc';
 }
 
 class AppConstant {

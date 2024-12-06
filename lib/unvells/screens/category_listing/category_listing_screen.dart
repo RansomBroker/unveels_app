@@ -41,7 +41,7 @@ class _CategorySearchScreenState extends State<CategorySearchScreen> {
   @override
   void initState() {
     homePageData = GlobalData.homePageData;
-    // TODO: implement initState
+
   }
 
   @override

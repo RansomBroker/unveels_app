@@ -8,7 +8,7 @@ import AuthenticationServices
 import SwiftKeychainWrapper
 
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     private var _latestLink: String?
     var displayLink : CADisplayLink?

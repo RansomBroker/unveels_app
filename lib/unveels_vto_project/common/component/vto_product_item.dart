@@ -119,31 +119,33 @@ class _VtoProductItemState extends State<VtoProductItem> {
             InkWell(
               onTap: () async {},
               child: SizedBox(
-                width: 150,
+                width: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
                       color: Colors.white,
-                      width: 150,
-                      height: 100,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      width: 100,
+                      height: 68,
+                      child: Stack(
                         children: [
-                          Expanded(
-                              flex: 9,
-                              child: Image.network(
-                                widget.product.imageUrl,
-                                width: double.infinity,
-                              )),
-                          const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.black,
-                                size: 18,
-                              )),
+                          Image.network(
+                            widget.product.imageUrl,
+                            width: double.infinity,
+                          ),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(4.0),
+                                child: Icon(
+                                  Icons.favorite_border,
+                                  color: Colors.black,
+                                  size: 18,
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -153,15 +155,22 @@ class _VtoProductItemState extends State<VtoProductItem> {
                     Text(
                       widget.product.name,
                       style: Constant.whiteBold16.copyWith(fontSize: 11),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       widget.product.brand,
                       style: Constant.whiteRegular12
                           .copyWith(fontWeight: FontWeight.w300, fontSize: 10),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(
+                      height: 5,
                     ),
                     Row(
                       children: [
-                        Text("KWD ${widget.product.price.toString()}",
+                        Text("\$${widget.product.price.toString()}",
                             style:
                                 Constant.whiteRegular12.copyWith(fontSize: 10)),
                         const Spacer(),
@@ -178,13 +187,13 @@ class _VtoProductItemState extends State<VtoProductItem> {
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
+                                horizontal: 5, vertical: 5),
                             color: const Color(0xFFC89A44),
                             child: Center(
                                 child: _isAddingToCart
                                     ? const SizedBox(
-                                        width: 18,
-                                        height: 18,
+                                        width: 15,
+                                        height: 15,
                                         child: CircularProgressIndicator(
                                             color: Colors.white))
                                     : const Text(

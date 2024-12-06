@@ -133,7 +133,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
       Uri fullUrl = Uri.parse(
           '${ApiConstant.webUrl}/rest/V1/products?searchCriteria[filter_groups][0][filters][0][field]=category_id&searchCriteria[filter_groups][0][filters][0][value]=451&searchCriteria[filter_groups][0][filters][0][condition_type]=eq&searchCriteria[filter_groups][1][filters][0][field]=type_id&searchCriteria[filter_groups][1][filters][0][value]=simple&searchCriteria[filter_groups][1][filters][0][condition_type]=eq&searchCriteria[filter_groups][2][filters][0][field]=skin_tone&searchCriteria[filter_groups][2][filters][0][value]=$skinId&searchCriteria[filter_groups][2][filters][0][condition_type]=eq&searchCriteria[filter_groups][3][filters][0][field]=tone_type&searchCriteria[filter_groups][3][filters][0][value]=$toneTypeId&searchCriteria[filter_groups][3][filters][0][condition_type]=finset');
       var res = await http.get(fullUrl, headers: {
-        "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
+        "Authorization": "Bearer ${ApiConstant.techToken}"
       });
       log(res.body, name: 'GET SKIN TONE PRODUCT');
       if (res.statusCode == 200) {
@@ -164,7 +164,7 @@ class _STFShadesWidgetState extends State<STFShadesWidget> {
       Uri fullUrl = Uri.parse(
           '${ApiConstant.webUrl}/rest/V1/products?searchCriteria[filter_groups][0][filters][0][field]=category_id&searchCriteria[filter_groups][0][filters][0][value]=451&searchCriteria[filter_groups][0][filters][0][condition_type]=eq&searchCriteria[filter_groups][1][filters][0][field]=type_id&searchCriteria[filter_groups][1][filters][0][value]=simple&searchCriteria[filter_groups][1][filters][0][condition_type]=eq&searchCriteria[filter_groups][2][filters][0][field]=skin_tone&searchCriteria[filter_groups][2][filters][0][value]=$skinId&searchCriteria[filter_groups][2][filters][0][condition_type]=eq');
       var res = await http.get(fullUrl, headers: {
-        "Authorization": "Bearer hb2vxjo1ayu0agrkr97eprrl5rccqotc"
+        "Authorization": "Bearer ${ApiConstant.techToken}"
       });
       log(res.body, name: 'GET SKIN TONE PRODUCT');
       if (res.statusCode == 200) {

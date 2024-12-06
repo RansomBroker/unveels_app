@@ -232,12 +232,15 @@ class __BodyState extends State<_Body> {
         return BottomCopyrightWidget(
           child: Column(
             children: [
-              ButtonWidget(
-                text: 'FIND THE LOOK',
-                width: context.width / 2,
-                backgroundColor: Colors.black,
-                onTap: _onFindTheLook,
+              Center(
+                child: ButtonWidget(
+                  text: 'FIND THE LOOK',
+                  width: context.width / 2,
+                  backgroundColor: Colors.black,
+                  onTap: _onFindTheLook,
+                ),
               ),
+              const SizedBox(height: 30)
             ],
           ),
         );

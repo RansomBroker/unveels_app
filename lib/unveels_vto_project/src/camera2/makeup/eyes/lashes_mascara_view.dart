@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:camera/camera.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
+import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
@@ -28,8 +29,8 @@ class LashesMascaraView extends StatefulWidget {
 }
 
 class _LashesMascaraViewState extends State<LashesMascaraView> {
-  late CameraController controller;
-  Completer<String?> cameraSetupCompleter = Completer();
+  InAppWebViewController? _webViewController;
+  bool _showContent = true;
   Completer? isFlippingCamera;
   late List<Permission> permissions;
   bool isRearCamera = true;
@@ -132,77 +133,10 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     lashes = widget.lashes;
-    if (Platform.isAndroid) {
-      DeviceInfoPlugin().androidInfo.then((value) {
-        if (value.version.sdkInt >= 32) {
-          permissions = [
-            Permission.camera,
-            Permission.microphone,
-          ];
-        } else {
-          permissions = [
-            Permission.camera,
-            Permission.microphone,
-            // Permission.storage
-          ];
-        }
-      }).then((value) {
-        // _initCamera();
-        checkPermissionStatuses().then((allclear) {
-          if (allclear) {
-            _initCamera();
-          } else {
-            permissions.request().then((value) {
-              checkPermissionStatuses().then((allclear) {
-                if (allclear) {
-                  _initCamera();
-                } else {
-                  Utils.showToast(
-                      'Mohon izinkan untuk mengakses Kamera dan Mikrofon');
-                  Navigator.of(context).pop();
-                }
-              });
-            });
-          }
-        });
-      });
-    } else {
-      _initCamera();
-      // permissions = [
-      //   Permission.camera,
-      //   Permission.microphone,
-      //   // Permission.storage
-      // ];
-      // checkPermissionStatuses().then((allclear) {
-      //   if (allclear) {
-      //     _initCamera();
-      //   } else {
-      //     permissions.request().then((value) {
-      //       checkPermissionStatuses().then((allclear) {
-      //         if (allclear) {
-      //           _initCamera();
-      //         } else {
-      //           Utils.showToast(
-      //               'Mohon izinkan untuk mengakses Kamera dan Mikrofon');
-      //           Navigator.of(context).pop();
-      //         }
-      //       });
-      //     });
-      //   }
-      // });
-    }
-    fetchData();
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    if (cameraSetupCompleter.isCompleted) {
-      controller.dispose();
-    }
+    fetchData();
   }
 
   Future<bool> checkPermissionStatuses() async {
@@ -214,35 +148,6 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     return true;
   }
 
-  Future<void> _initCamera({CameraDescription? camera}) async {
-    Future<void> selectCamera(CameraDescription camera) async {
-      controller = CameraController(camera, ResolutionPreset.high,
-          imageFormatGroup: ImageFormatGroup.jpeg);
-      await controller.initialize();
-      cameraSetupCompleter.complete();
-    }
-
-    if (camera != null) {
-      selectCamera(camera);
-    } else {
-      await availableCameras().then((value) async {
-        isFlipCameraSupported = value.indexWhere((element) =>
-                element.lensDirection == CameraLensDirection.front) !=
-            -1;
-
-        for (var camera in value) {
-          if (camera.lensDirection == CameraLensDirection.back) {
-            await selectCamera(camera);
-            return;
-          }
-        }
-
-        cameraSetupCompleter
-            .complete("Tidak dapat menemukan kamera yang cocok.");
-      });
-    }
-  }
-
   Widget pictureTaken() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -252,7 +157,8 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.black54,
                   borderRadius: BorderRadius.circular(8),
@@ -273,7 +179,8 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             child: InkWell(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   color: const Color(0xffCA9C43),
                   borderRadius: BorderRadius.circular(8),
@@ -372,7 +279,8 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                 fetchData();
               },
               child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
@@ -424,14 +332,25 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     );
   }
 
- Widget lipstickChoice() {
+  Widget lipstickChoice() {
     if (_isLoading) {
-      return Container(color: Colors.white, width: 150, height: 80);
+      return SizedBox(
+          height: 130,
+          child: Column(
+            children: [
+              Container(color: Colors.white, width: 100, height: 68),
+            ],
+          ));
     }
+
+    if (products!.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
-        height: 200,
+        height: 130,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -445,8 +364,8 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             //         color: Colors.white, size: 25),
             //   );
             var product = products?[index];
-            if (product !=null) {
-            return VtoProductItem(product: product);
+            if (product != null) {
+              return VtoProductItem(product: product);
             } else {
               return const SizedBox();
             }
@@ -455,6 +374,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
       ),
     );
   }
+
   Widget slider() {
     return SizedBox(
       height: 60,
@@ -492,105 +412,123 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
 
   Widget sheet() {
     return Container(
-      // height: 100,
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
       decoration: const BoxDecoration(
-        color: Colors.black54,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.black,
+          ],
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          separator(),
-          Constant.xSizedBox4,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      lashes = true;
-                    });
-                    fetchData();
-                  },
-                  child: Text(
-                    'Lashes',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      shadows: !lashes
-                          ? null
-                          : [
-                              const BoxShadow(
-                                offset: Offset(0, 0),
-                                color: Colors.white,
-                                spreadRadius: 0,
-                                blurRadius: 10,
-                              ),
-                            ],
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            separator(),
+            Constant.xSizedBox4,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        lashes = true;
+                      });
+                      fetchData();
+                    },
+                    child: Text(
+                      'Lashes',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        shadows: !lashes
+                            ? null
+                            : [
+                                const BoxShadow(
+                                  offset: Offset(0, 0),
+                                  color: Colors.white,
+                                  spreadRadius: 0,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Container(
-                width: 1,
-                height: 18,
-                color: Colors.white,
-              ),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      lashes = false;
-                    });
-                    fetchData();
-                  },
-                  child: Text(
-                    'Mascara',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      shadows: lashes
-                          ? null
-                          : [
-                              const BoxShadow(
-                                offset: Offset(0, 0),
-                                color: Colors.white,
-                                spreadRadius: 0,
-                                blurRadius: 10,
-                              ),
-                            ],
+                Container(
+                  width: 1,
+                  height: 18,
+                  color: Colors.white,
+                ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        lashes = false;
+                      });
+                      fetchData();
+                    },
+                    child: Text(
+                      'Mascara',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        shadows: lashes
+                            ? null
+                            : [
+                                const BoxShadow(
+                                  offset: Offset(0, 0),
+                                  color: Colors.white,
+                                  spreadRadius: 0,
+                                  blurRadius: 10,
+                                ),
+                              ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            Constant.xSizedBox16,
+            typeLashesChip(),
+            Constant.xSizedBox32,
+            lipstickChoice(),
+          ],
+          BottomCopyright(
+            showContent: _showContent,
+            onTap: () {
+              setState(() {
+                _showContent = !_showContent;
+              });
+            },
           ),
-          Constant.xSizedBox16,
-          typeLashesChip(),
-          Constant.xSizedBox32,
-          lipstickChoice(),
         ],
       ),
     );
   }
 
-  Widget cameraPreview(double scale) {
-    return Transform.scale(
-      scale: scale,
-      alignment: Alignment.center,
-      child: Container(
-        alignment: Alignment.center,
-        color: Colors.black,
-        child: CameraPreview(controller),
-      ),
+  Widget cameraPreview() {
+    return InAppWebView(
+      initialUrlRequest: URLRequest(
+          url: WebUri('${ApiConstant.techWebUrl}/virtual-try-on-web')),
+      onWebViewCreated: (controller) async {
+        _webViewController = controller;
+      },
+      onPermissionRequest: (controller, permissionRequest) async {
+        return PermissionResponse(
+            resources: permissionRequest.resources,
+            action: PermissionResponseAction.GRANT);
+      },
+      shouldOverrideUrlLoading: (controller, navigationAction) async {
+        return NavigationActionPolicy.ALLOW;
+      },
     );
   }
 
@@ -599,8 +537,8 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
       onTap: onTap,
       child: Image.asset(
         path,
-        width: 24,
-        height: 24,
+        width: 18,
+        height: 18,
         color: Colors.white,
       ),
     );
@@ -612,34 +550,36 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
       extendBody: true,
       backgroundColor: Colors.black,
       appBar: AppBar(
-        // toolbarHeight: 0,
-        leadingWidth: 84,
         titleSpacing: 0,
         leading: InkWell(
           onTap: () {
             CusNav.nPop(context);
-            CusNav.nPushReplace(context, OcrCameraPage2(makeUpOn: true));
           },
-          child: Container(
-            margin: const EdgeInsets.only(top: 8),
-            // padding: EdgeInsets.all(8),
-            // width: 64,
-            decoration: const BoxDecoration(
-                shape: BoxShape.circle, color: Colors.black26),
-            child: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+          child: Center(
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: const BoxDecoration(
+                  shape: BoxShape.circle, color: Colors.black26),
+              child: const Icon(Icons.arrow_back_ios_new_rounded,
+                  color: Colors.white, size: 18),
+            ),
           ),
         ),
         actions: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: Container(
-              margin: const EdgeInsets.only(top: 8),
-              // padding: EdgeInsets.only(right: 16, left: 16),
-              width: 100,
-              height: 100,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black26),
-              child: const Icon(Icons.close, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Center(
+                  child: Container(
+                decoration: const BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.black26),
+                child: const SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: Icon(Icons.close, color: Colors.white, size: 18)),
+              )),
             ),
           ),
         ],
@@ -650,143 +590,61 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       ),
       extendBodyBehindAppBar: true,
-      body: FutureBuilder<String?>(
-        future: cameraSetupCompleter.future,
-        builder: (context, snapshot) {
-          final isLoading = snapshot.connectionState != ConnectionState.done;
-
-          if (isLoading) {
-            return const Center(child: CircularProgressIndicator.adaptive());
-          } else if (snapshot.data != null) {
-            return Center(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text('Setup Camera Failed'),
-                Text(
-                  snapshot.data!,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                )
-              ],
-            ));
-          } else {
-            return LayoutBuilder(
-              builder: (p0, p1) {
-                final width = p1.maxWidth;
-                final height = p1.maxHeight;
-
-                late double scale;
-
-                if (MediaQuery.of(context).orientation ==
-                    Orientation.portrait) {
-                  final screenRatio = width / height;
-                  final cameraRatio = controller.value.aspectRatio;
-                  scale = 1 / (cameraRatio * screenRatio);
-                } else {
-                  final screenRatio = (height) / width;
-                  final cameraRatio = controller.value.aspectRatio;
-                  scale = 1 / (cameraRatio * screenRatio);
-                }
-
-                return Stack(
-                  children: [
-                    cameraPreview(scale),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        // margin: xHEdgeInsets12
-                        //     .add(const EdgeInsets.only(bottom: 12)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: Container(
-                                margin: const EdgeInsets.only(right: 16),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 10),
-                                decoration: BoxDecoration(
-                                    color: Colors.black12,
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    iconSidebar(() async {
-                                      CusNav.nPush(context, const CameraVideoPage());
-                                    }, Assets.iconsIcCamera),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(() async {
-                                      ///[Flip Camera]
-                                      if (isFlippingCamera == null ||
-                                          isFlippingCamera!.isCompleted) {
-                                        isFlippingCamera = Completer();
-                                        isFlippingCamera!.complete(
-                                            await availableCameras()
-                                                .then((value) async {
-                                          for (var camera in value) {
-                                            if (camera.lensDirection ==
-                                                (controller.description
-                                                            .lensDirection ==
-                                                        CameraLensDirection
-                                                            .front
-                                                    ? CameraLensDirection.back
-                                                    : CameraLensDirection
-                                                        .front)) {
-                                              await controller.dispose();
-                                              cameraSetupCompleter =
-                                                  Completer();
-
-                                              await _initCamera(camera: camera);
-                                              setState(() {});
-                                              break;
-                                            }
-                                          }
-
-                                          await Future.delayed(const Duration(
-                                              seconds: 1, milliseconds: 500));
-                                        }));
-                                      } else {
-                                        print('Not completed!');
-                                      }
-                                    }, Assets.iconsIcFlipCamera),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcScale),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(() async {
-                                      setState(() {
-                                        // makeupOrAccessories = true;
-                                      });
-                                    }, Assets.iconsIcCompare),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcReset),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcChoose),
-                                    Constant.xSizedBox12,
-                                    iconSidebar(
-                                        () async {}, Assets.iconsIcShare),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Constant.xSizedBox16,
-                            sheet(),
-                            // file != null ? pictureTaken() : noPictureTaken(),
-                            // pictureTaken(),
-                          ],
-                        ),
+      body: Stack(
+        children: [
+          cameraPreview(),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              // margin: xHEdgeInsets12
+              //     .add(const EdgeInsets.only(bottom: 12)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 10),
+                      decoration: BoxDecoration(
+                          color: Colors.black12,
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          iconSidebar(() async {
+                            CusNav.nPush(context, const CameraVideoPage());
+                          }, Assets.iconsIcCamera),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcFlipCamera),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcScale),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {
+                            setState(() {
+                              // makeupOrAccessories = true;
+                            });
+                          }, Assets.iconsIcCompare),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcReset),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcChoose),
+                          Constant.xSizedBox12,
+                          iconSidebar(() async {}, Assets.iconsIcShare),
+                        ],
                       ),
-                    )
-                  ],
-                );
-              },
-            );
-          }
-        },
+                    ),
+                  ),
+                  Constant.xSizedBox16,
+                  sheet(),
+                  // file != null ? pictureTaken() : noPictureTaken(),
+                  // pictureTaken(),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
