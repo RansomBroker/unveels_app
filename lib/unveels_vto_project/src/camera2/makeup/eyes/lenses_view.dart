@@ -569,7 +569,7 @@ class _LensesViewState extends State<LensesView> {
 
     var json = jsonEncode({
       "showLens": true,
-      "lensColor": [toWebHex(color)],
+      "lensColor": toWebHex(color),
       "lensPattern": lensesSelected,
     });
     String source = 'window.postMessage(JSON.stringify($json),"*");';

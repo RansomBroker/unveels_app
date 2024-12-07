@@ -315,7 +315,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             onTap: () async {
               setState(() {
                 eyelashSelected = index;
-                onOffVisible = false;
+                onOffVisible = true;
               });
               fetchData();
               tryOn();
@@ -663,13 +663,25 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     }
 
     var json = jsonEncode({
-      "showMascara": true,
+      "showMascara": lashes == false,
       "mascaraColor": toWebHex(color),
     });
     String source = 'window.postMessage(JSON.stringify($json),"*");';
     log(source, name: 'postMessage');
     _webViewController?.evaluateJavascript(
       source: source,
+    );
+
+    var jsonMascara = jsonEncode({
+      "showLashes": lashes,
+      "lashesColor": toWebHex(color),
+      "lashesPattern": eyelashSelected,
+    });
+    String sourceMascara =
+        'window.postMessage(JSON.stringify($jsonMascara),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: sourceMascara,
     );
   }
 }

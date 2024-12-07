@@ -1,10 +1,15 @@
 part of 'voice_command_cubit.dart';
 
+enum VoiceCommandStatus { addCart }
+
 abstract class VoiceCommandState {
   final String text;
   final double confidence;
+  final VoiceCommandStatus? status;
 
-  VoiceCommandState(this.text, this.confidence);
+  VoiceCommandState(this.text, this.confidence, {
+    this.status,
+  });
 }
 
 class VoiceCommandInitial extends VoiceCommandState {
@@ -16,9 +21,14 @@ class VoiceCommandReady extends VoiceCommandState {
 }
 
 
+class VoiceCommandStoping extends VoiceCommandState {
+  VoiceCommandStoping() : super("Stoping...", 1.0);
+}
+
+
 
 class VoiceCommandListening extends VoiceCommandState {
-  VoiceCommandListening(String text, double confidence) : super(text, confidence);
+  VoiceCommandListening(String text, double confidence, { VoiceCommandStatus? status }) : super(text, confidence, status: status);
 }
 
 class VoiceCommandError extends VoiceCommandState {

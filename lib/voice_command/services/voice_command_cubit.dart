@@ -40,7 +40,7 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     }
   }
 
-  void startListening() async {
+  Future<void> startListening() async {
     try {
       PermissionStatus status = await Permission.microphone.request();
       if (status != PermissionStatus.granted) {
@@ -55,83 +55,94 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
           final recognizedText = result.recognizedWords;
           final confidence = result.confidence;
 
+          log(result.toJson().toString(), name: 'Voice Command Result');
+
           if (result.finalResult == true) {
 
-          log(result.toJson().toString(), name: 'Voice Command');
 
-          // Process command
-          String command = recognizedText.toLowerCase();
+            // Process command
+            String command = recognizedText.toLowerCase();
 
-          var context = navigatorKey.currentContext!;
-          if (command.startsWith("search")) {
-            var query = command.replaceAll("search", "").trim();
-            _search(query);
-          } else if (command.startsWith("open product")) {
-            var query = command.replaceAll("open product", "").trim();
+            var context = navigatorKey.currentContext!;
+            if (command.startsWith("search")) {
+              var query = command.replaceAll("search", "").trim();
+              _search(query);
+            } else if (command.startsWith("open product")) {
+              var query = command.replaceAll("open product", "").trim();
 
-            await _openProduct(query);
-          } else if (command.startsWith("open produk")) {
-            var query = command.replaceAll("open produk", "").trim();
+              await _openProduct(query);
+            } else if (command.startsWith("open produk")) {
+              var query = command.replaceAll("open produk", "").trim();
 
-            await _openProduct(query);
-          } else if (command.startsWith("open category")) {
-            var query = command.replaceAll("open category", "").trim();
+              await _openProduct(query);
+            } else if (command.startsWith("open category")) {
+              var query = command.replaceAll("open category", "").trim();
 
-            _openCategory(query);
-          } else if (command.startsWith("open kategori")) {
-            var query = command.replaceAll("open kategori", "").trim();
-            _openCategory(query);
-          } else if (command.startsWith("open cart")) {
-            Navigator.pushNamed(context, AppRoutes.cart);
-          } else if (command.startsWith("add to cart")) {
-            _addToCart();
-          } else if (command.startsWith("tambahkan keranjang")) {
-            _addToCart();
-          } else if (command.startsWith("back to home")) {
-            Navigator.pushNamedAndRemoveUntil(
-                context, AppRoutes.home, (route) => false);
-          }
+              _openCategory(query);
+            } else if (command.startsWith("open kategori")) {
+              var query = command.replaceAll("open kategori", "").trim();
+              _openCategory(query);
+            } else if (command.startsWith("open cart")) {
+              Navigator.pushNamed(context, AppRoutes.cart);
+            } else if (command.startsWith("add to cart")) {
+              _addToCart();
+            } else if (command.startsWith("tambahkan keranjang")) {
+              _addToCart();
+            } else if (command.startsWith("back to home")) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, AppRoutes.home, (route) => false);
+            } else if (command.startsWith("back to home")) {
+              Navigator.pushNamedAndRemoveUntil(
+                  context, AppRoutes.home, (route) => false);
+            }
           }
         },
         listenOptions: SpeechListenOptions(
           listenMode: ListenMode.dictation,
-
-
         ),
       );
+
     } catch (e) {
-      stopListening();
+      await stopListening();
       log(e.toString());
     }
 
     emit(VoiceCommandListening('', 0));
   }
 
-  void stopListening() async {
+  Future<void> stopListening() async {
+    emit(VoiceCommandStoping());
     await _speech.stop();
     emit(VoiceCommandReady());
   }
 
-  void toggleListening() {
-    if (state is VoiceCommandListening) {
-      stopListening();
+  void toggleListening() async {
+    if (_speech.isListening) {
+      await stopListening();
     } else {
-      startListening();
+      await startListening();
     }
   }
 
-  void _statusListener(String status) {
-    if (status == 'notListening' && state is VoiceCommandListening) {
-      startListening(); // Restart listening
+  void _statusListener(String status) async {
+    log(status, name: 'Voice Command Status');
+
+
+    if (status == 'done' && state is VoiceCommandListening) {
+      await Future.delayed(Duration(seconds: 1));
+      await startListening();
     }
   }
 
-  void _errorListener(SpeechRecognitionError error) {
-    // log(error.errorMsg);
-    if (_speech.isListening ||
-        error.errorMsg == 'error_busy' ||
-        error.errorMsg == 'error_speech_timeout') {
-      stopListening();
+  void _errorListener(SpeechRecognitionError error) async {
+    log(error.errorMsg, name: 'Voice Command Error');
+    if (_speech.isListening) {
+      await stopListening();
+      // startListening();
+    }
+
+    if (error.errorMsg == 'error_no_match') {
+
     }
   }
 
@@ -161,16 +172,17 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
       log(model.suggestProductArray!.products.toString(), name: 'search');
 
       if (products.isEmpty) {
-        Navigator.pushNamed(
-          context,
-          AppRoutes.catalog,
-          arguments: getCatalogMap(
-            query ?? "",
-            query,
-            BUNDLE_KEY_CATALOG_TYPE_SEARCH,
-            false,
-          ),
-        );
+        return;
+        // Navigator.pushNamed(
+        //   context,
+        //   AppRoutes.catalog,
+        //   arguments: getCatalogMap(
+        //     query ?? "",
+        //     query,
+        //     BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+        //     false,
+        //   ),
+        // );
       }
 
       if (products.length > 1) {
@@ -200,16 +212,16 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
             ),
           );
         } else {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.catalog,
-            arguments: getCatalogMap(
-              query ?? "",
-              query,
-              BUNDLE_KEY_CATALOG_TYPE_SEARCH,
-              false,
-            ),
-          );
+          // Navigator.pushNamed(
+          //   context,
+          //   AppRoutes.catalog,
+          //   arguments: getCatalogMap(
+          //     query ?? "",
+          //     query,
+          //     BUNDLE_KEY_CATALOG_TYPE_SEARCH,
+          //     false,
+          //   ),
+          // );
         }
       } else {
         product = products.first;
@@ -244,18 +256,20 @@ class VoiceCommandCubit extends Cubit<VoiceCommandState> {
     var context = navigatorKey.currentContext!;
 
     try {
-      var model = await productDetailRepository
-          ?.addToCart(product!.productId!, 1, {}, []);
+      // var model = await productDetailRepository
+      //     ?.addToCart(product!.productId!, 1, {}, []);
+      //
+      // log(model!.toJson().toString(), name: '');
+      // if (model != null) {
+      //   if (model.success == true) {
+      //     Navigator.pushNamed(context, AppRoutes.cart);
+      //   } else {
+      //     ScaffoldMessenger.of(context)
+      //         .showSnackBar(SnackBar(content: Text(model.message ?? "")));
+      //   }
+      // }
 
-      log(model!.toJson().toString(), name: '');
-      if (model != null) {
-        if (model.success == true) {
-          Navigator.pushNamed(context, AppRoutes.cart);
-        } else {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(model.message ?? "")));
-        }
-      }
+      emit(VoiceCommandListening(state.text, state.confidence,status: VoiceCommandStatus.addCart));
     } catch (error, _) {
       print(error);
     }
