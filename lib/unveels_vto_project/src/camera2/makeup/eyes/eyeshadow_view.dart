@@ -41,10 +41,12 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   double sliderValue = 0;
   bool onOffVisibel = false;
   int? eyebrowSelected = 0;
-  int? colorSelected = 0;
+  List<int> colorSelected = [];
   int? colorTextSelected = 0;
   int? typeSelected = 0;
   int? typeComboSelected = 0;
+  int get maxColorSelected  => (typeComboSelected??0) + 1;
+
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -110,7 +112,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     const Color(0xff4A2912),
   ];
 
-  List<String> type1List = ['Metallic' 'Shimmer' 'Matte'];
+  List<String> type1List = ['Metallic', 'Shimmer', 'Matte'];
 
   List<String> typeComboList = [
     'One',
@@ -263,7 +265,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisibel = true;
+                  onOffVisibel = false;
                 });
                 fetchData();
                 tryOn();
@@ -275,8 +277,12 @@ class _EyeshadowViewState extends State<EyeshadowView> {
           return InkWell(
               onTap: () async {
                 setState(() {
-                  colorSelected = index;
-                  onOffVisibel = false;
+                  if (colorSelected.length >= maxColorSelected) {
+                    colorSelected.removeAt(0);
+                  }
+
+                  colorSelected.add(index);
+                  onOffVisibel = true;
                 });
                 fetchData();
                 tryOn();
@@ -287,7 +293,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
+                        color: colorSelected.indexWhere((e) => e == index) >= 0  && onOffVisibel == true
                             ? Colors.white
                             : Colors.transparent),
                   ),
@@ -319,6 +325,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   typeSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -359,6 +366,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 typeComboSelected = index;
               });
               fetchData();
+              tryOn();
             },
             child: Center(
               child: Text(
@@ -400,6 +408,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 eyebrowSelected = index;
               });
               fetchData();
+              tryOn();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -682,14 +691,31 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   }
 
   void tryOn() {
+    var colors = <Color>[];
     Color color = colorMainList[colorTextSelected ?? 0];
-    if (onOffVisibel == true && colorSelected != null) {
-      color = colorList[colorSelected ?? 0];
+
+    if (colorSelected.length > maxColorSelected) {
+      var tempColor = <int>[];
+      for(var i = 0; i < maxColorSelected; i++){
+        tempColor.add(colorSelected[i]);
+      }
+      colorSelected = tempColor;
+      setState(() {
+
+      });
+    }
+
+    if (onOffVisibel == true && colorSelected.isNotEmpty) {
+      for(final cIndex in colorSelected) {
+        colors.add(colorList[cIndex]);
+      }
+    } else {
+      colors.add(color);
     }
 
     var json = jsonEncode({
       "showEyeShadow": true,
-      "eyeShadowColor": [color.toWebHex()],
+      "eyeShadowColor": colors.map((e) => e.toWebHex()).toList(),
       "eyeshadowMode ": typeComboList[typeComboSelected ?? 0],
       "eyeshadowPattern": eyebrowSelected,
       "eyeshadowMaterial": type1List[typeComboSelected ?? 0],
