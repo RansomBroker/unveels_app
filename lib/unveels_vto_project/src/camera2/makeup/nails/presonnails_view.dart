@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,11 +14,8 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
-import 'package:test_new/unvells/constants/app_constants.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -38,9 +36,9 @@ class _PresOnNailsViewState extends State<PresOnNailsView> {
   File? file;
   bool makeupOrAccessories = false;
   bool onOffVisible = false;
-  int? nailSelected = 0;
-  int? colorSelected = 0;
-  int? colorTextSelected = 0;
+  int? nailSelected;
+  int? colorSelected;
+  int? colorTextSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -67,6 +65,18 @@ class _PresOnNailsViewState extends State<PresOnNailsView> {
 
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          if (colorTextSelected == null) {
+            colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorChoiceList = getSelectableColorList(
+                    products!, vtoColors[colorTextSelected!].value) ??
+                [];
+            products = dataResponse
+                .where((e) => e.color == vtoColors[colorTextSelected!].value)
+                .toList();
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -297,33 +307,46 @@ class _PresOnNailsViewState extends State<PresOnNailsView> {
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: nailsList.length,
+        itemCount: vtoColors.length,
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
+          ColorModel color = vtoColors[index];
           return InkWell(
             onTap: () {
               setState(() {
                 colorTextSelected = index;
+                fetchData();
               });
-              fetchData();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                    color: index == colorTextSelected
+                    color: colorTextSelected == index
                         ? Colors.white
                         : Colors.transparent),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                      radius: 8, backgroundColor: nailsColorList[index]),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      gradient: color.hex.startsWith('linear-gradient')
+                          ? getLinearGradient(color.hex)
+                          : null,
+                      color: (color.hex == 'none' ||
+                              color.hex.startsWith('linear-gradient'))
+                          ? null
+                          : Color(int.parse('0xFF${color.hex.substring(1)}')),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   Constant.xSizedBox4,
                   Text(
-                    nailsList[index],
+                    color.label,
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
@@ -336,47 +359,59 @@ class _PresOnNailsViewState extends State<PresOnNailsView> {
   }
 
   Widget colorChoice() {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorChoiceList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: SizedBox(
+        height: 30,
+        child: Row(
+          children: [
+            InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisible = true;
+                  colorSelected = null;
                 });
-                fetchData();
               },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = index;
-                  onOffVisible = false;
-                });
-                fetchData();
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                      color: index == colorSelected && onOffVisible == false
-                          ? Colors.white
-                          : Colors.transparent),
-                ),
-                child: CircleAvatar(
-                    radius: 12, backgroundColor: colorChoiceList[index]),
-              ));
-        },
+              child: const Icon(
+                Icons.do_not_disturb_alt_sharp,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: colorChoiceList.length,
+                separatorBuilder: (_, __) => Constant.xSizedBox12,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                      });
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: index == colorSelected
+                              ? Colors.white
+                              : Colors.transparent,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: colorChoiceList[index],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -481,18 +516,20 @@ class _PresOnNailsViewState extends State<PresOnNailsView> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_showContent) ...[Constant.xSizedBox8,
-          colorChip(),
-          Constant.xSizedBox8,
-          colorChoice(),
-          Constant.xSizedBox4,
-          separator(),
-          Constant.xSizedBox4,
-          itemChoice(),
-          separator(),
-          Constant.xSizedBox8,
-          lipstickChoice(),
-          Constant.xSizedBox8],
+          if (_showContent) ...[
+            Constant.xSizedBox8,
+            colorChip(),
+            Constant.xSizedBox8,
+            colorChoice(),
+            Constant.xSizedBox4,
+            separator(),
+            Constant.xSizedBox4,
+            itemChoice(),
+            separator(),
+            Constant.xSizedBox8,
+            lipstickChoice(),
+            Constant.xSizedBox8
+          ],
           BottomCopyright(
             showContent: _showContent,
             onTap: () {
