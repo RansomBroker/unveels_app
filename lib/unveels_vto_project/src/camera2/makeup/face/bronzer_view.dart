@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
@@ -18,6 +20,7 @@ import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/face/contour_view.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -654,6 +657,25 @@ class _BronzerViewState extends State<BronzerView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = skinColorList[skinSelected ?? 0];
+    if (onOffVisibel == true && colorSelected != null) {
+      color = colorChoiceList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showBlush": true,
+      "blushColor": [color.toWebHex()],
+      "blushMode": "One",
+      "blushPattern": 1,
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

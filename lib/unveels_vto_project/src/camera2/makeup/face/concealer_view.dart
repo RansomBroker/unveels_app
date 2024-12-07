@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -82,16 +84,7 @@ class _ConcealerViewState extends State<ConcealerView> {
     fetchData();
   }
 
-  void tryOn() {
-    final show = colorSelected != 0;
 
-    _webViewController?.evaluateJavascript(source: """
-    window.postMessage(JSON.stringify({
-      "showConcealer": $show,
-      ${show ? '"concealerColor": "${toWebHex(colorChoiceList[colorSelected!])}",' : ''}
-    }), "*");
-    """);
-  }
 
   List<String> skinList = skin_tones.map((e) => e.name).toList();
   List<Color> skinColorList = skin_tones.map((e) => e.color).toList();
@@ -254,6 +247,7 @@ class _ConcealerViewState extends State<ConcealerView> {
                   skinSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -626,6 +620,23 @@ class _ConcealerViewState extends State<ConcealerView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = skinColorList[skinSelected ?? 0];
+    if (onOffVisible == true && colorSelected != null) {
+      color = colorChoiceList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showConcealer": skinSelected != null,
+      "concealerColor": [color.toWebHex()],
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: '?postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

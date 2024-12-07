@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -82,6 +85,7 @@ class _BlusherViewState extends State<BlusherView> {
     super.initState();
 
     fetchData();
+    tryOn();
   }
 
   List<String> typeList = [
@@ -259,6 +263,7 @@ class _BlusherViewState extends State<BlusherView> {
                   typeSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -302,6 +307,7 @@ class _BlusherViewState extends State<BlusherView> {
                     onOffVisibel = true;
                   });
                   fetchData();
+                  tryOn();
                 },
                 child: const Icon(Icons.do_not_disturb_alt_sharp,
                     color: Colors.white, size: 25),
@@ -314,6 +320,7 @@ class _BlusherViewState extends State<BlusherView> {
                     onOffVisibel = false;
                   });
                   fetchData();
+                  tryOn();
                 },
                 child: Container(
                   padding:
@@ -366,6 +373,7 @@ class _BlusherViewState extends State<BlusherView> {
                       skinSelected = index;
                     });
                     fetchData();
+                    tryOn();
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -613,6 +621,25 @@ class _BlusherViewState extends State<BlusherView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = skinColorList[skinSelected ?? 0];
+    if (onOffVisibel == true && colorSelected != null) {
+      color = colorChoiceList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showBlush": true,
+      "blushColor": [color.toWebHex()],
+      "blushMode":"One",
+      "blushPattern": 1,
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

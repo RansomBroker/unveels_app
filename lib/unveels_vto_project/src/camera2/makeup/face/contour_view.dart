@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -296,6 +299,7 @@ class _ContourViewState extends State<ContourView> {
                     onOffVisibel = true;
                   });
                   fetchData();
+                  tryOn();
                 },
                 child: const Icon(Icons.do_not_disturb_alt_sharp,
                     color: Colors.white, size: 25),
@@ -308,6 +312,7 @@ class _ContourViewState extends State<ContourView> {
                     onOffVisibel = false;
                   });
                   fetchData();
+                  tryOn();
                 },
                 child: Container(
                   padding:
@@ -361,6 +366,7 @@ class _ContourViewState extends State<ContourView> {
                       onOffVisibel1 = false;
                     });
                     fetchData();
+                    tryOn();
                   },
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -518,6 +524,7 @@ class _ContourViewState extends State<ContourView> {
                         oneOrDual = true;
                       });
                       fetchData();
+                      tryOn();
                     },
                     child: Text(
                       "One",
@@ -534,6 +541,7 @@ class _ContourViewState extends State<ContourView> {
                         oneOrDual = false;
                       });
                       fetchData();
+                      tryOn();
                     },
                     child: Text(
                       "Two",
@@ -704,6 +712,23 @@ class _ContourViewState extends State<ContourView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = skinColorList[skinSelected ?? 0];
+    if (onOffVisibel == true && colorSelected != null) {
+      color = colorChoiceList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showConcealer": true,
+      "concealerColor": [color.toWebHex()],
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: '?postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

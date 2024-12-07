@@ -110,11 +110,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     const Color(0xff4A2912),
   ];
 
-  List<String> type1List = [
-    'Sheer',
-    'Matt',
-    'Gloss',
-  ];
+  List<String> type1List = ['Metallic' 'Shimmer' 'Matte'];
 
   List<String> typeComboList = [
     'One',
@@ -694,10 +690,9 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     var json = jsonEncode({
       "showEyeShadow": true,
       "eyeShadowColor": [color.toWebHex()],
-      "eyeshadowPattern": "smokey",
-      "eyeshadowMaterial": "matte",
-      // "eyeshadowPattern": eyebrowSelected,
-      // "eyeshadowMaterial": type1List[typeComboSelected ?? 0],
+      "eyeshadowMode ": typeComboList[typeComboSelected ?? 0],
+      "eyeshadowPattern": eyebrowSelected,
+      "eyeshadowMaterial": type1List[typeComboSelected ?? 0],
     });
     String source = 'window.postMessage(JSON.stringify($json),"*");';
     log(source, name: 'postMessage');

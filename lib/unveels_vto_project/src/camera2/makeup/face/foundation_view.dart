@@ -258,6 +258,7 @@ class _FoundationViewState extends State<FoundationView> {
                   skinSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
