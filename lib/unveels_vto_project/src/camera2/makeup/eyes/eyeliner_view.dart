@@ -632,7 +632,7 @@ class _EyelinerViewState extends State<EyelinerView> {
 
     var json = jsonEncode({
       "showEyeliner": true,
-      "eyelinerColor": [toWebHex(color)],
+      "eyelinerColor": toWebHex(color),
       "eyelinerPattern": eyebrowSelected,
       // "eyelinerPattern": "cat-eye",
     });
