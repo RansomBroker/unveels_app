@@ -392,38 +392,38 @@ class _HomeScreenState extends State<HomeScreen>
                       ],
                     ),
                   ),
-                  // Positioned(
-                  //   top: AppSizes.deviceHeight * .58,
-                  //   right: 10,
-                  //   child: Column(
-                  //     children: [
-                  //       FloatingActionButton(
-                  //         onPressed: () {
-                  //           Navigator.pushNamed(
-                  //               context, AppRoutes.vaOnboarding);
-                  //         },
-                  //         backgroundColor: Colors.transparent,
-                  //         child: const FluxImage(
-                  //           imageUrl: 'assets/icons/ai2.png',
-                  //         ),
-                  //       ),
-                  //       const SizedBox(
-                  //         height: 6,
-                  //       ),
-                  //       FloatingActionButton(
-                  //         onPressed: () {
-                  //           final speechService = context.read<VoiceCommandCubit>();
+                  Positioned(
+                    top: AppSizes.deviceHeight * .58,
+                    right: 10,
+                    child: Column(
+                      children: [
+                        FloatingActionButton(
+                          onPressed: () {
+                            Navigator.pushNamed(
+                                context, AppRoutes.vaOnboarding);
+                          },
+                          backgroundColor: Colors.transparent,
+                          child: const FluxImage(
+                            imageUrl: 'assets/icons/ai2.png',
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 6,
+                        ),
+                        FloatingActionButton(
+                          onPressed: () {
+                            final speechService = context.read<VoiceCommandCubit>();
 
-                  //           speechService.toggleListening();
-                  //         },
-                  //         backgroundColor: Colors.transparent,
-                  //         child: const FluxImage(
-                  //           imageUrl: 'assets/icons/ai1.png',
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
+                            speechService.toggleListening();
+                          },
+                          backgroundColor: Colors.transparent,
+                          child: const FluxImage(
+                            imageUrl: 'assets/icons/ai1.png',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               )),
         ),
