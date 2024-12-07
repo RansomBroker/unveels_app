@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,12 +14,9 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/face/contour_view.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
-import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -40,8 +36,8 @@ class _BronzerViewState extends State<BronzerView> {
   bool isFlipCameraSupported = false;
   File? file;
   bool makeupOrAccessories = false;
-  int? skinSelected = 0;
-  int? colorSelected = 0;
+  int? skinSelected;
+  int? colorSelected;
   bool onOffVisibel = false;
 
   final Dio dio = Dio();
@@ -69,6 +65,9 @@ class _BronzerViewState extends State<BronzerView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -87,6 +86,17 @@ class _BronzerViewState extends State<BronzerView> {
     fetchData();
   }
 
+  void tryOn() {
+    final show = colorSelected != null;
+
+    _webViewController?.evaluateJavascript(source: """
+    window.postMessage(JSON.stringify({
+      "showBronzer": $show,
+      ${show ? '"bronzerColor": "${toWebHex(colorChoiceList[colorSelected!])}",' : ''}
+    }), "*");
+    """);
+  }
+
   List<String> skinList = [
     "Light skin",
     "Medium skin",
@@ -97,17 +107,7 @@ class _BronzerViewState extends State<BronzerView> {
     const Color(0xFFD08A59),
     const Color(0xFF45260D),
   ];
-  List<Color> colorChoiceList = [
-    const Color(0xFF3D2B1F),
-    const Color(0xFF5C4033),
-    const Color(0xFF694B3A),
-    const Color(0xFF8A4513),
-    const Color(0xFF7A3F00),
-    const Color(0xFF4F300D),
-    const Color(0xFF483C32),
-    const Color(0xFF342112),
-    const Color(0xFF4A2912),
-  ];
+  List<Color> colorChoiceList = [];
   List<String> bronzerList = [
     Assets.imagesImgBronzer,
     Assets.imagesImgBronzer1,
@@ -283,47 +283,59 @@ class _BronzerViewState extends State<BronzerView> {
       alignment: Alignment.centerLeft,
       child: SizedBox(
         height: 30,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: colorChoiceList.length,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = 0;
-                    onOffVisibel = true;
-                  });
-                  fetchData();
+        child: Row(
+          children: [
+            InkWell(
+              onTap: () async {
+                setState(() {
+                  colorSelected = null;
+                  onOffVisibel = true;
+                });
+                tryOn();
+              },
+              child: const Icon(
+                Icons.do_not_disturb_alt_sharp,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: colorChoiceList.length,
+                separatorBuilder: (_, __) => Constant.xSizedBox12,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                        onOffVisibel = false;
+                      });
+                      tryOn();
+                      fetchData();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: index == colorSelected && !onOffVisibel
+                              ? Colors.white
+                              : Colors.transparent,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: colorChoiceList[index],
+                      ),
+                    ),
+                  );
                 },
-                child: const Icon(Icons.do_not_disturb_alt_sharp,
-                    color: Colors.white, size: 25),
-              );
-            }
-            return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = index;
-                    onOffVisibel = false;
-                  });
-                  fetchData();
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorChoiceList[index]),
-                ));
-          },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -495,6 +507,7 @@ class _BronzerViewState extends State<BronzerView> {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_showContent) ...[
             Constant.xSizedBox8,
@@ -657,25 +670,6 @@ class _BronzerViewState extends State<BronzerView> {
           )
         ],
       ),
-    );
-  }
-
-  void tryOn() {
-    Color color = skinColorList[skinSelected ?? 0];
-    if (onOffVisibel == true && colorSelected != null) {
-      color = colorChoiceList[colorSelected ?? 0];
-    }
-
-    var json = jsonEncode({
-      "showBlush": true,
-      "blushColor": [color.toWebHex()],
-      "blushMode": "One",
-      "blushPattern": 1,
-    });
-    String source = 'window.postMessage(JSON.stringify($json),"*");';
-    log(source, name: 'postMessage');
-    _webViewController?.evaluateJavascript(
-      source: source,
     );
   }
 }
