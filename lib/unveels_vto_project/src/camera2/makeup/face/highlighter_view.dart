@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +14,8 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -37,9 +36,9 @@ class _HighlighterViewState extends State<HighlighterView> {
   File? file;
   bool makeupOrAccessories = false;
   bool onOffVisibel = false;
-  int? skinSelected = 0;
-  int? colorSelected = 0;
-  int? typeSelected = 0;
+  int? skinSelected;
+  int? colorSelected;
+  int? typeSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -47,6 +46,7 @@ class _HighlighterViewState extends State<HighlighterView> {
   final ProductRepository productRepository = ProductRepository();
 
   Future<void> fetchData() async {
+    tryOn();
     setState(() {
       _isLoading = true;
     });
@@ -66,6 +66,9 @@ class _HighlighterViewState extends State<HighlighterView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -84,10 +87,28 @@ class _HighlighterViewState extends State<HighlighterView> {
     fetchData();
   }
 
+  void tryOn() {
+    print("TRYING TO TRY ON");
+    final show = skinSelected != null;
+
+    String? color = colorSelected != null
+        ? toWebHex(colorChoiceList[colorSelected!])
+        : null;
+
+    _webViewController?.evaluateJavascript(
+      source: """
+    window.postMessage(JSON.stringify({
+      "showHighlighter": $show,
+      ${show ? '"highlighterColor": "$color", "highlighterPattern": $skinSelected,' : ''}
+    }), "*");
+    """,
+    );
+  }
+
   List<String> typeList = [
+    "Matte",
     "Shimmer",
-    "Matt",
-    "Gloss",
+    "Metallic",
   ];
   List<Color> skinColorList = [
     const Color(0xFFFDD8B7),
@@ -445,6 +466,7 @@ class _HighlighterViewState extends State<HighlighterView> {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_showContent) ...[
             // Constant.xSizedBox8,

@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -12,10 +14,10 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
+
+import '../../../../utils/color_utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -36,9 +38,9 @@ class _EyebrowsViewState extends State<EyebrowsView> {
   File? file;
   double sliderValue = 0;
   bool onOffVisibel = false;
-  int? eyebrowSelected = 0;
-  int? colorSelected = 0;
-  int? typeSelected = 0;
+  int? eyebrowSelected;
+  int? colorSelected;
+  int? typeSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -51,22 +53,32 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     });
     print("Fetching data");
     try {
-      // print("Trying to fetch");
-      // List<String>? textures =
-      //     getTextureByLabel([chipList[typeColorSelected!]]);
-      // print(textures);
-      // // List<String>? productTypes =
-      // //     getProductTypesByLabels("lips_makeup_product_type", [
-      // //   "Lipsticks",
-      // //   "Lip Stains",
-      // //   "Lip Tints",
-      // //   "Lip Balms",
-      // // ]);
-      // print(productTypes);
-
       var dataResponse = await productRepository.fetchProducts(browMakeup: '');
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          if (typeSelected == null) {
+            colorList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorList = getSelectableColorList(
+                    products!,
+                    vtoColors
+                        .where((e) =>
+                            e.label == colorMainListString[typeSelected!])
+                        .first
+                        .value) ??
+                [];
+            products = dataResponse
+                .where((e) =>
+                    e.color ==
+                    vtoColors
+                        .where((e) =>
+                            e.label == colorMainListString[typeSelected!])
+                        .first
+                        .value)
+                .toList();
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -242,6 +254,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 typeSelected = index;
               });
               fetchData();
+
+              tryOn();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -273,45 +287,69 @@ class _EyebrowsViewState extends State<EyebrowsView> {
   Widget colorChoice() {
     return SizedBox(
       height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
-              onTap: () async {
-                setState(() {
-                  onOffVisibel = true;
-                });
-                fetchData();
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              setState(() {
+                colorSelected = null;
+                onOffVisibel = true;
+              });
+              tryOn();
+            },
+            child: const Icon(
+              Icons.do_not_disturb_alt_sharp,
+              color: Colors.white,
+              size: 25,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: colorList.length,
+              separatorBuilder: (_, __) => Constant.xSizedBox12,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        onOffVisibel = false;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: const Icon(Icons.do_not_disturb_alt_sharp,
+                        color: Colors.white, size: 25),
+                  );
+                }
+                return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                        onOffVisibel = true;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 1, vertical: 1),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color:
+                                  index == colorSelected && onOffVisibel == true
+                                      ? Colors.white
+                                      : Colors.transparent),
+                        ),
+                        child: CircleAvatar(
+                            radius: 12, backgroundColor: colorList[index])));
               },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = index;
-                  onOffVisibel = false;
-                });
-                fetchData();
-              },
-              child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorList[index])));
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -336,6 +374,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 eyebrowSelected = index;
               });
               fetchData();
+
+              tryOn();
             },
             child: Container(
               padding: const EdgeInsets.all(1),
@@ -370,6 +410,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 sliderValue = v;
               });
               fetchData();
+
+              tryOn();
             },
           ),
           const Padding(
@@ -406,9 +448,6 @@ class _EyebrowsViewState extends State<EyebrowsView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_showContent) ...[
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
             colorChoice(),
             Constant.xSizedBox8,
             separator(),
@@ -566,6 +605,25 @@ class _EyebrowsViewState extends State<EyebrowsView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = colorMainList[typeSelected ?? 0];
+    if (onOffVisibel == true && colorSelected != null) {
+      color = colorList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showEyebrows": true,
+      "eyebrowsColor": [toWebHex(color)],
+      "eyebrowsPattern": eyebrowSelected,
+      "eyebrowsVisibility": sliderValue / 10,
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

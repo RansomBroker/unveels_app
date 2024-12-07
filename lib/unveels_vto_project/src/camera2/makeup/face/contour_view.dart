@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,11 +15,9 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/makeup/face/highlighter_view.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -40,8 +40,9 @@ class _ContourViewState extends State<ContourView> {
   bool oneOrDual = false;
   bool onOffVisibel = false;
   bool onOffVisibel1 = false;
-  int? skinSelected = 0;
+  int? skinSelected;
   int? colorSelected = 0;
+  List<int>? selectedColors;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -68,6 +69,9 @@ class _ContourViewState extends State<ContourView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -84,6 +88,28 @@ class _ContourViewState extends State<ContourView> {
     super.initState();
 
     fetchData();
+  }
+
+  void tryOn() {
+    final show = (oneOrDual == true && colorSelected != null) ||
+        (!oneOrDual && selectedColors != null && selectedColors!.isNotEmpty);
+
+    final colors = oneOrDual
+        ? [toWebHex(colorChoiceList[colorSelected!])]
+        : selectedColors!
+            .map((index) => toWebHex(colorChoiceList[index]))
+            .toList();
+
+    final colorMode = oneOrDual ? 'One' : "Dual";
+
+    _webViewController?.evaluateJavascript(
+      source: """
+    window.postMessage(JSON.stringify({
+      "showContour": $show,
+      ${show ? '"contourColors": ${jsonEncode(colors)}, "contourColorMode": "$colorMode",' : ''}
+    }), "*");
+    """,
+    );
   }
 
   List<String> skinList = [
@@ -107,12 +133,13 @@ class _ContourViewState extends State<ContourView> {
     const Color(0xFF342112),
     const Color(0xFF4A2912),
   ];
-  List<String> bronzerList = [
-    Assets.imagesImgBronzer,
-    Assets.imagesImgBronzer1,
-    Assets.imagesImgBronzer2,
-    Assets.imagesImgBronzer3,
-    Assets.imagesImgBronzer4,
+  List<String> contourList = [
+    Assets.contour1,
+    Assets.contour2,
+    Assets.contour3,
+    Assets.contour4,
+    Assets.contour5,
+    Assets.contour6,
   ];
 
   Future<bool> checkPermissionStatuses() async {
@@ -282,47 +309,81 @@ class _ContourViewState extends State<ContourView> {
       alignment: Alignment.centerLeft,
       child: SizedBox(
         height: 30,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: colorChoiceList.length,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = 0;
-                    onOffVisibel = true;
-                  });
-                  fetchData();
+        child: Row(
+          children: [
+            InkWell(
+              onTap: () async {
+                setState(() {
+                  colorSelected = null;
+                  onOffVisibel = true;
+                });
+                tryOn();
+              },
+              child: const Icon(
+                Icons.do_not_disturb_alt_sharp,
+                color: Colors.white,
+                size: 25,
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: colorChoiceList.length,
+                separatorBuilder: (_, __) => Constant.xSizedBox12,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        if (oneOrDual == true) {
+                          colorSelected = index;
+                          onOffVisibel = false;
+                        } else {
+                          if (selectedColors == null) {
+                            selectedColors = [index];
+                          } else {
+                            if (selectedColors!.contains(index)) {
+                              selectedColors!.remove(index);
+                            } else {
+                              if (selectedColors!.length < 2) {
+                                selectedColors!.add(index);
+                              } else {
+                                selectedColors![1] = index;
+                              }
+                            }
+                          }
+                          colorSelected = selectedColors?.isNotEmpty == true
+                              ? selectedColors!.last
+                              : null;
+                        }
+                        fetchData();
+                      });
+                      tryOn();
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 1, vertical: 1),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: (oneOrDual == true
+                                  ? (index == colorSelected &&
+                                      onOffVisibel == false)
+                                  : (selectedColors?.contains(index) == true))
+                              ? Colors.white
+                              : Colors.transparent,
+                        ),
+                      ),
+                      child: CircleAvatar(
+                        radius: 12,
+                        backgroundColor: colorChoiceList[index],
+                      ),
+                    ),
+                  );
                 },
-                child: const Icon(Icons.do_not_disturb_alt_sharp,
-                    color: Colors.white, size: 25),
-              );
-            }
-            return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = index;
-                    onOffVisibel = false;
-                  });
-                  fetchData();
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorChoiceList[index]),
-                ));
-          },
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -336,7 +397,7 @@ class _ContourViewState extends State<ContourView> {
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: oneOrDual == false ? bronzerList.length : 1,
+          itemCount: contourList.length,
           separatorBuilder: (_, __) => Constant.xSizedBox12,
           itemBuilder: (context, index) {
             // if (index == 0)
@@ -368,7 +429,7 @@ class _ContourViewState extends State<ContourView> {
                       SizedBox(
                         width: 50,
                         height: 50,
-                        child: Image.asset(bronzerList[index]),
+                        child: Image.asset(contourList[index]),
                       ),
                     ],
                   )),
@@ -536,7 +597,7 @@ class _ContourViewState extends State<ContourView> {
                       fetchData();
                     },
                     child: Text(
-                      "Two",
+                      "Dual",
                       style: oneOrDual == false
                           ? Constant.whiteBold16.copyWith(fontSize: 12)
                           : Constant.whiteRegular12,

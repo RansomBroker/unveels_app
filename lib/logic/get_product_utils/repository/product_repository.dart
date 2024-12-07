@@ -62,8 +62,6 @@ class ProductRepository {
         {'field': productType, 'value': productTypes, 'condition_type': 'in'},
       if (pattern != null)
         {'field': 'pattern', 'value': pattern, 'condition_type': 'finset'},
-      if (skinTone != null)
-        {'field': 'skin_tone', 'value': skinTone, 'condition_type': 'eq'},
       if (shape != null)
         {'field': 'shape', 'value': shape, 'condition_type': 'eq'},
       if (material != null)
@@ -123,7 +121,6 @@ class ProductRepository {
           if (extensionAttributes != null &&
               brandName != null &&
               extensionAttributes["configurable_product_links"] != null) {
-
             var productLinks = extensionAttributes["configurable_product_links"]
                     as List<dynamic>? ??
                 [];
@@ -136,9 +133,8 @@ class ProductRepository {
             }
           }
 
-          return extensionAttributes?["configurable_product_links"];
+          return extensionAttributes?["configurable_product_links"] ?? [item["id"]];
         }).toList();
-
 
         Map<String, String> productToBrand = {};
 
@@ -158,7 +154,9 @@ class ProductRepository {
               'field': 'entity_id',
               'value': flattenedResult.join(","),
               'condition_type': 'in'
-            }
+            },
+            if (skinTone != null)
+              {'field': 'skin_tone', 'value': skinTone, 'condition_type': 'eq'},
           ]),
           options: Options(headers: headers),
         );

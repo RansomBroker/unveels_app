@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,15 +16,14 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
 class LashesMascaraView extends StatefulWidget {
   LashesMascaraView({super.key, this.lashes = true});
+
   bool lashes;
 
   @override
@@ -263,7 +265,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisible = true;
+                  onOffVisible = false;
                 });
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
@@ -274,9 +276,10 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
               onTap: () async {
                 setState(() {
                   colorSelected = index;
-                  onOffVisible = false;
+                  onOffVisible = true;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                   padding:
@@ -284,7 +287,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: index == colorSelected && onOffVisible == false
+                        color: index == colorSelected && onOffVisible == true
                             ? Colors.white
                             : Colors.transparent),
                   ),
@@ -315,6 +318,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                 onOffVisible = false;
               });
               fetchData();
+              tryOn();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -391,6 +395,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                 sliderValue = v;
               });
               fetchData();
+              tryOn();
             },
           ),
           const Padding(
@@ -442,6 +447,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                         lashes = true;
                       });
                       fetchData();
+                      tryOn();
                     },
                     child: Text(
                       'Lashes',
@@ -474,6 +480,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                         lashes = false;
                       });
                       fetchData();
+                      tryOn();
                     },
                     child: Text(
                       'Mascara',
@@ -646,6 +653,23 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = colorMainList[colorSelected ?? 0];
+    if (onOffVisible == true && colorSelected != null) {
+      color = colorList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showMascara": true,
+      "mascaraColor": toWebHex(color),
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

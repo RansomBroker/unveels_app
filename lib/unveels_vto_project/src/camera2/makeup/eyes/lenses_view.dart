@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,10 +15,8 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -275,7 +276,7 @@ class _LensesViewState extends State<LensesView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisible = true;
+                  onOffVisible = false;
                 });
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
@@ -286,15 +287,16 @@ class _LensesViewState extends State<LensesView> {
             onTap: () async {
               setState(() {
                 lensesSelected = index;
-                onOffVisible = false;
+                onOffVisible = true;
               });
               fetchData();
+              tryOn();
             },
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(
-                    color: index == lensesSelected && onOffVisible == false
+                    color: index == lensesSelected && onOffVisible == true
                         ? Colors.white
                         : Colors.transparent),
               ),
@@ -365,6 +367,7 @@ class _LensesViewState extends State<LensesView> {
                 sliderValue = v;
               });
               fetchData();
+              tryOn();
             },
           ),
           const Padding(
@@ -555,6 +558,24 @@ class _LensesViewState extends State<LensesView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = colorMainList[colorSelected ?? 0];
+    if (onOffVisible == true && colorSelected != null) {
+      color = colorList[colorSelected ?? 0];
+    }
+
+    var json = jsonEncode({
+      "showLens": true,
+      "lensColor": [toWebHex(color)],
+      "lensPattern": lensesSelected,
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }

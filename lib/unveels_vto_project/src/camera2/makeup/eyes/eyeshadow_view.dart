@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +16,8 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -38,10 +39,11 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   double sliderValue = 0;
   bool onOffVisibel = false;
   int? eyebrowSelected = 0;
-  int? colorSelected = 0;
-  int? colorTextSelected = 0;
-  int? typeSelected = 0;
+  List<int> colorSelected = [];
+  int? colorTextSelected;
+  int? typeSelected;
   int? typeComboSelected = 0;
+  int get maxColorSelected => (typeComboSelected ?? 0) + 1;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -69,6 +71,9 @@ class _EyeshadowViewState extends State<EyeshadowView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -107,11 +112,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
     const Color(0xff4A2912),
   ];
 
-  List<String> type1List = [
-    'Sheer',
-    'Matt',
-    'Gloss',
-  ];
+  List<String> type1List = ['Metallic', 'Shimmer', 'Matte'];
 
   List<String> typeComboList = [
     'One',
@@ -221,6 +222,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   colorTextSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -253,45 +255,62 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   Widget colorChoice() {
     return SizedBox(
       height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
-              onTap: () async {
-                setState(() {
-                  onOffVisibel = true;
-                });
-                fetchData();
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              setState(() {
+                colorSelected.clear();
+                onOffVisibel = true;
+              });
+              tryOn();
+            },
+            child: const Icon(
+              Icons.do_not_disturb_alt_sharp,
+              color: Colors.white,
+              size: 25,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: colorList.length,
+              separatorBuilder: (_, __) => Constant.xSizedBox12,
+              itemBuilder: (context, index) {
+                return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        if (colorSelected.length >= maxColorSelected) {
+                          colorSelected.removeAt(0);
+                        }
+
+                        colorSelected.add(index);
+                        onOffVisibel = true;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 1, vertical: 1),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color:
+                                  colorSelected.indexWhere((e) => e == index) >=
+                                              0 &&
+                                          onOffVisibel == true
+                                      ? Colors.white
+                                      : Colors.transparent),
+                        ),
+                        child: CircleAvatar(
+                            radius: 12, backgroundColor: colorList[index])));
               },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = index;
-                  onOffVisibel = false;
-                });
-                fetchData();
-              },
-              child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorList[index])));
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -317,6 +336,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                   typeSelected = index;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -357,6 +377,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 typeComboSelected = index;
               });
               fetchData();
+              tryOn();
             },
             child: Center(
               child: Text(
@@ -398,6 +419,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 eyebrowSelected = index;
               });
               fetchData();
+              tryOn();
             },
             child: Container(
               decoration: BoxDecoration(
@@ -474,6 +496,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                 sliderValue = v;
               });
               fetchData();
+              tryOn();
             },
           ),
           const Padding(
@@ -510,9 +533,9 @@ class _EyeshadowViewState extends State<EyeshadowView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_showContent) ...[
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
+            // Constant.xSizedBox8,
+            // colorChip(),
+            // Constant.xSizedBox8,
             colorChoice(),
             Constant.xSizedBox8,
             separator(),
@@ -678,6 +701,41 @@ class _EyeshadowViewState extends State<EyeshadowView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    var colors = <Color>[];
+    Color color = colorMainList[colorTextSelected ?? 0];
+
+    if (colorSelected.length > maxColorSelected) {
+      var tempColor = <int>[];
+      for (var i = 0; i < maxColorSelected; i++) {
+        tempColor.add(colorSelected[i]);
+      }
+      colorSelected = tempColor;
+      setState(() {});
+    }
+
+    if (onOffVisibel == true && colorSelected.isNotEmpty) {
+      for (final cIndex in colorSelected) {
+        colors.add(colorList[cIndex]);
+      }
+    } else {
+      colors.add(color);
+    }
+
+    var json = jsonEncode({
+      "showEyeShadow": true,
+      "eyeShadowColor": colors.map((e) => toWebHex(color)).toList(),
+      "eyeshadowMode ": typeComboList[typeComboSelected ?? 0],
+      "eyeshadowPattern": eyebrowSelected,
+      "eyeshadowMaterial": type1List[typeComboSelected ?? 0],
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }
