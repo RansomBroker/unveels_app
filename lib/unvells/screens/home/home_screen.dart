@@ -125,26 +125,6 @@ class _HomeScreenState extends State<HomeScreen>
     super.build(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
-      // floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
-      // floatingActionButton: Column(
-      //
-      //   children: [
-      //     FloatingActionButton(
-      //       onPressed: () {
-      //       },
-      //       backgroundColor: Colors.transparent,
-      //       child: const FluxImage(imageUrl: 'assets/icons/ai1.png',),
-      //     ),
-      //     FloatingActionButton(
-      //       onPressed: () {
-      //       },
-      //       backgroundColor: Colors.transparent,
-      //       child: const FluxImage(imageUrl: 'assets/icons/ai2.png',),
-      //
-      //     ),
-      //
-      //   ],
-      // ),
       appBar: AppBar(
         backgroundColor: Colors.black,
         toolbarHeight: AppSizes.deviceHeight * .08,
@@ -412,60 +392,42 @@ class _HomeScreenState extends State<HomeScreen>
                       ],
                     ),
                   ),
-                  Positioned(
-                    top: AppSizes.deviceHeight * .58,
-                    right: 10,
-                    child: Column(
-                      children: [
-                        FloatingActionButton(
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                context, AppRoutes.vaOnboarding);
-                          },
-                          backgroundColor: Colors.transparent,
-                          child: const FluxImage(
-                            imageUrl: 'assets/icons/ai2.png',
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 6,
-                        ),
-                        FloatingActionButton(
-                          onPressed: () {
-                            final speechService = context.read<VoiceCommandCubit>();
+                  // Positioned(
+                  //   top: AppSizes.deviceHeight * .58,
+                  //   right: 10,
+                  //   child: Column(
+                  //     children: [
+                  //       FloatingActionButton(
+                  //         onPressed: () {
+                  //           Navigator.pushNamed(
+                  //               context, AppRoutes.vaOnboarding);
+                  //         },
+                  //         backgroundColor: Colors.transparent,
+                  //         child: const FluxImage(
+                  //           imageUrl: 'assets/icons/ai2.png',
+                  //         ),
+                  //       ),
+                  //       const SizedBox(
+                  //         height: 6,
+                  //       ),
+                  //       FloatingActionButton(
+                  //         onPressed: () {
+                  //           final speechService = context.read<VoiceCommandCubit>();
 
-                            speechService.toggleListening();
-                          },
-                          backgroundColor: Colors.transparent,
-                          child: const FluxImage(
-                            imageUrl: 'assets/icons/ai1.png',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  //           speechService.toggleListening();
+                  //         },
+                  //         backgroundColor: Colors.transparent,
+                  //         child: const FluxImage(
+                  //           imageUrl: 'assets/icons/ai1.png',
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               )),
         ),
         Visibility(visible: isLoading, child: const Loader()),
-        // Column(
-        //   children: [
-        //     FloatingActionButton(
-        //       onPressed: () {
-        //
-        //       },
-        //       child: const FluxImage(
-        //         imageUrl: 'assets/icons/ai1.svg',
-        //       ),
-        //     ),
-        //     FloatingActionButton(
-        //       onPressed: () {},
-        //       child: const FluxImage(
-        //         imageUrl: 'assets/icons/ai2.svg',
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }
