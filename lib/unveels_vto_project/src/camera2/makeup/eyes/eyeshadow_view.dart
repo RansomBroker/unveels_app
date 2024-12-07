@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
 import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
@@ -18,6 +19,7 @@ import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
+import 'package:test_new/voice_command/services/voice_cmd_cubit.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -43,6 +45,7 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   int? colorTextSelected;
   int? typeSelected;
   int? typeComboSelected = 0;
+
   int get maxColorSelected => (typeComboSelected ?? 0) + 1;
 
   final Dio dio = Dio();
@@ -665,8 +668,27 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
+                          BlocProvider(
+                            create: (_) => VoiceCmdCubit(),
+                            child: BlocConsumer<VoiceCmdCubit, VoiceCmdState>(
+                              listener:
+                                  (BuildContext context, VoiceCmdState state) {
+                                if (state is VoiceCommandResult) {
+                                  log(state.text, name: 'Result Voice');
 
-                          iconSidebar(() async {}, Assets.iconsIcMic),
+                                  _voiceCommand(state.text);
+                                }
+                              },
+                              builder:
+                                  (BuildContext context, VoiceCmdState state) {
+                                return iconSidebar(() async {
+                                  context
+                                      .read<VoiceCmdCubit>()
+                                      .toggleListening();
+                                }, Assets.iconsIcMic);
+                              },
+                            ),
+                          ),
                           Constant.xSizedBox12,
                           iconSidebar(() async {
                             CusNav.nPush(context, const CameraVideoPage());
@@ -730,12 +752,51 @@ class _EyeshadowViewState extends State<EyeshadowView> {
       "eyeShadowColor": colors.map((e) => toWebHex(color)).toList(),
       "eyeshadowMode ": typeComboList[typeComboSelected ?? 0],
       "eyeshadowPattern": eyebrowSelected,
-      "eyeshadowMaterial": type1List[typeComboSelected ?? 0],
+      "eyeshadowMaterial": type1List[typeSelected ?? 0],
     });
     String source = 'window.postMessage(JSON.stringify($json),"*");';
     log(source, name: 'postMessage');
     _webViewController?.evaluateJavascript(
       source: source,
     );
+  }
+
+  void _voiceCommand(String text) {
+    text = text.toLowerCase();
+
+
+    // Metcallic, Shimmer, Matte
+    int typeSelectedIndex =
+        type1List.indexWhere((e) => text.contains(e.toLowerCase()));
+    if (typeSelectedIndex >= 0) {
+      typeSelected = typeSelectedIndex;
+
+      setState(() {});
+
+      fetchData();
+      tryOn();
+
+      log("typeSelected : $typeSelected",
+          name: 'voice command proccess');
+
+      return;
+    }
+
+  //   One, Dual, more
+    int typeComboIndex =
+    typeComboList.indexWhere((e) => text.contains(e.toLowerCase()));
+    if (typeComboIndex >= 0) {
+      typeComboSelected = typeComboIndex;
+
+      setState(() {});
+
+      fetchData();
+      tryOn();
+
+      log("typeSelected : $typeSelected",
+          name: 'voice command proccess');
+
+      return;
+    }
   }
 }

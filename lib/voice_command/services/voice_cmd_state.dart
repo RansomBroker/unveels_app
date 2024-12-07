@@ -21,6 +21,10 @@ class VoiceCommandListening extends VoiceCmdState {
   VoiceCommandListening(String text, double confidence) : super(text, confidence);
 }
 
+class VoiceCommandResult extends VoiceCmdState {
+  VoiceCommandResult(String text, double confidence) : super(text, confidence);
+}
+
 class VoiceCommandError extends VoiceCmdState {
   final String errorMessage;
 

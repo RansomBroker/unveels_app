@@ -41,16 +41,16 @@ class VoiceCmdCubit extends Cubit<VoiceCmdState> {
           final recognizedText = result.recognizedWords;
           final confidence = result.confidence;
 
-          if (result.finalResult == false) return;
 
           log(result.toJson().toString(), name: 'Voice Command');
 
-          emit(VoiceCommandListening(recognizedText, confidence));
+          emit(VoiceCommandResult(recognizedText, confidence));
 
 
         },
         listenOptions: SpeechListenOptions(
           listenMode: ListenMode.dictation,
+
         ),
       );
     } catch (e) {}
