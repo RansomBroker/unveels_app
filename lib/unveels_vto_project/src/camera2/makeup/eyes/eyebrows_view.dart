@@ -289,7 +289,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisibel = true;
+                  onOffVisibel = false;
                 });
                 fetchData();
                 tryOn();
@@ -302,7 +302,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
               onTap: () async {
                 setState(() {
                   colorSelected = index;
-                  onOffVisibel = false;
+                  onOffVisibel = true;
                 });
                 fetchData();
                 tryOn();
@@ -313,7 +313,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
+                        color: index == colorSelected && onOffVisibel == true
                             ? Colors.white
                             : Colors.transparent),
                   ),
@@ -592,6 +592,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
       "showEyebrows": true,
       "eyebrowsColor": [color.toWebHex()],
       "eyebrowsPattern": eyebrowSelected,
+      "eyebrowsVisibility": sliderValue / 10,
     });
     String source = 'window.postMessage(JSON.stringify($json),"*");';
     log(source, name: 'postMessage');

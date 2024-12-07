@@ -279,7 +279,7 @@ class _LensesViewState extends State<LensesView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisible = true;
+                  onOffVisible = false;
                 });
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
@@ -290,7 +290,7 @@ class _LensesViewState extends State<LensesView> {
             onTap: () async {
               setState(() {
                 lensesSelected = index;
-                onOffVisible = false;
+                onOffVisible = true;
               });
               fetchData();
               tryOn();
@@ -299,7 +299,7 @@ class _LensesViewState extends State<LensesView> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(
-                    color: index == lensesSelected && onOffVisible == false
+                    color: index == lensesSelected && onOffVisible == true
                         ? Colors.white
                         : Colors.transparent),
               ),
