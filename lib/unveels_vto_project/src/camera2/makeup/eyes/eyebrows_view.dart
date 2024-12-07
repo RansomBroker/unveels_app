@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -12,10 +14,10 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
+
+import '../../../../utils/color_utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -242,6 +244,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 typeSelected = index;
               });
               fetchData();
+
+              tryOn();
             },
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
@@ -286,6 +290,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                   onOffVisibel = true;
                 });
                 fetchData();
+                tryOn();
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
                   color: Colors.white, size: 25),
@@ -298,6 +303,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                   onOffVisibel = false;
                 });
                 fetchData();
+                tryOn();
               },
               child: Container(
                   padding:
@@ -336,6 +342,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 eyebrowSelected = index;
               });
               fetchData();
+
+              tryOn();
             },
             child: Container(
               padding: const EdgeInsets.all(1),
@@ -370,6 +378,8 @@ class _EyebrowsViewState extends State<EyebrowsView> {
                 sliderValue = v;
               });
               fetchData();
+
+              tryOn();
             },
           ),
           const Padding(
@@ -566,6 +576,25 @@ class _EyebrowsViewState extends State<EyebrowsView> {
           )
         ],
       ),
+    );
+  }
+
+  void tryOn() {
+    Color color = colorMainList[typeSelected ?? 0];
+    if (onOffVisibel == true && colorSelected != null) {
+      color = colorList[colorSelected ?? 0];
+    }
+
+
+    var json = jsonEncode({
+      "showEyebrows": true,
+      "eyebrowsColor": [toWebHex(color)],
+      "eyebrowsPattern": eyebrowSelected,
+    });
+    String source = 'window.postMessage(JSON.stringify($json),"*");';
+    log(source, name: 'postMessage');
+    _webViewController?.evaluateJavascript(
+      source: source,
     );
   }
 }
