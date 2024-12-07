@@ -19,6 +19,7 @@ import 'package:test_new/unvells/helper/app_storage_pref.dart';
 import 'package:test_new/unvells/helper/bottom_sheet_helper.dart';
 import 'package:test_new/unvells/helper/skeleton_widget.dart';
 import 'package:test_new/unvells/helper/utils.dart';
+import 'package:test_new/voice_command/services/voice_command_cubit.dart';
 
 import '../../../../logic/get_product_details/get_product_details_state.dart';
 import '../../../app_widgets/app_outlined_button.dart';
@@ -72,100 +73,92 @@ class _AddToCartButtonViewState extends State<AddToCartButtonView> {
   Widget build(BuildContext context) {
     _localizations = AppLocalizations.of(context);
     final getGiftDataBloc = GetProductDetailsNewBloc.of(context);
-    return Container(
-      color: Colors.white.withOpacity(0.8),
-      child: Padding(
-        padding:
-            const EdgeInsets.only(bottom: 29.0, left: 25, right: 25, top: 17),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: CustomButton(
-                onPressed: () {
-                  if (widget._productDetailPageModel?.typeId ==
-                      'bss_giftcard') {
-                    giftBottomModelSheet(
-                        context: context,
-                        addToCart: () {
-                          debugPrint(
-                              widget._productDetailPageModel?.sku.toString());
+    return BlocConsumer<VoiceCommandCubit, VoiceCommandState>(
+      builder: (context, state) {
+        return Container(
+          color: Colors.white.withOpacity(0.8),
+          child: Padding(
+            padding: const EdgeInsets.only(
+                bottom: 29.0, left: 25, right: 25, top: 17),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: CustomButton(
+                    onPressed: () {
+                      if (widget._productDetailPageModel?.typeId ==
+                          'bss_giftcard') {
+                        giftBottomModelSheet(
+                            context: context,
+                            addToCart: () {
+                              debugPrint(widget._productDetailPageModel?.sku
+                                  .toString());
 
-                          widget.productPageBloc?.add(AddGiftToCartEvent(
-                            sku: widget._productDetailPageModel?.sku ?? '',
-                            productParamsJSON: {
-                              "bss_giftcard_amount": "custom",
-                              "bss_giftcard_amount_dynamic":
-                                  getGiftDataBloc.selectedAMount?.price,
-                              "bss_giftcard_recipient_email": getGiftDataBloc
-                                  .emailOfAddresseeController.text,
-                              "bss_giftcard_recipient_name": getGiftDataBloc
-                                  .nameOfAddresseeController.text,
-                              "bss_giftcard_sender_email":
-                                  getGiftDataBloc.emailController.text,
-                              "bss_giftcard_sender_name":
-                                  getGiftDataBloc.nameController.text,
-                              "bss_giftcard_selected_image":
-                                  getGiftDataBloc.selectedImage?.id,
-                              "bss_giftcard_template":
-                                  getGiftDataBloc.selectedTemplate?.templateId,
-                              "bss_giftcard_message_email":
-                                  getGiftDataBloc.messageController.text,
-                              "bss_giftcard_timezone":
-                                  getGiftDataBloc.selectedTimeZone?.value,
-                              "bss_giftcard_delivery_date":
-                                  getGiftDataBloc.dateController.text
+                              widget.productPageBloc?.add(AddGiftToCartEvent(
+                                sku: widget._productDetailPageModel?.sku ?? '',
+                                productParamsJSON: {
+                                  "bss_giftcard_amount": "custom",
+                                  "bss_giftcard_amount_dynamic":
+                                      getGiftDataBloc.selectedAMount?.price,
+                                  "bss_giftcard_recipient_email":
+                                      getGiftDataBloc
+                                          .emailOfAddresseeController.text,
+                                  "bss_giftcard_recipient_name": getGiftDataBloc
+                                      .nameOfAddresseeController.text,
+                                  "bss_giftcard_sender_email":
+                                      getGiftDataBloc.emailController.text,
+                                  "bss_giftcard_sender_name":
+                                      getGiftDataBloc.nameController.text,
+                                  "bss_giftcard_selected_image":
+                                      getGiftDataBloc.selectedImage?.id,
+                                  "bss_giftcard_template": getGiftDataBloc
+                                      .selectedTemplate?.templateId,
+                                  "bss_giftcard_message_email":
+                                      getGiftDataBloc.messageController.text,
+                                  "bss_giftcard_timezone":
+                                      getGiftDataBloc.selectedTimeZone?.value,
+                                  "bss_giftcard_delivery_date":
+                                      getGiftDataBloc.dateController.text
+                                },
+                              ));
                             },
-                          ));
-                        },
-                        bloc: GetProductDetailsNewBloc.of(context),
-                        detailsBloc: widget.productPageBloc!);
-                  } else if (collectAllOptionData(true, context)) {
-                    print(
-                        "TEST_LOG ===> mProductParamsJSON ==> $mProductParamsJSON");
-                    widget.productPageBloc?.add(AddtoCartEvent(
-                      false,
-                      widget._productDetailPageModel?.id?.toString() ?? "",
-                      widget.counter,
-                      mProductParamsJSON,
-                      relatedProducts,
-                    ));
-                  }
-                },
-                title:
-                    Utils.getStringValue(context, AppStringConstant.addToCart)
+                            bloc: GetProductDetailsNewBloc.of(context),
+                            detailsBloc: widget.productPageBloc!);
+                      } else if (collectAllOptionData(true, context)) {
+                        print(
+                            "TEST_LOG ===> mProductParamsJSON ==> $mProductParamsJSON");
+                        widget.productPageBloc?.add(AddtoCartEvent(
+                          false,
+                          widget._productDetailPageModel?.id?.toString() ?? "",
+                          widget.counter,
+                          mProductParamsJSON,
+                          relatedProducts,
+                        ));
+                      }
+                    },
+                    title: Utils.getStringValue(
+                            context, AppStringConstant.addToCart)
                         .toUpperCase(),
-              ),
-            ),
-            const SizedBox(
-              width: 10.0,
-            ),
-            BlocBuilder<GetProductDetailsNewBloc, GetProductDetailsState>(
-              builder: (context, state) {
-                return state.when(
-                  loading: () => const Expanded(
-                      child: Skeleton(
-                    height: 54,
-                    cornerRadius: 10,
-                  )),
-                  success: (model) {
-                    final bool isTryOn =
-                        model?.items?.firstOrNull?.isProductTryOn == 1;
-                    final bool? is_product_skin_try =
-                        model?.items?.firstOrNull?.is_product_skin_try == 1;
+                  ),
+                ),
+                const SizedBox(
+                  width: 10.0,
+                ),
+                BlocBuilder<GetProductDetailsNewBloc, GetProductDetailsState>(
+                  builder: (context, state) {
+                    return state.when(
+                      loading: () => const Expanded(
+                          child: Skeleton(
+                        height: 54,
+                        cornerRadius: 10,
+                      )),
+                      success: (model) {
+                        final bool isTryOn =
+                            model?.items?.firstOrNull?.isProductTryOn == 1;
+                        final bool? is_product_skin_try =
+                            model?.items?.firstOrNull?.is_product_skin_try == 1;
 
-                    return is_product_skin_try == true
-                        ? Expanded(
-                            flex: 1,
-                            child: CustomButton(
-                              onPressed: () {},
-                              kFillColor: Colors.white,
-                              borderColor: AppColors.gold,
-                              textColor: AppColors.gold,
-                              iconPath: "assets/icons/Tryon icon.png",
-                              title: "SKIN IMPROVEMENTS".toUpperCase(),
-                            ))
-                        : isTryOn == true
+                        return is_product_skin_try == true
                             ? Expanded(
                                 flex: 1,
                                 child: CustomButton(
@@ -174,43 +167,73 @@ class _AddToCartButtonViewState extends State<AddToCartButtonView> {
                                   borderColor: AppColors.gold,
                                   textColor: AppColors.gold,
                                   iconPath: "assets/icons/Tryon icon.png",
-                                  title: Utils.getStringValue(context, AppStringConstant.tryOn),
+                                  title: "SKIN IMPROVEMENTS".toUpperCase(),
                                 ))
-                            : Expanded(
-                                flex: 1,
-                                child: CustomButton(
-                                  onPressed: () {
-                                    if (collectAllOptionData(true, context)) {
-                                      print(
-                                          "TEST_LOG ===> mProductParamsJSON ==> $mProductParamsJSON");
-                                      widget.productPageBloc?.add(
-                                          AddtoCartEvent(
-                                              true,
-                                              widget._productDetailPageModel?.id
-                                                      ?.toString() ??
-                                                  "",
-                                              widget.counter,
-                                              mProductParamsJSON,
-                                              relatedProducts));
-                                    }
-                                  },
-                                  kFillColor: Colors.white,
-                                  borderColor: AppColors.gold,
-                                  textColor: AppColors.gold,
-                                  title: Utils.getStringValue(
-                                              context, AppStringConstant.buyNow)
-                                          .toUpperCase() ??
-                                      '',
-                                ));
+                            : isTryOn == true
+                                ? Expanded(
+                                    flex: 1,
+                                    child: CustomButton(
+                                      onPressed: () {},
+                                      kFillColor: Colors.white,
+                                      borderColor: AppColors.gold,
+                                      textColor: AppColors.gold,
+                                      iconPath: "assets/icons/Tryon icon.png",
+                                      title: Utils.getStringValue(
+                                          context, AppStringConstant.tryOn),
+                                    ))
+                                : Expanded(
+                                    flex: 1,
+                                    child: CustomButton(
+                                      onPressed: () {
+                                        if (collectAllOptionData(
+                                            true, context)) {
+                                          print(
+                                              "TEST_LOG ===> mProductParamsJSON ==> $mProductParamsJSON");
+                                          widget.productPageBloc?.add(
+                                              AddtoCartEvent(
+                                                  true,
+                                                  widget._productDetailPageModel
+                                                          ?.id
+                                                          ?.toString() ??
+                                                      "",
+                                                  widget.counter,
+                                                  mProductParamsJSON,
+                                                  relatedProducts));
+                                        }
+                                      },
+                                      kFillColor: Colors.white,
+                                      borderColor: AppColors.gold,
+                                      textColor: AppColors.gold,
+                                      title: Utils.getStringValue(context,
+                                                  AppStringConstant.buyNow)
+                                              .toUpperCase() ??
+                                          '',
+                                    ));
+                      },
+                      error: (e) => Text(e),
+                      initial: () => const CircularProgressIndicator(),
+                    );
                   },
-                  error: (e) => Text(e),
-                  initial: () => const CircularProgressIndicator(),
-                );
-              },
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
+      listener: (conext, state) {
+        if (state is VoiceCommandListening && state.status == VoiceCommandStatus.addCart) {
+          widget.productPageBloc?.add(
+              AddtoCartEvent(
+                  true,
+                  widget._productDetailPageModel
+                      ?.id
+                      ?.toString() ??
+                      "",
+                  widget.counter,
+                  mProductParamsJSON,
+                  relatedProducts));
+        }
+      },
     );
   }
 
