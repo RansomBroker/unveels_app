@@ -262,7 +262,7 @@ class _EyelinerViewState extends State<EyelinerView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisible = true;
+                  onOffVisible = false;
                 });
                 fetchData();
                 tryOn();
@@ -275,7 +275,7 @@ class _EyelinerViewState extends State<EyelinerView> {
               onTap: () async {
                 setState(() {
                   colorSelected = index;
-                  onOffVisible = false;
+                  onOffVisible = true;
                 });
                 fetchData();
                 tryOn();
@@ -286,7 +286,7 @@ class _EyelinerViewState extends State<EyelinerView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: index == colorSelected && onOffVisible == false
+                        color: index == colorSelected && onOffVisible == true
                             ? Colors.white
                             : Colors.transparent),
                   ),

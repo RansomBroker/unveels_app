@@ -265,7 +265,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
             return InkWell(
               onTap: () async {
                 setState(() {
-                  onOffVisible = true;
+                  onOffVisible = false;
                 });
               },
               child: const Icon(Icons.do_not_disturb_alt_sharp,
@@ -276,7 +276,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
               onTap: () async {
                 setState(() {
                   colorSelected = index;
-                  onOffVisible = false;
+                  onOffVisible = true;
                 });
                 fetchData();
                 tryOn();
@@ -287,7 +287,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                        color: index == colorSelected && onOffVisible == false
+                        color: index == colorSelected && onOffVisible == true
                             ? Colors.white
                             : Colors.transparent),
                   ),
