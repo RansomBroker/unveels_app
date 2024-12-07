@@ -40,11 +40,10 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   bool onOffVisibel = false;
   int? eyebrowSelected = 0;
   List<int> colorSelected = [];
-  int? colorTextSelected = 0;
-  int? typeSelected = 0;
+  int? colorTextSelected;
+  int? typeSelected;
   int? typeComboSelected = 0;
-  int get maxColorSelected  => (typeComboSelected??0) + 1;
-
+  int get maxColorSelected => (typeComboSelected ?? 0) + 1;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -72,6 +71,9 @@ class _EyeshadowViewState extends State<EyeshadowView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -253,51 +255,62 @@ class _EyeshadowViewState extends State<EyeshadowView> {
   Widget colorChoice() {
     return SizedBox(
       height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
-              onTap: () async {
-                setState(() {
-                  onOffVisibel = false;
-                });
-                fetchData();
-                tryOn();
-              },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  if (colorSelected.length >= maxColorSelected) {
-                    colorSelected.removeAt(0);
-                  }
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              setState(() {
+                colorSelected.clear();
+                onOffVisibel = true;
+              });
+              tryOn();
+            },
+            child: const Icon(
+              Icons.do_not_disturb_alt_sharp,
+              color: Colors.white,
+              size: 25,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: colorList.length,
+              separatorBuilder: (_, __) => Constant.xSizedBox12,
+              itemBuilder: (context, index) {
+                return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        if (colorSelected.length >= maxColorSelected) {
+                          colorSelected.removeAt(0);
+                        }
 
-                  colorSelected.add(index);
-                  onOffVisibel = true;
-                });
-                fetchData();
-                tryOn();
+                        colorSelected.add(index);
+                        onOffVisibel = true;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 1, vertical: 1),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color:
+                                  colorSelected.indexWhere((e) => e == index) >=
+                                              0 &&
+                                          onOffVisibel == true
+                                      ? Colors.white
+                                      : Colors.transparent),
+                        ),
+                        child: CircleAvatar(
+                            radius: 12, backgroundColor: colorList[index])));
               },
-              child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: colorSelected.indexWhere((e) => e == index) >= 0  && onOffVisibel == true
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorList[index])));
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -520,9 +533,9 @@ class _EyeshadowViewState extends State<EyeshadowView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_showContent) ...[
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
+            // Constant.xSizedBox8,
+            // colorChip(),
+            // Constant.xSizedBox8,
             colorChoice(),
             Constant.xSizedBox8,
             separator(),
@@ -694,17 +707,15 @@ class _EyeshadowViewState extends State<EyeshadowView> {
 
     if (colorSelected.length > maxColorSelected) {
       var tempColor = <int>[];
-      for(var i = 0; i < maxColorSelected; i++){
+      for (var i = 0; i < maxColorSelected; i++) {
         tempColor.add(colorSelected[i]);
       }
       colorSelected = tempColor;
-      setState(() {
-
-      });
+      setState(() {});
     }
 
     if (onOffVisibel == true && colorSelected.isNotEmpty) {
-      for(final cIndex in colorSelected) {
+      for (final cIndex in colorSelected) {
         colors.add(colorList[cIndex]);
       }
     } else {

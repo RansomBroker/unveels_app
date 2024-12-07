@@ -287,47 +287,69 @@ class _EyebrowsViewState extends State<EyebrowsView> {
   Widget colorChoice() {
     return SizedBox(
       height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
-              onTap: () async {
-                setState(() {
-                  onOffVisibel = false;
-                });
-                fetchData();
-                tryOn();
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              setState(() {
+                colorSelected = null;
+                onOffVisibel = true;
+              });
+              tryOn();
+            },
+            child: const Icon(
+              Icons.do_not_disturb_alt_sharp,
+              color: Colors.white,
+              size: 25,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: colorList.length,
+              separatorBuilder: (_, __) => Constant.xSizedBox12,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        onOffVisibel = false;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: const Icon(Icons.do_not_disturb_alt_sharp,
+                        color: Colors.white, size: 25),
+                  );
+                }
+                return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                        onOffVisibel = true;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 1, vertical: 1),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color:
+                                  index == colorSelected && onOffVisibel == true
+                                      ? Colors.white
+                                      : Colors.transparent),
+                        ),
+                        child: CircleAvatar(
+                            radius: 12, backgroundColor: colorList[index])));
               },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = index;
-                  onOffVisibel = true;
-                });
-                fetchData();
-                tryOn();
-              },
-              child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisibel == true
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorList[index])));
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -426,9 +448,6 @@ class _EyebrowsViewState extends State<EyebrowsView> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (_showContent) ...[
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
             colorChoice(),
             Constant.xSizedBox8,
             separator(),

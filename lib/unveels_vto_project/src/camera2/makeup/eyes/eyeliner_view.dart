@@ -68,6 +68,19 @@ class _EyelinerViewState extends State<EyelinerView> {
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          if (colorTextSelected == null) {
+            colorList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorList = getSelectableColorList(
+                    products!, vtoColors[colorTextSelected!].value) ??
+                [];
+            products = dataResponse
+                .where((e) => e.color == vtoColors[colorTextSelected!].value)
+                .toList();
+            print(vtoColors[colorTextSelected!].value);
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -211,9 +224,10 @@ class _EyelinerViewState extends State<EyelinerView> {
       child: ListView.separated(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: colorMainList.length,
+        itemCount: vtoColors.length,
         separatorBuilder: (_, __) => Constant.xSizedBox8,
         itemBuilder: (context, index) {
+          var color = vtoColors[index];
           return InkWell(
             onTap: () {
               setState(() {
@@ -233,11 +247,23 @@ class _EyelinerViewState extends State<EyelinerView> {
               ),
               child: Row(
                 children: [
-                  CircleAvatar(
-                      radius: 8, backgroundColor: colorMainList[index]),
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      gradient: color.hex.startsWith('linear-gradient')
+                          ? getLinearGradient(color.hex)
+                          : null,
+                      color: (color.hex == 'none' ||
+                              color.hex.startsWith('linear-gradient'))
+                          ? null
+                          : Color(int.parse('0xFF${color.hex.substring(1)}')),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
                   Constant.xSizedBox4,
                   Text(
-                    colorMainListString[index],
+                    vtoColors[index].label,
                     style: const TextStyle(color: Colors.white, fontSize: 10),
                   ),
                 ],
@@ -252,47 +278,54 @@ class _EyelinerViewState extends State<EyelinerView> {
   Widget colorChoice() {
     return SizedBox(
       height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
-              onTap: () async {
-                setState(() {
-                  onOffVisible = false;
-                });
-                fetchData();
-                tryOn();
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () async {
+              setState(() {
+                colorSelected = null;
+              });
+              tryOn();
+            },
+            child: const Icon(
+              Icons.do_not_disturb_alt_sharp,
+              color: Colors.white,
+              size: 25,
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemCount: colorList.length,
+              separatorBuilder: (_, __) => Constant.xSizedBox12,
+              itemBuilder: (context, index) {
+                return InkWell(
+                    onTap: () async {
+                      setState(() {
+                        colorSelected = index;
+                        onOffVisible = true;
+                      });
+                      fetchData();
+                      tryOn();
+                    },
+                    child: Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                              color: index == colorSelected && onOffVisible == true
+                                  ? Colors.white
+                                  : Colors.transparent),
+                        ),
+                        child: CircleAvatar(
+                            radius: 12, backgroundColor: colorList[index])));
               },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = index;
-                  onOffVisible = true;
-                });
-                fetchData();
-                tryOn();
-              },
-              child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisible == true
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorList[index])));
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
