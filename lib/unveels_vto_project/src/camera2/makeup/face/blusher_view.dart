@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,10 +15,8 @@ import 'package:test_new/logic/get_product_utils/repository/product_repository.d
 import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
 import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -37,9 +37,11 @@ class _BlusherViewState extends State<BlusherView> {
   File? file;
   bool makeupOrAccessories = false;
   bool onOffVisibel = false;
-  int? skinSelected = 0;
-  int? colorSelected = 0;
-  int? typeSelected = 0;
+  int? skinSelected;
+  int? colorSelected;
+  int? typeSelected;
+  int typeColor2Selected = 0;
+  List<int> selectedColors = [];
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -47,25 +49,24 @@ class _BlusherViewState extends State<BlusherView> {
   final ProductRepository productRepository = ProductRepository();
 
   Future<void> fetchData() async {
+    tryOn();
     setState(() {
       _isLoading = true;
     });
     print("Fetching data");
     try {
-      // print("Trying to fetch");
-      // List<String>? textures =
-      //     getTextureByLabel([chipList[typeColorSelected!]]);
-      // print(textures);
       List<String>? productTypes =
           getProductTypesByLabels("face_makeup_product_type", ["Blushes"]);
       print(productTypes);
 
       var dataResponse = await productRepository.fetchProducts(
-          // texture: textures!.isEmpty ? null : textures.join(","),
           productType: "face_makeup_product_type",
           productTypes: productTypes?.join(","));
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
+        }
       });
     } catch (e) {
       print("err");
@@ -75,6 +76,28 @@ class _BlusherViewState extends State<BlusherView> {
         _isLoading = false;
       });
     }
+  }
+
+  void tryOn() {
+    final show = (typeColor2Selected == 0 && colorSelected != null) ||
+        (typeColor2Selected != 0 && selectedColors.isNotEmpty);
+
+    final colors = typeColor2Selected == 0
+        ? [toWebHex(colorChoiceList[colorSelected!])]
+        : selectedColors
+            .map((index) => toWebHex(colorChoiceList[index]))
+            .toList();
+
+    final mode = chip2List[typeColor2Selected];
+
+    _webViewController?.evaluateJavascript(
+      source: """
+    window.postMessage(JSON.stringify({
+      "setShowBlush": $show,
+      ${show ? '"blushColor": ${jsonEncode(colors)}, "blushMode": "$mode","blushPattern": "$skinSelected",' : ''}
+    }), "*");
+    """,
+    );
   }
 
   @override
@@ -111,6 +134,12 @@ class _BlusherViewState extends State<BlusherView> {
     Assets.imagesImgBlusher3,
     Assets.imagesImgBlusher4,
     Assets.imagesImgBlusher5,
+  ];
+
+  List<String> chip2List = [
+    'One',
+    'Dual',
+    'Tri',
   ];
 
   Future<bool> checkPermissionStatuses() async {
@@ -242,6 +271,44 @@ class _BlusherViewState extends State<BlusherView> {
     );
   }
 
+  Widget chip2Choice() {
+    return SizedBox(
+      height: 18,
+      child: ListView.separated(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: chip2List.length,
+        separatorBuilder: (_, __) => Constant.xSizedBox12,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              setState(() {
+                typeColor2Selected = index;
+              });
+            },
+            child: Text(
+              chip2List[index],
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                shadows: typeColor2Selected != index
+                    ? null
+                    : [
+                        const BoxShadow(
+                          offset: Offset(0, 0),
+                          color: Colors.white,
+                          spreadRadius: 0,
+                          blurRadius: 10,
+                        ),
+                      ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   Widget typeChip() {
     return Align(
       alignment: Alignment.centerLeft,
@@ -288,47 +355,90 @@ class _BlusherViewState extends State<BlusherView> {
       alignment: Alignment.centerLeft,
       child: SizedBox(
         height: 30,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: colorChoiceList.length,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = 0;
-                    onOffVisibel = true;
-                  });
-                  fetchData();
-                },
-                child: const Icon(Icons.do_not_disturb_alt_sharp,
-                    color: Colors.white, size: 25),
-              );
-            }
-            return InkWell(
-                onTap: () async {
-                  setState(() {
-                    colorSelected = index;
-                    onOffVisibel = false;
-                  });
-                  fetchData();
-                },
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisibel == false
-                            ? Colors.white
-                            : Colors.transparent),
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            height: 30,
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: () async {
+                    setState(() {
+                      selectedColors.clear();
+                    });
+                    fetchData();
+                  },
+                  child: const Icon(
+                    Icons.do_not_disturb_alt_sharp,
+                    color: Colors.white,
+                    size: 25,
                   ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorChoiceList[index]),
-                ));
-          },
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: colorChoiceList.length,
+                    separatorBuilder: (_, __) => Constant.xSizedBox12,
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        return InkWell(
+                          onTap: () async {
+                            setState(() {
+                              selectedColors.clear();
+                            });
+                            fetchData();
+                          },
+                          child: const Icon(
+                            Icons.do_not_disturb_alt_sharp,
+                            color: Colors.white,
+                            size: 25,
+                          ),
+                        );
+                      }
+                      return InkWell(
+                        onTap: () async {
+                          setState(() {
+                            setState(() {
+                              if (selectedColors.contains(index)) {
+                                selectedColors.remove(index);
+                              } else {
+                                if (selectedColors.length <
+                                    typeColor2Selected + 1) {
+                                  selectedColors.add(index);
+                                } else {
+                                  selectedColors.removeAt(0);
+                                  selectedColors.add(index);
+                                }
+                              }
+                            });
+                          });
+                          fetchData();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 1, vertical: 1),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: selectedColors.contains(index)
+                                  ? Colors.white
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            radius: 12,
+                            backgroundColor: colorChoiceList[index],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -458,13 +568,8 @@ class _BlusherViewState extends State<BlusherView> {
             highlighterChoice(),
             Constant.xSizedBox4,
             separator(),
-            const Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  "View All",
-                  style: TextStyle(color: Colors.white, fontSize: 12),
-                )),
-            Constant.xSizedBox4,
+            chip2Choice(),
+            separator(),
             lipstickChoice(),
             // Constant.xSizedBox8,
           ],
