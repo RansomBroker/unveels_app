@@ -642,6 +642,9 @@ class _EyeshadowViewState extends State<EyeshadowView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
+
+                          iconSidebar(() async {}, Assets.iconsIcMic),
+                          Constant.xSizedBox12,
                           iconSidebar(() async {
                             CusNav.nPush(context, const CameraVideoPage());
                           }, Assets.iconsIcCamera),

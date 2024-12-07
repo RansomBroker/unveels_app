@@ -15,6 +15,7 @@ class Assets {
   static const String iconsIcFace = 'assets/icons/ic-face.png';
   static const String iconsIcFaceOn = 'assets/icons/ic-face-on.png';
   static const String iconsIcFlipCamera = 'assets/icons/ic-flip-camera.png';
+  static const String iconsIcMic = 'assets/icons/ic-mic.png';
   static const String iconsIcHair = 'assets/icons/ic-hair.png';
   static const String iconsIcHairOn = 'assets/icons/ic-hair-on.png';
   static const String iconsIcHand = 'assets/icons/ic-hand.png';
