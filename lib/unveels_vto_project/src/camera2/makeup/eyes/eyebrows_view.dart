@@ -38,9 +38,9 @@ class _EyebrowsViewState extends State<EyebrowsView> {
   File? file;
   double sliderValue = 0;
   bool onOffVisibel = false;
-  int? eyebrowSelected = 0;
-  int? colorSelected = 0;
-  int? typeSelected = 0;
+  int? eyebrowSelected;
+  int? colorSelected;
+  int? typeSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -53,22 +53,32 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     });
     print("Fetching data");
     try {
-      // print("Trying to fetch");
-      // List<String>? textures =
-      //     getTextureByLabel([chipList[typeColorSelected!]]);
-      // print(textures);
-      // // List<String>? productTypes =
-      // //     getProductTypesByLabels("lips_makeup_product_type", [
-      // //   "Lipsticks",
-      // //   "Lip Stains",
-      // //   "Lip Tints",
-      // //   "Lip Balms",
-      // // ]);
-      // print(productTypes);
-
       var dataResponse = await productRepository.fetchProducts(browMakeup: '');
       setState(() {
         products = dataResponse;
+        if (products != null) {
+          if (typeSelected == null) {
+            colorList = getSelectableColorList(dataResponse, null) ?? [];
+          } else {
+            colorList = getSelectableColorList(
+                    products!,
+                    vtoColors
+                        .where((e) =>
+                            e.label == colorMainListString[typeSelected!])
+                        .first
+                        .value) ??
+                [];
+            products = dataResponse
+                .where((e) =>
+                    e.color ==
+                    vtoColors
+                        .where((e) =>
+                            e.label == colorMainListString[typeSelected!])
+                        .first
+                        .value)
+                .toList();
+          }
+        }
       });
     } catch (e) {
       print("err");
@@ -584,7 +594,6 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     if (onOffVisibel == true && colorSelected != null) {
       color = colorList[colorSelected ?? 0];
     }
-
 
     var json = jsonEncode({
       "showEyebrows": true,
