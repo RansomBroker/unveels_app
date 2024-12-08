@@ -1,23 +1,13 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
-import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/get_textures.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
-import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_page2.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
-import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
@@ -29,12 +19,6 @@ class NailPolishAccView extends StatefulWidget {
 }
 
 class _NailPolishAccViewState extends State<NailPolishAccView> {
-  InAppWebViewController? _webViewController;
-  bool _showContent = true;  Completer? isFlippingCamera;
-  late List<Permission> permissions;
-  bool isRearCamera = true;
-  bool isFlipCameraSupported = false;
-  File? file;
   bool makeupOrAccessories = false;
   bool onOffVisible = false;
   int? typeSelected;
@@ -80,9 +64,7 @@ class _NailPolishAccViewState extends State<NailPolishAccView> {
 
   @override
   void initState() {
-
     super.initState();
-
   }
 
   List<String> nailsList = [
@@ -119,138 +101,6 @@ class _NailPolishAccViewState extends State<NailPolishAccView> {
 
   List<String> chipList = texturesLabel;
 
-  Future<bool> checkPermissionStatuses() async {
-    for (var permission in permissions) {
-      if (await permission.status != PermissionStatus.granted) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  Widget pictureTaken() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'Edit',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Constant.xSizedBox24,
-          Expanded(
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xffCA9C43),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Share',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Constant.xSizedBox16,
-                    Icon(Icons.share_outlined, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget noPictureTaken() {
-    return SizedBox(
-      width: double.infinity,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 6,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: InkWell(
-                onTap: () {
-
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      width: 60,
-                      height: 60,
-                    ),
-                    const Icon(
-                      Icons.circle,
-                      color: Colors.white,
-                      size: 60,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            flex: 4,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: Visibility(
-                visible: isFlipCameraSupported,
-                child: InkWell(
-                  onTap: () async {
-
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 16),
-                    width: 35,
-                    height: 35,
-                    decoration: const BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.black26),
-                    child: const Icon(Icons.autorenew_rounded,
-                        color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget lipstickChoice() {
     if (_isLoading) {
@@ -422,24 +272,14 @@ class _NailPolishAccViewState extends State<NailPolishAccView> {
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
   }
-
-  Widget sheet() {
-    return Container(
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Colors.black,
-          ],
-        ),
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (_showContent) ...[Constant.xSizedBox8,
+          Constant.xSizedBox8,
           colorChip(),
           Constant.xSizedBox8,
           colorChoice(),
@@ -450,150 +290,7 @@ class _NailPolishAccViewState extends State<NailPolishAccView> {
           separator(),
           Constant.xSizedBox8,
           lipstickChoice(),
-          Constant.xSizedBox8],
-          BottomCopyright(
-            showContent: _showContent,
-            onTap: () {
-              setState(() {
-                _showContent = !_showContent;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget cameraPreview() {
-    return InAppWebView(
-      initialUrlRequest: URLRequest(
-          url: WebUri('${ApiConstant.techWebUrl}/virtual-try-on-web')),
-      onWebViewCreated: (controller) async {
-        _webViewController = controller;
-      },
-      onPermissionRequest: (controller, permissionRequest) async {
-        return PermissionResponse(
-            resources: permissionRequest.resources,
-            action: PermissionResponseAction.GRANT);
-      },
-      shouldOverrideUrlLoading: (controller, navigationAction) async {
-        return NavigationActionPolicy.ALLOW;
-      },
-    );
-  }
-
-  Widget iconSidebar(GestureTapCallback? onTap, String path) {
-    return InkWell(
-      onTap: onTap,
-      child: Image.asset(
-        path,
-        width: 18,
-        height: 18,
-        color: Colors.white,
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        titleSpacing: 0,
-        leading: InkWell(
-          onTap: () {
-            CusNav.nPop(context);
-          },
-          child: Center(
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black26),
-              child: const Icon(Icons.arrow_back_ios_new_rounded,
-                  color: Colors.white, size: 18),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              child: Center(
-                  child: Container(
-                decoration: const BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.black26),
-                child: const SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Icon(Icons.close, color: Colors.white, size: 18)),
-              )),
-            ),
-          ),
-        ],
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        systemOverlayStyle:
-            const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
-        children: [
-          cameraPreview(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              // margin: xHEdgeInsets12
-              //     .add(const EdgeInsets.only(bottom: 12)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 16),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          iconSidebar(() async {
-                            CusNav.nPush(context, const CameraVideoPage());
-                          }, Assets.iconsIcCamera),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcFlipCamera),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcScale),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {
-                            setState(() {
-                              makeupOrAccessories = true;
-                            });
-                          }, Assets.iconsIcCompareOff),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcResetOff),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcChoose),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcShare),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Constant.xSizedBox16,
-                  sheet(),
-                  // file != null ? pictureTaken() : noPictureTaken(),
-                  // pictureTaken(),
-                ],
-              ),
-            ),
-          )
+          Constant.xSizedBox8
         ],
       ),
     );

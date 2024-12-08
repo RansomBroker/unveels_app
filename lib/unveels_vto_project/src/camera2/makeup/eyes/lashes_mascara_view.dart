@@ -1,49 +1,36 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:test_new/unveels_vto_project/common/component/bottom_copyright.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
-import 'package:test_new/unvells/constants/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
-import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/camera_video_page.dart';
-import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
 
 class LashesMascaraView extends StatefulWidget {
-  LashesMascaraView({super.key, this.lashes = true});
+  final InAppWebViewController? webViewController;
+  const LashesMascaraView(
+      {super.key, this.lashes = true, this.webViewController});
 
-  bool lashes;
+  final bool lashes;
 
   @override
   State<LashesMascaraView> createState() => _LashesMascaraViewState();
 }
 
 class _LashesMascaraViewState extends State<LashesMascaraView> {
-  InAppWebViewController? _webViewController;
-  bool _showContent = true;
-  Completer? isFlippingCamera;
-  late List<Permission> permissions;
-  bool isRearCamera = true;
-  bool isFlipCameraSupported = false;
-  File? file;
-  double sliderValue = 0;
   bool lashes = true;
   bool onOffVisible = false;
-  int? colorSelected = 0;
-  int? colorTextSelected = 0;
-  int? eyelashSelected = 0;
+  int? colorSelected;
+  int? colorTextSelected;
+  int? eyelashSelected;
 
   final Dio dio = Dio();
   List<ProductData>? products;
@@ -141,75 +128,6 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     fetchData();
   }
 
-  Future<bool> checkPermissionStatuses() async {
-    for (var permission in permissions) {
-      if (await permission.status != PermissionStatus.granted) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  Widget pictureTaken() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.black54,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text(
-                  'Edit',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Constant.xSizedBox24,
-          Expanded(
-            child: InkWell(
-              onTap: () {},
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                decoration: BoxDecoration(
-                  color: const Color(0xffCA9C43),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Share',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Constant.xSizedBox16,
-                    Icon(Icons.share_outlined, color: Colors.white),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget colorChip() {
     return SizedBox(
       height: 30,
@@ -247,52 +165,6 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
               ),
             ),
           );
-        },
-      ),
-    );
-  }
-
-  Widget colorChoice() {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          if (index == 0) {
-            return InkWell(
-              onTap: () async {
-                setState(() {
-                  onOffVisible = false;
-                });
-              },
-              child: const Icon(Icons.do_not_disturb_alt_sharp,
-                  color: Colors.white, size: 25),
-            );
-          }
-          return InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = index;
-                  onOffVisible = true;
-                });
-                fetchData();
-                tryOn();
-              },
-              child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 1, vertical: 1),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                        color: index == colorSelected && onOffVisible == true
-                            ? Colors.white
-                            : Colors.transparent),
-                  ),
-                  child: CircleAvatar(
-                      radius: 12, backgroundColor: colorList[index])));
         },
       ),
     );
@@ -379,166 +251,6 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     );
   }
 
-  Widget slider() {
-    return SizedBox(
-      height: 60,
-      child: Column(
-        children: [
-          Slider(
-            thumbColor: const Color(0xffCA9C43),
-            activeColor: const Color(0xffCA9C43),
-            value: sliderValue,
-            max: 10,
-            min: 0,
-            onChanged: (v) {
-              setState(() {
-                sliderValue = v;
-              });
-              fetchData();
-              tryOn();
-            },
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Light',
-                    style: TextStyle(color: Colors.white, fontSize: 8)),
-                Text('Dark',
-                    style: TextStyle(color: Colors.white, fontSize: 8)),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget sheet() {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Colors.black,
-          ],
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (_showContent) ...[
-            Constant.xSizedBox8,
-            colorChip(),
-            Constant.xSizedBox8,
-            separator(),
-            Constant.xSizedBox4,
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        lashes = true;
-                      });
-                      fetchData();
-                      tryOn();
-                    },
-                    child: Text(
-                      'Lashes',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        shadows: !lashes
-                            ? null
-                            : [
-                                const BoxShadow(
-                                  offset: Offset(0, 0),
-                                  color: Colors.white,
-                                  spreadRadius: 0,
-                                  blurRadius: 10,
-                                ),
-                              ],
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  width: 1,
-                  height: 18,
-                  color: Colors.white,
-                ),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      setState(() {
-                        lashes = false;
-                      });
-                      fetchData();
-                      tryOn();
-                    },
-                    child: Text(
-                      'Mascara',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        shadows: lashes
-                            ? null
-                            : [
-                                const BoxShadow(
-                                  offset: Offset(0, 0),
-                                  color: Colors.white,
-                                  spreadRadius: 0,
-                                  blurRadius: 10,
-                                ),
-                              ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Constant.xSizedBox16,
-            typeLashesChip(),
-            Constant.xSizedBox32,
-            lipstickChoice(),
-          ],
-          BottomCopyright(
-            showContent: _showContent,
-            onTap: () {
-              setState(() {
-                _showContent = !_showContent;
-              });
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget cameraPreview() {
-    return InAppWebView(
-      initialUrlRequest: URLRequest(
-          url: WebUri('${ApiConstant.techWebUrl}/virtual-try-on-web')),
-      onWebViewCreated: (controller) async {
-        _webViewController = controller;
-      },
-      onPermissionRequest: (controller, permissionRequest) async {
-        return PermissionResponse(
-            resources: permissionRequest.resources,
-            action: PermissionResponseAction.GRANT);
-      },
-      shouldOverrideUrlLoading: (controller, navigationAction) async {
-        return NavigationActionPolicy.ALLOW;
-      },
-    );
-  }
-
   Widget iconSidebar(GestureTapCallback? onTap, String path) {
     return InkWell(
       onTap: onTap,
@@ -553,104 +265,86 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        titleSpacing: 0,
-        leading: InkWell(
-          onTap: () {
-            CusNav.nPop(context);
-          },
-          child: Center(
-            child: Container(
-              width: 32,
-              height: 32,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: Colors.black26),
-              child: const Icon(Icons.arrow_back_ios_new_rounded,
-                  color: Colors.white, size: 18),
-            ),
-          ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              child: Center(
-                  child: Container(
-                decoration: const BoxDecoration(
-                    shape: BoxShape.circle, color: Colors.black26),
-                child: const SizedBox(
-                    width: 32,
-                    height: 32,
-                    child: Icon(Icons.close, color: Colors.white, size: 18)),
-              )),
-            ),
-          ),
-        ],
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.white,
-        systemOverlayStyle:
-            const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          cameraPreview(),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              // margin: xHEdgeInsets12
-              //     .add(const EdgeInsets.only(bottom: 12)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 16),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 10),
-                      decoration: BoxDecoration(
-                          color: Colors.black12,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          iconSidebar(() async {
-                            CusNav.nPush(context, const CameraVideoPage());
-                          }, Assets.iconsIcCamera),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcFlipCamera),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcScale),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {
-                            setState(() {
-                              // makeupOrAccessories = true;
-                            });
-                          }, Assets.iconsIcCompare),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcReset),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcChoose),
-                          Constant.xSizedBox12,
-                          iconSidebar(() async {}, Assets.iconsIcShare),
-                        ],
-                      ),
+          Constant.xSizedBox8,
+          colorChip(),
+          Constant.xSizedBox8,
+          separator(),
+          Constant.xSizedBox4,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      lashes = true;
+                    });
+                    fetchData();
+                    tryOn();
+                  },
+                  child: Text(
+                    'Lashes',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      shadows: !lashes
+                          ? null
+                          : [
+                              const BoxShadow(
+                                offset: Offset(0, 0),
+                                color: Colors.white,
+                                spreadRadius: 0,
+                                blurRadius: 10,
+                              ),
+                            ],
                     ),
                   ),
-                  Constant.xSizedBox16,
-                  sheet(),
-                  // file != null ? pictureTaken() : noPictureTaken(),
-                  // pictureTaken(),
-                ],
+                ),
               ),
-            ),
-          )
+              Container(
+                width: 1,
+                height: 18,
+                color: Colors.white,
+              ),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      lashes = false;
+                    });
+                    fetchData();
+                    tryOn();
+                  },
+                  child: Text(
+                    'Mascara',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      shadows: lashes
+                          ? null
+                          : [
+                              const BoxShadow(
+                                offset: Offset(0, 0),
+                                color: Colors.white,
+                                spreadRadius: 0,
+                                blurRadius: 10,
+                              ),
+                            ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Constant.xSizedBox16,
+          typeLashesChip(),
+          Constant.xSizedBox32,
+          lipstickChoice(),
         ],
       ),
     );
@@ -668,7 +362,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     });
     String source = 'window.postMessage(JSON.stringify($json),"*");';
     log(source, name: 'postMessage');
-    _webViewController?.evaluateJavascript(
+    widget.webViewController?.evaluateJavascript(
       source: source,
     );
 
@@ -680,7 +374,7 @@ class _LashesMascaraViewState extends State<LashesMascaraView> {
     String sourceMascara =
         'window.postMessage(JSON.stringify($jsonMascara),"*");';
     log(source, name: 'postMessage');
-    _webViewController?.evaluateJavascript(
+    widget.webViewController?.evaluateJavascript(
       source: sourceMascara,
     );
   }

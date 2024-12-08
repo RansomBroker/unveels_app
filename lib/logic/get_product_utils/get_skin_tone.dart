@@ -8,7 +8,7 @@ class SkinTone {
   SkinTone({required this.name, required this.color, required this.id});
 }
 
-List<SkinTone> skin_tones = [
+List<SkinTone> skinTones = [
   SkinTone(name: "Fair Skin", color: const Color(0xFFFFDFC4), id: "6675"),
   SkinTone(name: "Medium Skin", color: const Color(0xFFF0C08C), id: "6677"),
   SkinTone(name: "Olive Skin", color: const Color(0xFFC68642), id: "6678"),
@@ -20,7 +20,7 @@ List<SkinTone> skin_tones = [
 List<String>? getSkinToneByLabels(List<String> labels) {
   try {
     List<String>? result = [];
-    for (var item in skin_tones) {
+    for (var item in skinTones) {
       if (labels.contains(item.id)) {
         result.add(item.id);
       }

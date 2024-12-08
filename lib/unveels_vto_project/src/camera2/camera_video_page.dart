@@ -7,9 +7,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:test_new/unveels_vto_project//common/component/custom_navigator.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
-import 'package:test_new/unveels_vto_project//src/camera2/makeup_page.dart';
 import 'package:test_new/unveels_vto_project//utils/utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -253,7 +251,7 @@ class _CameraVideoPageState extends State<CameraVideoPage> {
           Expanded(
             child: InkWell(
               onTap: () {
-                CusNav.nPushAndRemoveUntil(context, const MakeupPage());
+                // CusNav.nPushAndRemoveUntil(context, const MakeupPage());
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
