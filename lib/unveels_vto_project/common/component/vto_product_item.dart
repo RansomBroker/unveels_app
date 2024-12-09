@@ -116,97 +116,94 @@ class _VtoProductItemState extends State<VtoProductItem> {
 
         return Stack(
           children: [
-            InkWell(
-              onTap: () async {},
-              child: SizedBox(
-                width: 100,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      color: Colors.white,
-                      width: 100,
-                      height: 68,
-                      child: Stack(
-                        children: [
-                          Image.network(
-                            widget.product.imageUrl,
-                            width: double.infinity,
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.favorite_border,
-                                  color: Colors.black,
-                                  size: 18,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      widget.product.name,
-                      style: Constant.whiteBold16.copyWith(fontSize: 11),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      widget.product.brand,
-                      style: Constant.whiteRegular12
-                          .copyWith(fontWeight: FontWeight.w300, fontSize: 10),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Row(
+            SizedBox(
+              width: 100,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    color: Colors.white,
+                    width: 100,
+                    height: 68,
+                    child: Stack(
                       children: [
-                        Text("\$${widget.product.price.toString()}",
-                            style:
-                                Constant.whiteRegular12.copyWith(fontSize: 10)),
-                        const Spacer(),
-                        InkWell(
-                          onTap: () async {
-                            Map<String, dynamic> mProductParamsJSON = {};
-                            itemCardBloc?.add(AddtoCartEvent(
-                                widget.product.id.toString(),
-                                1,
-                                mProductParamsJSON));
-                            setState(() {
-                              _isAddingToCart = true;
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 5),
-                            color: const Color(0xFFC89A44),
-                            child: Center(
-                                child: _isAddingToCart
-                                    ? const SizedBox(
-                                        width: 15,
-                                        height: 15,
-                                        child: CircularProgressIndicator(
-                                            color: Colors.white))
-                                    : const Text(
-                                        "Add to cart",
-                                        style: TextStyle(
-                                            color: Colors.white, fontSize: 10),
-                                      )),
-                          ),
-                        )
+                        Image.network(
+                          widget.product.imageUrl,
+                          width: double.infinity,
+                        ),
+                        const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: Icon(
+                                Icons.favorite_border,
+                                color: Colors.black,
+                                size: 18,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Text(
+                    widget.product.name,
+                    style: Constant.whiteBold16.copyWith(fontSize: 11),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    widget.product.brand,
+                    style: Constant.whiteRegular12
+                        .copyWith(fontWeight: FontWeight.w300, fontSize: 10),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Text("\$${widget.product.price.toString()}",
+                          style:
+                              Constant.whiteRegular12.copyWith(fontSize: 10)),
+                      const Spacer(),
+                      InkWell(
+                        onTap: () async {
+                          Map<String, dynamic> mProductParamsJSON = {};
+                          itemCardBloc?.add(AddtoCartEvent(
+                              widget.product.id.toString(),
+                              1,
+                              mProductParamsJSON));
+                          setState(() {
+                            _isAddingToCart = true;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          color: const Color(0xFFC89A44),
+                          child: Center(
+                              child: _isAddingToCart
+                                  ? const SizedBox(
+                                      width: 15,
+                                      height: 15,
+                                      child: CircularProgressIndicator(
+                                          color: Colors.white))
+                                  : const Text(
+                                      "Add to cart",
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 10),
+                                    )),
+                        ),
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
           ],

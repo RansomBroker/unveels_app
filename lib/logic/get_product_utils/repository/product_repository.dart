@@ -11,6 +11,7 @@ class ProductData {
   final double price;
   final String? color;
   final String? hexacode;
+  final String? textureId;
 
   ProductData({
     required this.id,
@@ -20,6 +21,7 @@ class ProductData {
     required this.price,
     this.color,
     this.hexacode,
+    this.textureId,
   });
 }
 
@@ -106,11 +108,18 @@ class ProductRepository {
 
       if (response.statusCode == 200) {
         Map<String, List<String>> brands = {};
+        Map<String, List<String>> textures = {};
+
         var result = (response.data["items"] as List<dynamic>).map((item) {
           var customAttribute = item["custom_attributes"] as List<dynamic>?;
 
           var brandId = customAttribute?.firstWhere(
             (e) => e["attribute_code"] == "brand",
+            orElse: () => null,
+          )?['value'];
+
+          String? textureId = customAttribute?.firstWhere(
+            (e) => e["attribute_code"] == "texture",
             orElse: () => null,
           )?['value'];
 
@@ -124,11 +133,18 @@ class ProductRepository {
             var productLinks = extensionAttributes["configurable_product_links"]
                     as List<dynamic>? ??
                 [];
+
             for (var element in productLinks) {
               if (brands.containsKey(brandName)) {
                 brands[brandName]!.add(element.toString());
               } else {
                 brands[brandName] = [element.toString()];
+              }
+
+            if (textures.containsKey(textureId) && textureId != null) {
+                textures[textureId]!.add(element.toString());
+              } else {
+                textures[textureId!] = [element.toString()];
               }
             }
           }
@@ -137,10 +153,17 @@ class ProductRepository {
         }).toList();
 
         Map<String, String> productToBrand = {};
+        Map<String, String> productToTexture = {};
 
         brands.forEach((brandName, productIds) {
           for (var productId in productIds) {
             productToBrand[productId] = brandName;
+          }
+        });
+
+        textures.forEach((textureId, productIds) {
+          for (var productId in productIds) {
+            productToTexture[productId] = textureId;
           }
         });
 
@@ -182,6 +205,7 @@ class ProductRepository {
             price: item['price']?.toDouble(),
             color: productColor,
             hexacode: hexacode,
+            textureId: productToTexture[item['id'].toString()] ?? "",
           );
         }).toList();
       } else {

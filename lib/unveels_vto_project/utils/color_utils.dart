@@ -53,7 +53,10 @@ LinearGradient getLinearGradient(String gradientString) {
       final hexColor = colorStop.split(' ')[0];
       colors.add(Color(int.parse('0xFF${hexColor.substring(1)}')));
     }
-    return LinearGradient(colors: colors);
+    return LinearGradient(
+        colors: colors,
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter);
   }
   return const LinearGradient(colors: [Colors.transparent]);
 }

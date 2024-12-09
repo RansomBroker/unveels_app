@@ -27,6 +27,15 @@ List<Map<String, String>> _textures = [
 
 List<String> texturesLabel = _textures.map((e) => e['label']!).toList();
 
+int getTextureIndexByValue(String value) {
+  try {
+    return _textures.indexWhere((element) => element['value'] == value);
+  } catch (e) {
+    print(e);
+    return -1;
+  }
+}
+
 List<String>? getTextureByLabel(List<String> labels) {
   try {
     List<String>? result = [];

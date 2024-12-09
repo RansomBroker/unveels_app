@@ -8,6 +8,7 @@ import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/get_textures.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_color_category_chooser.dart';
 import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
 import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 
@@ -20,9 +21,10 @@ class LipColorView extends StatefulWidget {
 }
 
 class _LipColorViewState extends State<LipColorView> {
+  int? selectedProductIndex;
   int? mainColorSelected;
   int? colorSelected;
-  int? typeColorSelected;
+  int? textureSelected;
   int? typeColor2Selected = 0;
   List<int>? selectedColors;
 
@@ -38,8 +40,8 @@ class _LipColorViewState extends State<LipColorView> {
     });
     try {
       List<String>? textures;
-      if (typeColorSelected != null) {
-        textures = getTextureByLabel([chipList[typeColorSelected!]]);
+      if (textureSelected != null) {
+        textures = getTextureByLabel([chipList[textureSelected!]]);
       }
 
       List<String>? productTypes =
@@ -113,20 +115,6 @@ class _LipColorViewState extends State<LipColorView> {
     );
   }
 
-  List<String> lipList = [
-    "Yellow",
-    "Black",
-    "Silver",
-    "Gold",
-    "Rose Gold",
-  ];
-  List<Color> lipColorList = [
-    const Color(0xFFFFFF00),
-    Colors.black,
-    const Color(0xffC0C0C0),
-    const Color(0xffCA9C43),
-    const Color(0xffB76E79),
-  ];
   List<Color> colorChoiceList = [];
   List<String> chipList = texturesLabel;
   List<String> chip2List = [
@@ -136,59 +124,14 @@ class _LipColorViewState extends State<LipColorView> {
   ];
 
   Widget colorChip() {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: vtoColors.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox8,
-        itemBuilder: (context, index) {
-          ColorModel color = vtoColors[index];
-          return InkWell(
-            onTap: () {
-              setState(() {
-                mainColorSelected = index;
-                fetchData();
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                    color: mainColorSelected == index
-                        ? Colors.white
-                        : Colors.transparent),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      gradient: color.hex.startsWith('linear-gradient')
-                          ? getLinearGradient(color.hex)
-                          : null,
-                      color: (color.hex == 'none' ||
-                              color.hex.startsWith('linear-gradient'))
-                          ? null
-                          : Color(int.parse('0xFF${color.hex.substring(1)}')),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  Constant.xSizedBox4,
-                  Text(
-                    color.label,
-                    style: const TextStyle(color: Colors.white, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+    return VtoColorCategoryChooser(
+      onColorSelected: (index, l, v) {
+        setState(() {
+          mainColorSelected = index;
+          fetchData();
+        });
+      },
+      selectedColor: mainColorSelected,
     );
   }
 
@@ -274,7 +217,7 @@ class _LipColorViewState extends State<LipColorView> {
     );
   }
 
-  Widget chipChoice() {
+  Widget textureChoice() {
     return SizedBox(
       height: 18,
       child: ListView.separated(
@@ -286,7 +229,7 @@ class _LipColorViewState extends State<LipColorView> {
           return InkWell(
             onTap: () {
               setState(() {
-                typeColorSelected = index;
+                textureSelected = index;
                 fetchData();
               });
             },
@@ -294,10 +237,10 @@ class _LipColorViewState extends State<LipColorView> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
               decoration: BoxDecoration(
                 color:
-                    typeColorSelected == index ? const Color(0xffCA9C43) : null,
+                    textureSelected == index ? const Color(0xffCA9C43) : null,
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                    color: typeColorSelected == index
+                    color: textureSelected == index
                         ? Colors.white
                         : Colors.transparent),
               ),
@@ -350,10 +293,28 @@ class _LipColorViewState extends State<LipColorView> {
     );
   }
 
+  void selectProduct(int index) {
+    var product = products?[index];
+    if (product != null) {
+      setState(() {
+        selectedProductIndex = index;
+
+        mainColorSelected =
+            vtoColors.indexWhere((p) => p.value == product.color);
+        colorSelected = colorChoiceList.indexWhere(
+            (p) => product.hexacode?.split(",").contains(p.toWebHex()) == true);
+        if (product.textureId != null) {
+          textureSelected = getTextureIndexByValue(product.textureId!);
+        }
+      });
+      tryOn();
+    }
+  }
+
   Widget lipstickChoice() {
     if (_isLoading) {
       return SizedBox(
-          height: 130,
+          height: 135,
           child: Column(
             children: [
               Container(color: Colors.white, width: 100, height: 68),
@@ -368,7 +329,7 @@ class _LipColorViewState extends State<LipColorView> {
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
-        height: 130,
+        height: 135,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -383,7 +344,19 @@ class _LipColorViewState extends State<LipColorView> {
             //   );
             var product = products?[index];
             if (product != null) {
-              return VtoProductItem(product: product);
+              return GestureDetector(
+                onTap: () {
+                  selectProduct(index);
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                          color: selectedProductIndex == index
+                              ? const Color(0xFFFFD700)
+                              : Colors.transparent),
+                    ),
+                    child: VtoProductItem(product: product)),
+              );
             } else {
               return const SizedBox();
             }
@@ -395,34 +368,6 @@ class _LipColorViewState extends State<LipColorView> {
 
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
-  }
-
-  Widget typeChip() {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: 7,
-        separatorBuilder: (_, __) => Constant.xSizedBox8,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.white),
-            ),
-            child: const Center(
-              child: Text(
-                'Sheer',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 10),
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 
   Widget typeText() {
@@ -462,7 +407,7 @@ class _LipColorViewState extends State<LipColorView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -473,7 +418,7 @@ class _LipColorViewState extends State<LipColorView> {
           Constant.xSizedBox8,
           separator(),
           Constant.xSizedBox4,
-          chipChoice(),
+          textureChoice(),
           Constant.xSizedBox4,
           separator(),
           chip2Choice(),

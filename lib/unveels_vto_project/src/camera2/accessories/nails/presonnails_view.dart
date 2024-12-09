@@ -107,7 +107,7 @@ class _PresOnNailsAccViewState extends State<PresOnNailsAccView> {
   Widget lipstickChoice() {
     if (_isLoading) {
       return SizedBox(
-          height: 130,
+          height: 135,
           child: Column(
             children: [
               Container(color: Colors.white, width: 100, height: 68),
@@ -122,7 +122,7 @@ class _PresOnNailsAccViewState extends State<PresOnNailsAccView> {
     return Align(
       alignment: Alignment.centerLeft,
       child: SizedBox(
-        height: 130,
+        height: 135,
         child: ListView.separated(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
@@ -324,7 +324,7 @@ class _PresOnNailsAccViewState extends State<PresOnNailsAccView> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
