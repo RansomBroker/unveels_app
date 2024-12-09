@@ -45,6 +45,7 @@ class ProductRepository {
     String? browMakeup,
     String? lenses,
     String? skinConcern,
+    String? hairProductType,
   }) async {
     print("Fetch Product");
     String url = "$_magnetoBaseUrl/rest/V1/products";
@@ -86,6 +87,8 @@ class ProductRepository {
         },
       if (skinConcern != null)
         {'field': 'skin_concern', 'value': skinConcern, 'condition_type': 'eq'},
+      if (hairProductType != null)
+        {'field': 'hair_color_product_type', 'value': "", 'condition_type': 'notnull'},
     ];
 
     final queryParams = getQueryParamsFromFilter([
@@ -141,15 +144,18 @@ class ProductRepository {
                 brands[brandName] = [element.toString()];
               }
 
-            if (textures.containsKey(textureId) && textureId != null) {
-                textures[textureId]!.add(element.toString());
-              } else {
-                textures[textureId!] = [element.toString()];
+              if (textureId != null) {
+                if (textures.containsKey(textureId)) {
+                  textures[textureId]!.add(element.toString());
+                } else {
+                  textures[textureId] = [element.toString()];
+                }
               }
             }
           }
 
-          return extensionAttributes?["configurable_product_links"] ?? [item["id"]];
+          return extensionAttributes?["configurable_product_links"] ??
+              [item["id"]];
         }).toList();
 
         Map<String, String> productToBrand = {};

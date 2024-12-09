@@ -8,7 +8,8 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_color_chooser.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_poroduct_list_view.dart';
 
 import '../../../../utils/color_utils.dart';
 
@@ -21,14 +22,16 @@ class EyebrowsView extends StatefulWidget {
 }
 
 class _EyebrowsViewState extends State<EyebrowsView> {
-  double sliderValue = 0;
+  double sliderValue = 3;
   bool onOffVisibel = false;
   int? eyebrowSelected;
-  int? colorSelected;
+  List<Color> selectedColors = [];
   int? typeSelected;
 
+  int? _selectedProductId;
+
   final Dio dio = Dio();
-  List<ProductData>? products;
+  List<ProductData>? _products;
   bool _isLoading = false;
   final ProductRepository productRepository = ProductRepository();
 
@@ -40,20 +43,20 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     try {
       var dataResponse = await productRepository.fetchProducts(browMakeup: '');
       setState(() {
-        products = dataResponse;
-        if (products != null) {
+        _products = dataResponse;
+        if (_products != null) {
           if (typeSelected == null) {
-            colorList = getSelectableColorList(dataResponse, null) ?? [];
+            colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
           } else {
-            colorList = getSelectableColorList(
-                    products!,
+            colorChoiceList = getSelectableColorList(
+                    _products!,
                     vtoColors
                         .where((e) =>
                             e.label == colorMainListString[typeSelected!])
                         .first
                         .value) ??
                 [];
-            products = dataResponse
+            _products = dataResponse
                 .where((e) =>
                     e.color ==
                     vtoColors
@@ -84,7 +87,7 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     'Brown',
     'Black',
   ];
-  List<Color> colorList = [
+  List<Color> colorChoiceList = [
     const Color(0xff3D2B1F),
     const Color(0xff5C4033),
     const Color(0xff6A4B3A),
@@ -110,49 +113,6 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     super.initState();
 
     fetchData();
-  }
-
-  Widget lipstickChoice() {
-    if (_isLoading) {
-      return SizedBox(
-          height: 135,
-          child: Column(
-            children: [
-              Container(color: Colors.white, width: 100, height: 68),
-            ],
-          ));
-    }
-
-    if (products!.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: SizedBox(
-        height: 135,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: products?.length ?? 0,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            // if (index == 0)
-            //   return InkWell(
-            //     onTap: () async {},
-            //     child: Icon(Icons.do_not_disturb_alt_sharp,
-            //         color: Colors.white, size: 25),
-            //   );
-            var product = products?[index];
-            if (product != null) {
-              return VtoProductItem(product: product);
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-      ),
-    );
   }
 
   Widget colorChip() {
@@ -201,59 +161,21 @@ class _EyebrowsViewState extends State<EyebrowsView> {
   }
 
   Widget colorChoice() {
-    return SizedBox(
-      height: 30,
-      child: Row(
-        children: [
-          InkWell(
-            onTap: () async {
-              setState(() {
-                colorSelected = null;
-                onOffVisibel = true;
-              });
-              tryOn();
-            },
-            child: const Icon(
-              Icons.do_not_disturb_alt_sharp,
-              color: Colors.white,
-              size: 25,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: ListView.separated(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemCount: colorList.length,
-              separatorBuilder: (_, __) => Constant.xSizedBox12,
-              itemBuilder: (context, index) {
-                return InkWell(
-                    onTap: () async {
-                      setState(() {
-                        colorSelected = index;
-                        onOffVisibel = true;
-                      });
-                      fetchData();
-                      tryOn();
-                    },
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 1, vertical: 1),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(
-                              color:
-                                  index == colorSelected && onOffVisibel == true
-                                      ? Colors.white
-                                      : Colors.transparent),
-                        ),
-                        child: CircleAvatar(
-                            radius: 12, backgroundColor: colorList[index])));
-              },
-            ),
-          ),
-        ],
-      ),
+    return VtoColorChooser(
+      colorChoiceList: colorChoiceList,
+      selectedColors: selectedColors,
+      onColorSelected: (color) {
+        setState(() {
+          selectedColors = [color];
+        });
+        fetchData();
+      },
+      onClear: () {
+        setState(() {
+          selectedColors.clear();
+        });
+        fetchData();
+      },
     );
   }
 
@@ -334,6 +256,21 @@ class _EyebrowsViewState extends State<EyebrowsView> {
     );
   }
 
+  void _selectProduct(ProductData product) {
+    setState(() {
+      _selectedProductId = product.id;
+      List<Color>? productColors = colorChoiceList
+          .where((p) =>
+              product.hexacode?.split(",").contains(p.toWebHex()) == true)
+          .toList();
+      if (productColors.isNotEmpty) {
+        selectedColors = [productColors.first];
+      }
+      eyebrowSelected ??= 0;
+    });
+    tryOn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -353,20 +290,26 @@ class _EyebrowsViewState extends State<EyebrowsView> {
           slider(),
           Constant.xSizedBox4,
           separator(),
-          lipstickChoice(),
+          VtoProductListView(
+            products: _products,
+            selectedProductId: _selectedProductId,
+            onSelectedProduct: _selectProduct,
+            isLoading: _isLoading,
+          )
         ],
       ),
     );
   }
 
   void tryOn() {
+    bool show = eyebrowSelected != null;
     Color color = colorMainList[typeSelected ?? 0];
-    if (onOffVisibel == true && colorSelected != null) {
-      color = colorList[colorSelected ?? 0];
+    if (onOffVisibel == true && selectedColors.isNotEmpty) {
+      color = selectedColors.first;
     }
 
     var json = jsonEncode({
-      "showEyebrows": true,
+      "showEyebrows": show,
       "eyebrowsColor": [toWebHex(color)],
       "eyebrowsPattern": eyebrowSelected,
       "eyebrowsVisibility": sliderValue / 10,

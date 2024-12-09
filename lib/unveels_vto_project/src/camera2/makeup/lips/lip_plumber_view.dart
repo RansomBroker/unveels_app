@@ -8,7 +8,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
-import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_poroduct_list_view.dart';
 import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -22,12 +22,11 @@ class LipPlumberView extends StatefulWidget {
 }
 
 class _LipPlumberViewState extends State<LipPlumberView> {
-  bool makeupOrAccessories = false;
   int? colorSelected;
-  bool onOffVisibel = false;
 
+  int? _selectedProductId;
   final Dio dio = Dio();
-  List<ProductData>? products;
+  List<ProductData>? _products;
   bool _isLoading = false;
   final ProductRepository productRepository = ProductRepository();
 
@@ -50,8 +49,8 @@ class _LipPlumberViewState extends State<LipPlumberView> {
           productType: "lips_makeup_product_type",
           productTypes: productTypes?.join(","));
       setState(() {
-        products = dataResponse;
-        if (products != null) {
+        _products = dataResponse;
+        if (_products != null) {
           colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
         }
       });
@@ -160,7 +159,6 @@ class _LipPlumberViewState extends State<LipPlumberView> {
               onTap: () async {
                 setState(() {
                   colorSelected = null;
-                  onOffVisibel = true;
                 });
                 tryOn();
               },
@@ -181,7 +179,6 @@ class _LipPlumberViewState extends State<LipPlumberView> {
                     onTap: () async {
                       setState(() {
                         colorSelected = index;
-                        onOffVisibel = false;
                       });
                       tryOn();
                     },
@@ -191,7 +188,7 @@ class _LipPlumberViewState extends State<LipPlumberView> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: index == colorSelected && !onOffVisibel
+                          color: index == colorSelected
                               ? Colors.white
                               : Colors.transparent,
                         ),
@@ -211,48 +208,6 @@ class _LipPlumberViewState extends State<LipPlumberView> {
     );
   }
 
-  Widget lipstickChoice() {
-    if (_isLoading) {
-      return SizedBox(
-          height: 135,
-          child: Column(
-            children: [
-              Container(color: Colors.white, width: 100, height: 68),
-            ],
-          ));
-    }
-
-    if (products!.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: SizedBox(
-        height: 135,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: products?.length ?? 0,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            // if (index == 0)
-            //   return InkWell(
-            //     onTap: () async {},
-            //     child: Icon(Icons.do_not_disturb_alt_sharp,
-            //         color: Colors.white, size: 25),
-            //   );
-            var product = products?[index];
-            if (product != null) {
-              return VtoProductItem(product: product);
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-      ),
-    );
-  }
 
   Widget chipChoice() {
     return SizedBox(
@@ -288,6 +243,18 @@ class _LipPlumberViewState extends State<LipPlumberView> {
     return const Divider(thickness: 1, color: Colors.white);
   }
 
+  void _selectProduct(ProductData product) {
+    setState(() {
+      _selectedProductId = product.id;
+      colorSelected = colorChoiceList.indexWhere(
+          (p) => product.hexacode?.split(",").contains(p.toWebHex()) == true);
+      // if (product.textureId != null) {
+      //   textureSelected = getTextureIndexByValue(product.textureId!);
+      // }
+    });
+    tryOn();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -298,7 +265,12 @@ class _LipPlumberViewState extends State<LipPlumberView> {
           Constant.xSizedBox8,
           colorChoice(),
           separator(),
-          lipstickChoice(),
+          VtoProductListView(
+            products: _products,
+            selectedProductId: _selectedProductId,
+            onSelectedProduct: _selectProduct,
+            isLoading: _isLoading,
+          )
         ],
       ),
     );

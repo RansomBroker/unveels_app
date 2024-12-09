@@ -1,9 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-
-const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
+import 'package:test_new/unveels_vto_project/common/component/vto_color_category_chooser.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_poroduct_list_view.dart';
+import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 
 class HairView extends StatefulWidget {
   final InAppWebViewController? webViewController;
@@ -15,21 +18,43 @@ class HairView extends StatefulWidget {
 
 class _HairViewState extends State<HairView> {
   bool makeupOrAccessories = false;
-  int? colorSelected = 0;
-  int? hairSelected = 0;
+  int? mainColorSelected;
+  int? hairSelected;
+
+  int? _selectedProductId;
+
+  final Dio dio = Dio();
+  List<ProductData>? _products;
+  bool _isLoading = false;
+  final ProductRepository productRepository = ProductRepository();
+
+  Future<void> fetchData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    try {
+      var dataResponse = await productRepository.fetchProducts(
+          hairProductType: "hair_color_product_type");
+
+      setState(() {
+        _products = dataResponse;
+      });
+    } catch (e) {
+      print("err");
+      print(e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+    fetchData();
   }
 
-  List<String> colorList = [
-    "Yellow",
-    "Black",
-    "Silver",
-    "Gold",
-    "Rose Gold",
-  ];
   List<String> hairList = [
     Assets.imagesImgHair1,
     Assets.imagesImgHair2,
@@ -39,148 +64,16 @@ class _HairViewState extends State<HairView> {
     Assets.imagesImgHair6,
     Assets.imagesImgHair7,
   ];
-  List<Color> hairColorList = [
-    const Color(0xFFFFFF00),
-    Colors.black,
-    const Color(0xFFC0C0C0),
-    const Color(0xFFCA9C43),
-    const Color(0xFFB76E79),
-  ];
-  List<Color> colorChoiceList = [
-    const Color(0xFF740039),
-    const Color(0xFF8D0046),
-    const Color(0xFFB20058),
-    const Color(0xFFB51F69),
-    const Color(0xFFDF1050),
-    const Color(0xFFE31B7B),
-    const Color(0xFFFE3699),
-    const Color(0xFFE861A4),
-    const Color(0xFFE0467C),
-  ];
-
-  List<String> chipList = ['Gloss', 'Matt', 'Shimmer'];
-
-  Widget lipstickChoice() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: SizedBox(
-        height: 150,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: 5,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            // if (index == 0)
-            //   return InkWell(
-            //     onTap: () async {},
-            //     child: Icon(Icons.do_not_disturb_alt_sharp,
-            //         color: Colors.white, size: 25),
-            //   );
-            return InkWell(
-                onTap: () async {},
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(20, 5, 15, 10),
-                      color: Colors.white,
-                      width: 120,
-                      height: 80,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                              flex: 9,
-                              child: Image.asset(Assets.imagesImgLipstick)),
-                          const Expanded(
-                              flex: 1,
-                              child: Icon(
-                                Icons.favorite_border,
-                                color: Colors.black,
-                                size: 18,
-                              )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      "Item name Tom Ford",
-                      style: Constant.whiteBold16.copyWith(fontSize: 12),
-                    ),
-                    Text(
-                      "Brand name",
-                      style: Constant.whiteRegular12
-                          .copyWith(fontWeight: FontWeight.w300),
-                    ),
-                    Row(
-                      children: [
-                        Text("\$15", style: Constant.whiteRegular12),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          color: const Color(0xFFC89A44),
-                          child: const Center(
-                              child: Text(
-                            "Add to cart",
-                            style: TextStyle(color: Colors.white, fontSize: 10),
-                          )),
-                        )
-                      ],
-                    )
-                  ],
-                ));
-          },
-        ),
-      ),
-    );
-  }
 
   Widget colorChip() {
-    return SizedBox(
-      height: 30,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: colorList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox8,
-        itemBuilder: (context, index) {
-          return InkWell(
-            onTap: () {
-              setState(() {
-                colorSelected = index;
-              });
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(
-                    color: index == colorSelected
-                        ? Colors.white
-                        : Colors.transparent),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                      radius: 8, backgroundColor: hairColorList[index]),
-                  Constant.xSizedBox4,
-                  Text(
-                    colorList[index],
-                    style: const TextStyle(color: Colors.white, fontSize: 10),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+    return VtoColorCategoryChooser(
+      onColorSelected: (index, l, v) {
+        setState(() {
+          mainColorSelected = index;
+          fetchData();
+        });
+      },
+      selectedColor: mainColorSelected,
     );
   }
 
@@ -233,34 +126,15 @@ class _HairViewState extends State<HairView> {
     );
   }
 
-  Widget chipChoice() {
-    return SizedBox(
-      height: 18,
-      child: ListView.separated(
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-        itemCount: chipList.length,
-        separatorBuilder: (_, __) => Constant.xSizedBox12,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                  color: index == 0 ? Colors.white : Colors.transparent),
-            ),
-            child: Text(
-              colorList[index],
-              style: const TextStyle(color: Colors.white, fontSize: 10),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   Widget separator() {
     return const Divider(thickness: 1, color: Colors.white);
+  }
+
+  void _selectProduct(ProductData product) {
+    setState(() {
+      _selectedProductId = product.id;
+      mainColorSelected = vtoColors.indexWhere((p) => p.value == product.color);
+    });
   }
 
   @override
@@ -277,7 +151,12 @@ class _HairViewState extends State<HairView> {
           Constant.xSizedBox8,
           separator(),
           Constant.xSizedBox4,
-          lipstickChoice(),
+          VtoProductListView(
+            products: _products,
+            selectedProductId: _selectedProductId,
+            onSelectedProduct: _selectProduct,
+            isLoading: _isLoading,
+          )
         ],
       ),
     );

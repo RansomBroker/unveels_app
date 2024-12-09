@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,8 @@ import 'package:test_new/logic/get_product_utils/get_product_types.dart';
 import 'package:test_new/logic/get_product_utils/repository/product_repository.dart';
 import 'package:test_new/unveels_vto_project//common/helper/constant.dart';
 import 'package:test_new/unveels_vto_project//generated/assets.dart';
-import 'package:test_new/unveels_vto_project/common/component/vto_product_item.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_color_chooser.dart';
+import 'package:test_new/unveels_vto_project/common/component/vto_poroduct_list_view.dart';
 import 'package:test_new/unveels_vto_project/utils/color_utils.dart';
 
 const xHEdgeInsets12 = EdgeInsets.symmetric(horizontal: 12);
@@ -22,14 +22,14 @@ class LipLinerView extends StatefulWidget {
 }
 
 class _LipLinerViewState extends State<LipLinerView> {
-  bool makeupOrAccessories = false;
   int? mainColorSelected;
-  int? colorSelected;
   int? typeColorSelected;
   int? patternSelected;
+  List<Color> selectedColors = [];
 
+  int? _selectedProductId;
   final Dio dio = Dio();
-  List<ProductData>? products;
+  List<ProductData>? _products;
   bool _isLoading = false;
   final ProductRepository productRepository = ProductRepository();
 
@@ -39,29 +39,26 @@ class _LipLinerViewState extends State<LipLinerView> {
     setState(() {
       _isLoading = true;
     });
-    print("Fetching data");
     try {
-      print("Trying to fetch");
       List<String>? productTypes =
           getProductTypesByLabels("lips_makeup_product_type", ["Lip Liners"]);
-      print(productTypes);
 
       var dataResponse = await productRepository.fetchProducts(
           productType: "lips_makeup_product_type",
           productTypes: productTypes?.join(","));
+
       setState(() {
-        products = dataResponse;
-        if (products != null) {
+        _products = dataResponse;
+        if (_products != null) {
           if (mainColorSelected == null) {
             colorChoiceList = getSelectableColorList(dataResponse, null) ?? [];
           } else {
             colorChoiceList = getSelectableColorList(
-                    products!, vtoColors[mainColorSelected!].value) ??
+                    _products!, vtoColors[mainColorSelected!].value) ??
                 [];
-            products = dataResponse
+            _products = dataResponse
                 .where((e) => e.color == vtoColors[mainColorSelected!].value)
                 .toList();
-            print(vtoColors[mainColorSelected!].value);
           }
         }
       });
@@ -82,20 +79,6 @@ class _LipLinerViewState extends State<LipLinerView> {
     fetchData();
   }
 
-  List<String> lipLinerList = [
-    "Yellow",
-    "Black",
-    "Silver",
-    "Gold",
-    "Rose Gold",
-  ];
-  List<Color> lipLinerColorList = [
-    const Color(0xFFFFFF00),
-    Colors.black,
-    const Color(0xFFC0C0C0),
-    const Color(0xFFCA9C43),
-    const Color(0xFFB76E79),
-  ];
   List<Color> colorChoiceList = [];
 
   List<String> lipLinerPath = [
@@ -115,15 +98,14 @@ class _LipLinerViewState extends State<LipLinerView> {
   void tryOn() {
     final show = patternSelected != null;
 
-    final color = colorSelected != null
-        ? [toWebHex(colorChoiceList[colorSelected!])]
-        : null;
+    final color =
+        selectedColors.isNotEmpty ? toWebHex(selectedColors.first) : null;
 
     widget.webViewController?.evaluateJavascript(
       source: """
     window.postMessage(JSON.stringify({
       "showLipliner": $show,
-      ${show ? '"liplinerColor": ${jsonEncode(color)}, "liplinerPattern": $patternSelected,' : ''}
+      ${show ? '"liplinerColor": "$color", "liplinerPattern": $patternSelected,' : ''}
     }), "*");
     """,
     );
@@ -187,62 +169,21 @@ class _LipLinerViewState extends State<LipLinerView> {
   }
 
   Widget colorChoice() {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: SizedBox(
-        height: 30,
-        child: Row(
-          children: [
-            InkWell(
-              onTap: () async {
-                setState(() {
-                  colorSelected = null;
-                });
-                tryOn();
-              },
-              child: const Icon(
-                Icons.do_not_disturb_alt_sharp,
-                color: Colors.white,
-                size: 25,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: colorChoiceList.length,
-                separatorBuilder: (_, __) => Constant.xSizedBox12,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () async {
-                      setState(() {
-                        colorSelected = index;
-                      });
-                      tryOn();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 1, vertical: 1),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                          color: index == colorSelected
-                              ? Colors.white
-                              : Colors.transparent,
-                        ),
-                      ),
-                      child: CircleAvatar(
-                        radius: 12,
-                        backgroundColor: colorChoiceList[index],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+    return VtoColorChooser(
+      colorChoiceList: colorChoiceList,
+      selectedColors: selectedColors,
+      onColorSelected: (color) {
+        setState(() {
+          selectedColors = [color];
+        });
+        fetchData();
+      },
+      onClear: () {
+        setState(() {
+          selectedColors.clear();
+        });
+        fetchData();
+      },
     );
   }
 
@@ -324,42 +265,19 @@ class _LipLinerViewState extends State<LipLinerView> {
     );
   }
 
-  Widget lipstickChoice() {
-    if (_isLoading) {
-      return SizedBox(
-          height: 135,
-          child: Column(
-            children: [
-              Container(color: Colors.white, width: 100, height: 68),
-            ],
-          ));
-    }
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: SizedBox(
-        height: 135,
-        child: ListView.separated(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: products?.length ?? 0,
-          separatorBuilder: (_, __) => Constant.xSizedBox12,
-          itemBuilder: (context, index) {
-            // if (index == 0)
-            //   return InkWell(
-            //     onTap: () async {},
-            //     child: Icon(Icons.do_not_disturb_alt_sharp,
-            //         color: Colors.white, size: 25),
-            //   );
-            var product = products?[index];
-            if (product != null) {
-              return VtoProductItem(product: product);
-            } else {
-              return const SizedBox();
-            }
-          },
-        ),
-      ),
-    );
+  void _selectProduct(ProductData product) {
+    setState(() {
+      _selectedProductId = product.id;
+      mainColorSelected = vtoColors.indexWhere((p) => p.value == product.color);
+      List<Color>? productColors = colorChoiceList
+          .where((p) =>
+              product.hexacode?.split(",").contains(p.toWebHex()) == true)
+          .toList();
+      if (productColors.isNotEmpty) {
+        selectedColors = [productColors.first];
+      }
+    });
+    tryOn();
   }
 
   Widget separator() {
@@ -380,7 +298,12 @@ class _LipLinerViewState extends State<LipLinerView> {
         itemChoice(),
         Constant.xSizedBox8,
         separator(),
-        lipstickChoice(),
+        VtoProductListView(
+          products: _products,
+          selectedProductId: _selectedProductId,
+          onSelectedProduct: _selectProduct,
+          isLoading: _isLoading,
+        )
       ]),
     );
   }

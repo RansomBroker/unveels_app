@@ -429,7 +429,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
     return const Divider(thickness: 1, color: Colors.white);
   }
 
-  Widget cameraPreview(double scale) {
+  Widget cameraPreview() {
     return InAppWebView(
       initialUrlRequest: URLRequest(
           url: WebUri('${ApiConstant.techWebUrl}/virtual-try-on-web')),
@@ -515,7 +515,7 @@ class _OcrCameraPage2State extends State<OcrCameraPage2>
         builder: (p0, p1) {
           return Stack(
             children: [
-              cameraPreview(1),
+              cameraPreview(),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
